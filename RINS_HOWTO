@@ -1,0 +1,248 @@
+RINS (Rapid Identification of Non-human Sequence)
+
+http://khavarilab.stanford.edu/resources.html
+
+
+Downloaded ...
+
+http://khavarilab.stanford.edu/downloads/rins_core.tar.gz
+https://s3.amazonaws.com/changseq/kqu/rins/rins.tar.gz
+
+http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download
+( ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.2.26+-universal-macosx.tar.gz )
+ 
+http://users.soe.ucsc.edu/~kent/src/
+( http://users.soe.ucsc.edu/~kent/src/blatSrc35.zip )
+
+
+http://bowtie-bio.sourceforge.net/
+( http://sourceforge.net/projects/bowtie-bio/files/bowtie/0.12.8/bowtie-0.12.8-src.zip/download )
+( http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.0.0-beta7/bowtie2-2.0.0-beta7-source.zip/download )
+
+http://trinityrnaseq.sourceforge.net
+( http://sourceforge.net/projects/trinityrnaseq/files/trinityrnaseq_r2012-06-08.tgz/download )
+
+
+--------------------------------------------------
+Preparation (for usage on a Mac using tcsh)
+
+	XCode and it's command line tools must be installed
+	MacPorts must be installed
+
+	echo $PATH should include /opt/local/bin
+
+	Add the following to your .tcshrc (or modified to the appropriate *rc file)
+
+setenv PATH ${PATH}:${HOME}/rins/core/:${HOME}/rins/blast:${HOME}/rins/blat:${HOME}/rins/bowtie:${HOME}/rins/trinity
+#	for simplicity
+setenv RINS_SRC_DIR /Volumes/BUF-Fileshare/RestrictedData/StaffFolders/WendtJake/RINS
+
+	open a new window and close this one
+
+--------------------------------------------------
+Install BLAST
+	
+mkdir -p ~/rins/blast
+mkdir ~/temporary_rins
+cd ~/temporary_rins
+tar xfz $RINS_SRC_DIR/ncbi-blast-2.2.26+-universal-macosx.tar.gz
+cd ncbi-blast-2.2.26+
+mv bin/* ~/rins/blast/
+
+#	Compiling from source is problematic and time consuming.
+#	tar xfz $RINS_SRC_DIR/ncbi-blast-2.2.26+-src.tar.gz
+#	cd ncbi-blast-2.2.26+-src/c++
+#	# adding --with-64 only delays the failures
+#	./configure --prefix=$HOME/rins
+#	make
+#	make install
+
+--------------------------------------------------
+Install BLAT
+
+mkdir -p ~/rins/blat
+cd ~/temporary_rins
+unzip $RINS_SRC_DIR/blatSrc35.zip
+cd blatSrc
+make C_INCLUDE_PATH=/opt/local/include/ PNGLIB=/opt/local/lib/libpng.a BINDIR=${HOME}/rins/blat/
+
+	#	make seems to do a make install (unconventional, and poor design)
+
+--------------------------------------------------
+Install BOWTIE
+
+mkdir -p ~/rins/bowtie
+cd ~/temporary_rins
+unzip $RINS_SRC_DIR/bowtie-0.12.8-src.zip
+cd bowtie-0.12.8
+make
+mv bowtie bowtie-build bowtie-inspect ${HOME}/rins/bowtie/
+
+
+--------------------------------------------------
+Install BOWTIE2 (accidental extra)
+
+mkdir -p ~/rins/bowtie2
+cd ~/temporary_rins
+unzip $RINS_SRC_DIR/bowtie2-2.0.0-beta7-source.zip
+cd bowtie2-2.0.0-beta7
+make
+mv bowtie2 bowtie2-build bowtie2-align bowtie2-inspect ${HOME}/rins/bowtie/
+
+#	No need for another dir since filenames are different
+
+	#	doesn't seem to be a make install
+	#	not really sure what needs to be copied to bin
+	#	no subdirs so just moving the 'new' stuff
+
+
+--------------------------------------------------
+Install TRINITY (a bit of a clusterf*k to 'install')
+
+mkdir -p ~/rins/trinity
+cd ~/temporary_rins
+tar xfz $RINS_SRC_DIR/trinityrnaseq_r2012-06-08.tgz
+cd trinityrnaseq_r2012-06-08
+make
+
+	#	This is excessive but what to do?
+	#	Very poor software design to not have a 'make install'.
+mv * ${HOME}/rins/trinity/
+
+
+--------------------------------------------------
+Install RINS Core (a bunch of perl scripts)
+
+mkdir -p ~/rins/core
+cd ~/temporary_rins
+tar xfz $RINS_SRC_DIR/rins_core.tar.gz
+cd rins_core
+mv * ${HOME}/rins/core/
+
+
+--------------------------------------------------
+How about we test something. (This data set is HUMUNGOUS!)
+( 6GB tar.gz, 18GB untared )
+
+mkdir ~/rins_test
+cd ~/rins_test
+tar xfz $RINS_SRC_DIR/rins.tar.gz
+
+
+edit config.txt
+
+
+
+rins.pl -c config.txt -o result.txt
+
+
+completes, but generates some errors and result.txt has no data
+
+
+> rins.pl -c config.txt -o result.txt
+Tue Aug 28 15:37:52 PDT 2012
+step 1 change fastq files to fasta files
+already fasta format, copy fasta files instead
+step 2 chop reads
+1000000
+1000000
+step 3 blat chopped reads
+Loaded 340163412 letters in 32101 sequences
+Error: sequence name gi_77020114_ref_NC_007461.1__Chlamydia_phage_4,_complete_genome is repeated in the database, all names must be unique.
+Loaded 340163412 letters in 32101 sequences
+Error: sequence name gi_77020114_ref_NC_007461.1__Chlamydia_phage_4,_complete_genome is repeated in the database, all names must be unique.
+step 4 find blat out candidate reads
+step 5 compress raw reads
+step 6 pull reads from blat_out_candidate fasta files
+step 7 align compressed reads to human genome reference using bowtie
+step 8 1 iteration
+de novo assembly using Trinity
+Error, do not understand options: --paired_fragment_length 300 --run_butterfly
+cp: trinity_output/Trinity.fasta: No such file or directory
+blastn trinity output against human genome
+clean up blastn outputs
+step 8 2 iteration
+blat chopped reads
+Loaded 0 letters in 0 sequences
+Searched 56836892 bases in 567692 sequences
+Loaded 0 letters in 0 sequences
+Searched 56769200 bases in 567692 sequences
+find blat out candidate reads
+de novo assembly using Trinity
+rm: trinity_output: No such file or directory
+Error, do not understand options: --paired_fragment_length 300 --run_butterfly
+cp: trinity_output/Trinity.fasta: No such file or directory
+blastn trinity output against human genome
+clean up blastn outputs
+rm: trinity_output: No such file or directory
+step 9 detect species of non human sequences
+blastn trinity output against non-human genome
+Loaded 0 letters in 0 sequences
+Searched 0 bases in 0 sequences
+Loaded 0 letters in 0 sequences
+Searched 0 bases in 0 sequences
+write results
+Attempting to mail jakewendt@berkeley.edu the complete notice
+Tue Aug 28 15:39:34 PDT 2012
+
+
+
+removed duplicates from virus index (no idea if same, different, better, worse)
+gi_77020114_ref_NC_007461.1__Chlamydia_phage_4,_complete_genome
+gi_282599175_ref_NC_013693.1__Shigella_phage_phiSboM-AG3,_complete_genome
+gi_306478709_ref_NC_014473.1__Croton_yellow_vein_virus,_complete_genome
+gi_240017693_ref_NC_011052.2__Sweet_potato_leaf_curl_Spain_virus,_complete_genome
+gi_157311299_ref_NC_009821.1__Enterobacteria_phage_Phi1,_complete_genome
+
+Not doing this anymore.  Looks like there are just short of 2000 duplicate sequences.
+
+
+Truncated virus.fa at second  ...
+gi_77020114_ref_NC_007461.1__Chlamydia_phage_4,_complete_genome
+
+
+Sadly, it appears that the rins.pl script is a bit out of sync with
+the other software too. Had to modify some params for calls to Trinity.pl.
+
+
+
+blat output psl files are empty (step 3)
+
+wrote script to rename duplicate sequence names
+still blat output is empty
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------
+Some data would be nice ....
+
+
+http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/hg19.2bit
+
+twoBitToFa hg19.2bit hg19.fa
+
+
+
