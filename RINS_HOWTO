@@ -28,6 +28,30 @@ Preparation (for usage on a Mac using tcsh)
 
 	XCode and it's command line tools must be installed
 	MacPorts must be installed
+	( don't know which ports )
+
+
+	R and some of these Perl libs are only needed for some tests.
+
+	sudo port install R
+
+
+	trinity/sample_data/test_Trinity_Coding_Extraction
+	will need some Perl libs ...
+cpan install URI
+cpan install URI::Escape
+
+
+	trinity/sample_data/test_edgeR_diff_expr/example_edgeR_analysis_pipeline
+	trinity/sample_data/test_edgeR_diff_expr/testEdgeRfuncs
+	will require 'R'
+	also the 'edgeR' library (which I can't find just yet)
+	Download and unzip package source for limma and edgeR
+http://www.bioconductor.org/packages/2.10/bioc/html/limma.html
+http://www.bioconductor.org/packages/2.10/bioc/html/edgeR.html
+	R CMD INSTALL /Users/jakewendt/limma
+	R CMD INSTALL /Users/jakewendt/edgeR
+
 
 	echo $PATH should include /opt/local/bin
 
