@@ -153,11 +153,13 @@ cd ~/rins_test
 tar xfz $RINS_SRC_DIR/rins.tar.gz
 
 
+
+
 edit config.txt
 
 
-
-rins.pl -c config.txt -o result.txt
+#	use ccls_rins.pl instead of rins.pl as it contains a couple mods.
+ccls_rins.pl -c config.txt -o result.txt
 
 
 completes, but generates some errors and result.txt has no data
@@ -259,8 +261,19 @@ That's always nice.
 Segmentation fault
 
 
+It would seem that the included hg18 "database" is corrupt and does not pass the 
 
-create a ccls_rins.pl
+blastdbcheck -db indexex/hg18
+
+I recreated the hg18 ebwt files from the included hg18.fa file
+
+cd indexes; bowtie-build hg18.fa hg18
+The resulting files are the same size, but 1 does differ.
+
+> diff ~/rins_test/rins/*indexes/hg18.1.ebwt
+Binary files /Users/jakewendt/rins_test/rins/indexes/hg18.1.ebwt and /Users/jakewendt/rins_test/rins/new_indexes/hg18.1.ebwt differ
+
+
 
 
 
