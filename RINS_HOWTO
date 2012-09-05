@@ -232,8 +232,14 @@ the other software too. Had to modify some params for calls to Trinity.pl.
 
 blat output psl files are empty (step 3)
 
-wrote script to rename duplicate sequence names
+wrote script to rename duplicate sequence names (doesn't really seem necessary)
 still blat output is empty
+
+
+
+
+
+
 
 
 
@@ -244,6 +250,16 @@ still blat output is empty
 I manually ran blat on the chopped and unchopped fa files and
 found that the unchopped files seem to actually produce a non-empty
 psl output file?  Investigating.
+
+
+Also seems that bowtie is silently seg faulting!!!
+That's always nice.
+
+> bowtie -n 3 -p 6 -f -S /Users/jakewendt/rins_test/rins/indexes/hg18 compress_leftlane.fa compress_leftlane.sam
+Segmentation fault
+
+
+
 
 
 
