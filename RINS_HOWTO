@@ -241,6 +241,14 @@ still blat output is empty
 
 
 
+I manually ran blat on the chopped and unchopped fa files and
+found that the unchopped files seem to actually produce a non-empty
+psl output file?  Investigating.
+
+
+
+
+
 
 
 
