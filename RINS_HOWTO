@@ -260,6 +260,8 @@ Segmentation fault
 
 
 
+create a ccls_rins.pl
+
 
 
 
@@ -291,6 +293,10 @@ Some data would be nice ....
 http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/hg19.2bit
 
 twoBitToFa hg19.2bit hg19.fa
+
+#	generate ebwt files
+bowtie-build hg19.fa hg19
+
 
 
 
