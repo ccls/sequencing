@@ -53,35 +53,35 @@ my $leftlane_filename	= $config->get_value("leftlane_filename");
 my $rightlane_filename = $config->get_value("rightlane_filename");
 my $singlelane_filename = $config->get_value("singlelane_filename");
 
-my $raw_read_length = $config->get_value("raw_read_length");
-my $chop_read_length = $config->get_value("chop_read_length");
-my $minIdentity = $config->get_value("minIdentity");
+my $raw_read_length = $config->get_value("raw_read_length") || 100;
+my $chop_read_length = $config->get_value("chop_read_length") || 25;
+my $minIdentity = $config->get_value("minIdentity") || 80;
 
 
 my $blat_reference = $config->get_value("blat_reference");
 
-my $compress_ratio_thrd = $config->get_value("compress_ratio_thrd");
-my $iteration = $config->get_value("iteration");
+my $compress_ratio_thrd = $config->get_value("compress_ratio_thrd") || 0.5;
+my $iteration = $config->get_value("iteration") || 2;
 
 # executables' configurations
 
-my $blat_bin = $config->get_value("blat_bin");
-my $bowtie_bin = $config->get_value("bowtie_bin");
-my $bowtie_build_bin = $config->get_value("bowtie_build_bin");
+my $blat_bin = $config->get_value("blat_bin") || 'blat';
+my $bowtie_bin = $config->get_value("bowtie_bin") || 'bowtie';
+my $bowtie_build_bin = $config->get_value("bowtie_build_bin") || 'bowtie-build';
 my $bowtie_index_human = $config->get_value("bowtie_index_human");
-my $bowtie_threads = $config->get_value("bowtie_threads");
-my $bowtie_mismatch = $config->get_value("bowtie_mismatch");
+my $bowtie_threads = $config->get_value("bowtie_threads") || 6;
+my $bowtie_mismatch = $config->get_value("bowtie_mismatch") || 3;
 
-my $trinity_script = $config->get_value("trinity_script");
-my $paired_fragment_length = $config->get_value("paired_fragment_length");
-my $min_contig_length = $config->get_value("min_contig_length");
-my $trinity_threads = $config->get_value("trinity_threads");
+my $trinity_script = $config->get_value("trinity_script") || 'Trinity.pl';
+my $paired_fragment_length = $config->get_value("paired_fragment_length") || 300;
+my $min_contig_length = $config->get_value("min_contig_length") || 300;
+my $trinity_threads = $config->get_value("trinity_threads") || 6;
 
-my $blastn_bin = $config->get_value("blastn_bin");
+my $blastn_bin = $config->get_value("blastn_bin") || 'blastn';
 my $blastn_index_human = $config->get_value("blastn_index_human");
 my $blastn_index_non_human = $config->get_value("blastn_index_non_human");
-my $blastn_evalue_thrd = $config->get_value("blastn_evalue_thrd");
-my $similarity_thrd = $config->get_value("similarity_thrd");
+my $blastn_evalue_thrd = $config->get_value("blastn_evalue_thrd") || 0.05;
+my $similarity_thrd = $config->get_value("similarity_thrd") || 0.8;
 
 
 # scripts' configurations
