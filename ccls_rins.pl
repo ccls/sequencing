@@ -19,8 +19,8 @@ push @usage, "Usage: ".basename($0)." [options]\n";
 push @usage, "Run the RINS pipeline to identify nonhuman sequences.\n";
 push @usage, "Command Line Example: ccls_rins.pl -c config.txt -o output.txt\n";
 push @usage, "	-h, --help    Displays this information\n";
-push @usage, "	-o, --output  Output Filename\n";
-push @usage, "	-c, --config  Config Filename\n";
+push @usage, "	-c, --config  Config Filename (default: config.txt)\n";
+push @usage, "	-o, --output  Output Filename (default: results.txt)\n";
 
 
 my $help;
@@ -37,8 +37,10 @@ GetOptions
 );
 
 not defined $help or die @usage;
-defined $config_filename or die @usage;
-defined $output_filename or die @usage;
+$config_filename ||= 'config.txt';
+#defined $config_filename or die @usage;
+$output_filename ||= 'results.txt';
+#defined $output_filename or die @usage;
 
 my $config = new();
 $config->read($config_filename);
