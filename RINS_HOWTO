@@ -30,6 +30,8 @@ Preparation (for usage on a Mac using tcsh)
 	MacPorts must be installed
 	( don't know which ports )
 
+	sudo port install git-core
+
 
 	R and some of these Perl libs are only needed for some tests.
 
@@ -56,12 +58,26 @@ http://www.bioconductor.org/packages/2.10/bioc/html/edgeR.html
 	echo $PATH should include /opt/local/bin
 
 	Add the following to your .tcshrc (or modified to the appropriate *rc file)
+	( could also add "source ~/rins/ccls/rinsrc" to your .tcshrc )
 
-setenv PATH ${PATH}:${HOME}/rins/core/:${HOME}/rins/blast:${HOME}/rins/blat:${HOME}/rins/bowtie:${HOME}/rins/trinity
+setenv PATH ${PATH}:${HOME}/rins/ccls:${HOME}/rins/core/:${HOME}/rins/blast:${HOME}/rins/blat:${HOME}/rins/bowtie:${HOME}/rins/trinity
 #	for simplicity
 setenv RINS_SRC_DIR /Volumes/BUF-Fileshare/RestrictedData/StaffFolders/WendtJake/RINS
 
 	open a new window and close this one
+
+
+
+
+
+--------------------------------------------------
+Install our own scripts 
+(if you are reading this you may have already done this somewhere else.)
+
+mkdir -p ~/rins
+cd ~/rins
+git clone git://github.com/ccls/sequencing.git ccls
+
 
 --------------------------------------------------
 Install BLAST
@@ -300,6 +316,46 @@ Binary files /Users/jakewendt/rins_test/rins/indexes/hg18.1.ebwt and /Users/jake
 
 
 --------------------------------------------------
+### My Upgrades
+
+I have updated the parameters used to call Trinity.pl as 
+some of the existing ones are no longer used.
+
+I have "uniquified" the virus sequence names in the virus db.
+
+I have modified all system calls to print command before execution.
+
+I have added, and am still adding, checks along the way.
+
+I have also modified to the script to have many defaults such as
+* command line defaults
+    * input config file (-c) defaults to config.txt
+    * output file (-o) defaults to results.txt
+* config file defaults
+    * blat_bin: blat (expected to be in PATH)
+    * bowtie_bin: bowtie (expected to be in PATH)
+    * bowtie_build_bin: bowtie-build (expected to be in PATH)
+    * trinity_script: Trinity.pl (expected to be in PATH)
+    * blastn_bin: blastn (expected to be in PATH)
+    * raw_read_length: 100
+    * chop_read_length: 25
+    * minIdentity: 80
+    * compress_ratio_thrd: 0.5
+    * iteration: 2
+    * bowtie_threads: 6
+    * bowtie_mismatch: 3
+    * paired_fragment_length: 300
+    * min_contig_length: 300
+    * trinity_threads: 6
+    * blastn_evalue_thrd: 0.05
+    * similarity_thrd: 0.8
+
+
+
+
+
+
+--------------------------------------------------
 Some data would be nice ....
 
 
@@ -312,4 +368,6 @@ bowtie-build hg19.fa hg19
 
 
 
+
+--------------------------------------------------
 

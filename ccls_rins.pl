@@ -313,11 +313,7 @@ if ($pair_end) {
 	do_this( "$trinity_script --seqType fa --single bowtie_singlelane.fa --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr --JM 10G\"" );
 }
 
-
-
-#	TODO	insert some sort of check
-
-
+file_check( 'trinity_output/Trinity.fasta' );
 
 do_this( "cp trinity_output/Trinity.fasta Trinity.fasta" );
 do_this( "$modify_trinity_output_script Trinity.fasta" );

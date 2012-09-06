@@ -1,0 +1,61 @@
+#
+#	If using tcsh, you could simply add
+#
+#		source $WHEREEVERTHISSCRIPTIS/rinsrc
+#
+#	to your .tcshrc file.  ( probably in ~/rins/ccls )
+#
+
+#	For convenience during rins installation
+setenv RINS_SRC_DIR /Volumes/BUF-Fileshare/RestrictedData/StaffFolders/WendtJake/RINS
+
+#	For after rins installation
+setenv PATH ${PATH}:${HOME}/rins/ccls:${HOME}/rins/core:${HOME}/rins/blast:${HOME}/rins/blat:${HOME}/rins/bowtie:${HOME}/rins/trinity
+#	using tildas does not work
+#setenv PATH ${PATH}:~/rins/ccls:~/rins/core:~/rins/blast:~/rins/blat:~/rins/bowtie:~/rins/trinity
+
+
+#
+#	If PATH includes '.', move it to the end
+#
+set temp_paths = (`echo $PATH | sed 's/:/ /g'`)
+set found_dot = 0
+set i = 0
+while( $i < $#temp_paths )
+	set i = `expr $i + 1`
+	if( $temp_paths[$i] == '.' ) then
+		set found_dot = 1
+		set temp_paths[$i] = ''
+	endif
+end
+if( $found_dot ) then
+	set temp_paths = ( $temp_paths . )
+endif
+setenv PATH `echo $temp_paths | sed 's/ /:/g'`
+unset temp_paths
+
+
+#
+#	Uniquify PATH contents (exact matches)
+#
+set temp_paths = (`echo $PATH | sed 's/:/ /g'`)
+set uniq_paths = ()
+set i = 0
+while( $i < $#temp_paths )
+	set i = `expr $i + 1`
+	set found = 0
+	foreach uniq_path ( $uniq_paths )
+		if( $uniq_path == $temp_paths[$i] ) then
+			set found = 1
+		endif
+	end
+	if( ! $found ) then
+		set uniq_paths = ( $uniq_paths $temp_paths[$i] )
+	endif
+end
+setenv PATH `echo $uniq_paths | sed 's/ /:/g'`
+unset uniq_paths
+unset temp_paths
+
+
+
