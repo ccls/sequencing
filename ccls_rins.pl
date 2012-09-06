@@ -576,46 +576,46 @@ sub get_value {
 	return $config_values->{$key};
 }
 
-sub get_list {
-	my $self = shift;
-	my $key = shift;
-	
-	my $index = 1;
-	my $key_index = $key.$index;
-	my @values;
-	while ($self->has_value($key_index))
-		{
-			push @values, $self->get_value($key_index);
-			$index++;
-			$key_index = $key.$index;
-		}
-	
-	return @values;
-}
+#sub get_list {
+#	my $self = shift;
+#	my $key = shift;
+#	
+#	my $index = 1;
+#	my $key_index = $key.$index;
+#	my @values;
+#	while ($self->has_value($key_index))
+#		{
+#			push @values, $self->get_value($key_index);
+#			$index++;
+#			$key_index = $key.$index;
+#		}
+#	
+#	return @values;
+#}
 
-sub get_hash {
-	my $self = shift;
-	my $key = shift;
-	
-	my $config_values = $self->{"config_values"};
-	my $config_filename = $self->{"config_filename"};
-	
-	defined $config_values and defined $config_filename or die "Error: config not read\n";
-	
-	if (not defined $config_values->{$key})
-		{
-			die "Error: no value for $key in config file $config_filename\n";
-		}
-	
-	my %values;
-	foreach my $value (split /,/, $config_values->{$key})
-		{
-			$value =~ s/\s//g;
-			$values{$value} = 1;
-		}
-	
-	return %values;
-}
+#sub get_hash {
+#	my $self = shift;
+#	my $key = shift;
+#	
+#	my $config_values = $self->{"config_values"};
+#	my $config_filename = $self->{"config_filename"};
+#	
+#	defined $config_values and defined $config_filename or die "Error: config not read\n";
+#	
+#	if (not defined $config_values->{$key})
+#		{
+#			die "Error: no value for $key in config file $config_filename\n";
+#		}
+#	
+#	my %values;
+#	foreach my $value (split /,/, $config_values->{$key})
+#		{
+#			$value =~ s/\s//g;
+#			$values{$value} = 1;
+#		}
+#	
+#	return %values;
+#}
 
 
 
