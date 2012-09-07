@@ -395,6 +395,14 @@ bowtie-build hg19.fa hg19
 
 
 
+Get SRR073726.fastq for use in the test_cahpv test...
+
+ftp://ftp.ddbj.nig.ac.jp/ddbj_database/dra/fastq/SRA026/SRA026688/SRX031910/SRR073726.fastq.bz2
+ftp://ftp.ddbj.nig.ac.jp/ddbj_database/dra/fastq/SRA026/SRA026688/SRX031910/SRR073726_1.fastq.bz2
+ftp://ftp.ddbj.nig.ac.jp/ddbj_database/dra/fastq/SRA026/SRA026688/SRX031910/SRR073726_2.fastq.bz2
+
+http://ftp.sra.ebi.ac.uk/vol1/fastq/SRR073/SRR073726/SRR073726_1.fastq.gz
+http://ftp.sra.ebi.ac.uk/vol1/fastq/SRR073/SRR073726/SRR073726_2.fastq.gz
 
 --------------------------------------------------
 
