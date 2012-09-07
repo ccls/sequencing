@@ -111,6 +111,8 @@ my $blastn_cleanup_script = "blastn_cleanup.pl";
 my $candidate_non_human_script = "candidate_non_human.pl";
 my $write_result_script = "write_result.pl";
 
+my $die_on_failed_file_check = $config->get_value("die_on_failed_file_check") || 0;# false
+
 
 my $mailto;
 if ($config->has_value("mailto")) {
@@ -473,8 +475,23 @@ sub file_check {
 
 #	STDERR is not logged when using " | tee -a log"
 
-	die "$filename not created" unless -e $filename;
-	die "$filename empty ( <= $empty_size )" if( -s $filename <= $empty_size );
+	my $msg = '';
+	unless( -e $filename ){
+		$msg = "$filename not created";
+		if( $die_on_failed_file_check ){
+			die $msg;
+		} else {
+			print "$msg\n";
+		}
+	}
+	if( -s $filename <= $empty_size ){
+		$msg = "$filename empty ( <= $empty_size )";
+		if( $die_on_failed_file_check ){
+			die $msg
+		} else {
+			print "$msg\n";
+		}
+	}
 }
 
 sub do_this {
