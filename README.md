@@ -14,7 +14,7 @@ Databases are corrupt.
 Executables are seg faulting.
 Processing "chopped" files finds nothing.
 Parafly java crashes...
-
+ 	( removed --compatible_path_extension)
 
 
 ## TODO

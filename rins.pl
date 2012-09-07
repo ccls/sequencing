@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 # rins.pl is a tool to Rapidly Identify Nonhuman Sequences
-#	(ccls_rins.pl is a modified version of rins.pl)
+#	(This is a modified version of the Stanford rins.pl)
 # 
 # script is written by Kun Qu and Aparna Bhaduri in Stanford Dermatology
 
@@ -17,7 +17,7 @@ use File::Spec;
 my @usage;
 push @usage, "Usage: ".basename($0)." [options]\n";
 push @usage, "Run the RINS pipeline to identify nonhuman sequences.\n";
-push @usage, "Command Line Example: ccls_rins.pl -c config.txt -o output.txt\n";
+push @usage, "Command Line Example: rins.pl -c config.txt -o output.txt\n";
 push @usage, "	-h, --help    Displays this information\n";
 push @usage, "	-c, --config  Config Filename (default: config.txt)\n";
 push @usage, "	-o, --output  Output Filename (default: results.txt)\n";
@@ -88,17 +88,28 @@ my $similarity_thrd = $config->get_value("similarity_thrd") || 0.8;
 
 # scripts' configurations
 
-my $scripts_directory = $config->get_value("scripts_directory");
-my $fastq2fasta_script = "$scripts_directory/fastq2fasta.pl";
-my $chopreads_script = "$scripts_directory/chopreads.pl";
-my $blat_out_candidate_script = "$scripts_directory/blatoutcandidate.pl";
-my $compress_script = "$scripts_directory/compress.pl";
-my $pull_reads_fasta_script = "$scripts_directory/pull_reads_fasta.pl";
-my $sam2names_script = "$scripts_directory/sam2names.pl";
-my $modify_trinity_output_script = "$scripts_directory/modify_trinity_output.pl";
-my $blastn_cleanup_script = "$scripts_directory/blastn_cleanup.pl";
-my $candidate_non_human_script = "$scripts_directory/candidate_non_human.pl";
-my $write_result_script = "$scripts_directory/write_result.pl";
+#my $scripts_directory = $config->get_value("scripts_directory");
+#my $fastq2fasta_script = "$scripts_directory/fastq2fasta.pl";
+#my $chopreads_script = "$scripts_directory/chopreads.pl";
+#my $blat_out_candidate_script = "$scripts_directory/blatoutcandidate.pl";
+#my $compress_script = "$scripts_directory/compress.pl";
+#my $pull_reads_fasta_script = "$scripts_directory/pull_reads_fasta.pl";
+#my $sam2names_script = "$scripts_directory/sam2names.pl";
+#my $modify_trinity_output_script = "$scripts_directory/modify_trinity_output.pl";
+#my $blastn_cleanup_script = "$scripts_directory/blastn_cleanup.pl";
+#my $candidate_non_human_script = "$scripts_directory/candidate_non_human.pl";
+#my $write_result_script = "$scripts_directory/write_result.pl";
+
+my $fastq2fasta_script = "fastq2fasta.pl";
+my $chopreads_script = "chopreads.pl";
+my $blat_out_candidate_script = "blatoutcandidate.pl";
+my $compress_script = "compress.pl";
+my $pull_reads_fasta_script = "pull_reads_fasta.pl";
+my $sam2names_script = "sam2names.pl";
+my $modify_trinity_output_script = "modify_trinity_output.pl";
+my $blastn_cleanup_script = "blastn_cleanup.pl";
+my $candidate_non_human_script = "candidate_non_human.pl";
+my $write_result_script = "write_result.pl";
 
 
 my $mailto;
@@ -112,6 +123,14 @@ if ($config->has_value("mailto")) {
 if (($file_format ne "fastq") and ($file_format ne "fasta")) {
 	die "File format can either be fastq or fasta\n";
 }
+
+
+#	make and use an outdir based on time now.
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime time;
+my $outdir = sprintf( "%4d%02d%02d%02d%02d%02d.outdir",
+	$year+1900, $mon+1, $mday, $hour, $min, $sec );
+mkdir $outdir;
+chdir $outdir;
 
 
 
@@ -302,15 +321,26 @@ print "de novo assembly using Trinity\n";
 
 #	--paired_fragment_length changed to --group_pairs_distance
 #	--run_butterfly no longer needed as is default
-#	--JM 10G now required
+#	--JM 1G now required
+
+#	changed --JM from 10G to just 1G and it was SO MUCH FASTER! NO DISK CHATTER!
+#		I don't have 10G of memory so it was probably using the disk as virtual memory.
+#		BIG MISTAKE.  Complete execution time is 23 minutes!  Still wrong though.
+
+#	--compatible_path_extension (for butterfly)
+# > java -Xmx20G -Xms1G -jar /Users/jakewendt/rins/trinity/Butterfly/Butterfly.jar -N 4817 -L 300 -F 300 -C /Users/jakewendt/rins_test/201209060909/trinity_output/chrysalis/RawComps.1/comp3552 --compatible_path_extension --stderr --max_number_of_paths_per_node=10 --path_reinforcement_distance=75 --triplet-lock
+#Exception in thread "main" java.lang.NullPointerException
+#	at gnu.getopt.Getopt.checkLongOption(Getopt.java:869)
+#	at gnu.getopt.Getopt.getopt(Getopt.java:1119)
+#	at TransAssembly_allProbPaths.main(TransAssembly_allProbPaths.java:193)
 
 
 if ($pair_end) {
 #	do_this( "$trinity_script --seqType fa --left bowtie_leftlane.fa --right bowtie_rightlane.fa --paired_fragment_length $paired_fragment_length --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
-	do_this( "$trinity_script --seqType fa --left bowtie_leftlane.fa --right bowtie_rightlane.fa --group_pairs_distance $paired_fragment_length --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\" --JM 10G" );
+	do_this( "$trinity_script --seqType fa --left bowtie_leftlane.fa --right bowtie_rightlane.fa --group_pairs_distance $paired_fragment_length --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\" --JM 1G" );
 } else {
 #	do_this( "$trinity_script --seqType fa --single bowtie_singlelane.fa --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
-	do_this( "$trinity_script --seqType fa --single bowtie_singlelane.fa --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr --JM 10G\"" );
+	do_this( "$trinity_script --seqType fa --single bowtie_singlelane.fa --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\" --JM 1G" );
 }
 
 file_check( 'trinity_output/Trinity.fasta' );
@@ -326,21 +356,12 @@ do_this( "$modify_trinity_output_script Trinity.fasta" );
 print "blastn trinity output against human genome\n";
 do_this( "$blastn_bin -query=Trinity.fasta -db=$blastn_index_human -evalue $blastn_evalue_thrd -outfmt 6 > human_contig.txt" );
 
-
-
-
-#	TODO	insert some sort of check
-
+file_check( 'human_contig.txt' );	#	NOTE  don't know how big an "empty" one is
 
 print "clean up blastn outputs\n";
 do_this( "$blastn_cleanup_script human_contig.txt Trinity.fasta clean_blastn.fa $similarity_thrd" );
 
-
-
-#	TODO	insert some sort of check
-
-
-
+file_check( 'clean_blastn.fa' );	#	NOTE  don't know how big an "empty" one is
 
 for ($nth_iteration=2; $nth_iteration<=$iteration; $nth_iteration++) {
 
@@ -349,22 +370,21 @@ for ($nth_iteration=2; $nth_iteration<=$iteration; $nth_iteration++) {
 
 	if ($pair_end) {
 		do_this( "$blat_bin clean_blastn.fa -minIdentity=95 leftlane.fa leftlane.iteration.psl" );
+		file_check( 'leftlane.iteration.psl', 427 );
 		do_this( "$blat_bin clean_blastn.fa -minIdentity=95 rightlane.fa rightlane.iteration.psl" );
+		file_check( 'rightlane.iteration.psl', 427 );
 	}
 	else {
 		do_this( "$blat_bin clean_blastn.fa -minIdentity=95 singlelane.fa singlelane.iteration.psl" );
+		file_check( 'singlelane.iteration.psl', 427 );
 	}
-
-
-
-#	TODO	insert some sort of check
-
-
 
 	print "find blat out candidate reads\n";
 	
 	if ($pair_end) {
 		do_this( "$blat_out_candidate_script leftlane.iteration.psl rightlane.iteration.psl leftlane.fa rightlane.fa" );
+		file_check( 'blat_out_candidate_leftlane.fa' );
+		file_check( 'blat_out_candidate_rightlane.fa' );
 
 		do_this( "cp blat_out_candidate_leftlane.fa iteration_leftlane.fa" );
 		do_this( "cp blat_out_candidate_rightlane.fa iteration_rightlane.fa" );
@@ -372,49 +392,39 @@ for ($nth_iteration=2; $nth_iteration<=$iteration; $nth_iteration++) {
 	}
 	else {
 		do_this( "$blat_out_candidate_script singlelane.iteration.psl singlelane.fa" );
+		file_check( 'blat_out_candidate_singlelane.fa' );
 		do_this( "cp blat_out_candidate_singlelane.fa iteration_singlelane.fa" );
 	}
-
-
-
-#	TODO	insert some sort of check
-
-
 
 	print "de novo assembly using Trinity\n";
 	do_this( "rm -r trinity_output" );
 
 	if ($pair_end) {
 #		do_this( "$trinity_script --seqType fa --left iteration_leftlane.fa --right iteration_rightlane.fa --paired_fragment_length $paired_fragment_length --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
-		do_this( "$trinity_script --seqType fa --left iteration_leftlane.fa --right iteration_rightlane.fa --group_pairs_distance $paired_fragment_length --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\" --JM 10G" );
+		do_this( "$trinity_script --seqType fa --left iteration_leftlane.fa --right iteration_rightlane.fa --group_pairs_distance $paired_fragment_length --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\" --JM 1G" );
 	}	
 	else {
 #		do_this( "$trinity_script --seqType fa --single iteration_singlelane.fa --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
-		do_this( "$trinity_script --seqType fa --single iteration_singlelane.fa --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
+		do_this( "$trinity_script --seqType fa --single iteration_singlelane.fa --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\" --JM 1G" );
 	}
 
-
-
-#	TODO	insert some sort of check
-
-
+	file_check( 'trinity_output/Trinity.fasta' );
 
 	do_this( "cp trinity_output/Trinity.fasta Trinity.fasta" );
 	do_this( "$modify_trinity_output_script Trinity.fasta" );
 
 	print "blastn trinity output against human genome\n";
 	do_this( "$blastn_bin -query=Trinity.fasta -db=$blastn_index_human -evalue $blastn_evalue_thrd -outfmt 6 > human_contig.txt" );
+	file_check( 'human_contig.txt' );	#	NOTE  don't know how big an "empty" one is
 
 	print "clean up blastn outputs\n";	
 	do_this( "$blastn_cleanup_script human_contig.txt Trinity.fasta clean_blastn.fa $similarity_thrd" );
+	file_check( 'clean_blastn.fa' );	#	NOTE  don't know how big an "empty" one is
+
 	do_this( "rm -r trinity_output" );
-
-
-
-#	TODO	insert some sort of check
-
-
 }
+
+
 
 
 
@@ -423,25 +433,18 @@ print "blastn trinity output against non-human genome\n";
 do_this( "cp clean_blastn.fa non_human_contig.fa" );
 do_this( "$blastn_bin -query=non_human_contig.fa -db=$blastn_index_non_human -evalue $blastn_evalue_thrd -outfmt 6 > non_human_contig_blastn.txt" );
 
-
-
-#	TODO	insert some sort of check
-
-
+file_check( 'non_human_contig_blastn.txt' );	#	NOTE  don't know how big an "empty" one is
 
 if ($pair_end) {
 	do_this( "$blat_bin non_human_contig.fa -minIdentity=98 iteration_leftlane.fa leftlane.psl" );
+	file_check( 'leftlane.psl', 427 );
 	do_this( "$blat_bin non_human_contig.fa -minIdentity=98 iteration_rightlane.fa rightlane.psl" );
+	file_check( 'rightlane.psl', 427 );
 }
 else {
 	do_this( "$blat_bin non_human_contig.fa -minIdentity=98 iteration_singlelane.fa singlelane.psl" );
+	file_check( 'singlelane.psl', 427 );
 }
-
-
-
-
-#	TODO	insert some sort of check
-
 
 print "write results\n";
 

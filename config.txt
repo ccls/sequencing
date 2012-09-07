@@ -48,7 +48,7 @@ bowtie_index_human     = /Users/jakewendt/rins/indexes/hg18
 # scripts and executable directories
 
 #scripts_directory = /Users/jakewendt/rins_test/rins/bin/
-scripts_directory = /Users/jakewendt/rins/core/
+#scripts_directory = /Users/jakewendt/rins/core/
 #blat_bin = /seq/blatSuite/blat
 #blat_bin = /Users/jakewendt/rins/blat/blat
 

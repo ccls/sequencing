@@ -14,7 +14,27 @@ use warnings FATAL => 'all';
 
 
 
-check_file( 'my_empty_file' );
+#check_file( 'my_empty_file' );
+
+#my ($sec,$min,$hour,$mday,$mon,$year,
+#          $wday,$yday,$isdst) = localtime time;
+#my $dstring = sprintf( "%4d%02d%02d%02d%02d%02d.outdir",
+#	$year+1900, $mon+1, $mday, $hour, $min, $sec );
+#
+#print $dstring;
+#mkdir $dstring;
+#chdir $dstring;
+
+
+#my $data = ">comp1810_c0_seq1 len=430 path=[408:0-429]";
+##my ($front, $back) = split (/len[:]/, $data);
+##my ($front, $back) = split (/len[=]/, $data);
+#my ($front, $back) = split (/len=/, $data);
+#print "$front .... $back\n"; # there is no "len[:]" in $data[0] !!!
+
+#if(( 1 > 0 ) && ( 2 < 3 )){
+#	print "yes";
+#}
 
 sub check_file {
 	my ( $filename, $size ) = @_;

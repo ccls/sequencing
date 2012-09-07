@@ -174,8 +174,6 @@ tar xfz $RINS_SRC_DIR/rins.tar.gz
 edit config.txt
 
 
-#	use ccls_rins.pl instead of rins.pl as it contains a couple mods.
-ccls_rins.pl -c config.txt -o result.txt
 
 
 completes, but generates some errors and result.txt has no data
@@ -327,6 +325,14 @@ I have modified all system calls to print command before execution.
 
 I have added, and am still adding, checks along the way.
 
+blastn created human_contig.txt not formated as expected and generates divide by 0
+	blastn_cleanup.pl human_contig.txt Trinity.fasta clean_blastn.fa 0.8
+	my ($front, $back) = split (/len[:]/, $data[0]);
+Created my own version
+
+Similar problem with write_result.pl
+	file format is even more different here?
+
 I have also modified to the script to have many defaults such as
 * command line defaults
     * input config file (-c) defaults to config.txt
@@ -349,6 +355,27 @@ I have also modified to the script to have many defaults such as
     * trinity_threads: 6
     * blastn_evalue_thrd: 0.05
     * similarity_thrd: 0.8
+
+I am considering logging the entire output of the scripts, but it is simply easier for the user to use something like 'tee'.  In addition, some of these applications, particularly the java ones, are very resource intensive.  They should be run nicely or you may not be able to use your computer for anything else while it is running.
+
+	nice +20 rins.pl | tee -a my_log_file &
+
+
+
+
+--------------------------------------------------
+### Some continued confusion
+
+
+blat finds nothing with chopped reads.  Why?  I would expect it to be easier to find matches for smaller pieces?  For the moment, I skip the chopping.
+
+
+From the rins.pl script ...
+  system "$compress_script blat_out_candidate_leftlane.fa $compress_ratio_thrd > compress_leftlane.names";
+  system "$compress_script blat_out_candidate_leftlane.fa $compress_ratio_thrd > compress_rightlane.names";
+The second line creates compress_rightlane.names from the blat_out_candidate_leftlane.fa file???  Is this correct?  I would think not, but perhaps it is irrelevant if the contents are the same.  Of course, if they are the same, why is there a left and a right????  This needs resolved before any substantial science can be done.  For the moment, I have "corrected" this to use left for left and right for right.
+
+
 
 
 
