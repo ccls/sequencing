@@ -15,6 +15,8 @@ Executables are seg faulting.
 Processing "chopped" files finds nothing.
 Parafly java crashes...
  	( removed --compatible_path_extension)
+blastn output changed?
+	modified blastn_cleanup.pl and write_results.pl
 
 
 ## TODO
