@@ -142,8 +142,8 @@ print "step 1 change fastq files to fasta files\n";
 if ($file_format eq "fastq") {	
 	if ($pair_end) {
 		do_this( "$fastq2fasta_script $leftlane_filename leftlane.fa" );
-		file_check( 'leftlane.fa' );
 		do_this( "$fastq2fasta_script $rightlane_filename rightlane.fa" );
+		file_check( 'leftlane.fa' );
 		file_check( 'rightlane.fa' );
 	} else {
 		do_this( "$fastq2fasta_script $singlelane_filename singlelane.fa" );
@@ -155,8 +155,8 @@ if ($file_format eq "fasta") {
 	print "already fasta format, copy fasta files instead\n";
 	if ($pair_end) {
 		do_this( "cp $leftlane_filename leftlane.fa" );
-		file_check( 'leftlane.fa' );
 		do_this( "cp $rightlane_filename rightlane.fa" );
+		file_check( 'leftlane.fa' );
 		file_check( 'rightlane.fa' );
 	}
 	else {
@@ -173,9 +173,9 @@ if ($pair_end) {
 	#
 #	do_this( "$chopreads_script leftlane.fa chopped_leftlane.fa $chop_read_length" );
 	do_this( "cp $leftlane_filename chopped_leftlane.fa" );
-	file_check( 'chopped_leftlane.fa' );
 #	do_this( "$chopreads_script rightlane.fa chopped_rightlane.fa $chop_read_length" );
 	do_this( "cp $rightlane_filename chopped_rightlane.fa" );
+	file_check( 'chopped_leftlane.fa' );
 	file_check( 'chopped_rightlane.fa' );
 
 } else {
@@ -188,8 +188,8 @@ print "step 3 blat chopped reads\n";
 
 if ($pair_end) {
 	do_this( "$blat_bin $blat_reference -minIdentity=$minIdentity chopped_leftlane.fa chopped_leftlane.psl" );
-	file_check( 'chopped_leftlane.psl', 427 );
 	do_this( "$blat_bin $blat_reference -minIdentity=$minIdentity chopped_rightlane.fa chopped_rightlane.psl" );
+	file_check( 'chopped_leftlane.psl', 427 );
 	file_check( 'chopped_rightlane.psl', 427 );
 } else {
 	do_this( "$blat_bin $blat_reference -minIdentity=$minIdentity chopped_singlelane.fa chopped_singlelane.psl" );
@@ -268,8 +268,8 @@ if ($pair_end) {
 
 
 	do_this( "$sam2names_script compress_leftlane.sam bowtie_leftlane.names" );
-	file_check( 'bowtie_leftlane.names' );
 	do_this( "$sam2names_script compress_rightlane.sam bowtie_rightlane.names" );
+	file_check( 'bowtie_leftlane.names' );
 	file_check( 'bowtie_rightlane.names' );
 	
 	do_this( "$pull_reads_fasta_script bowtie_leftlane.names bowtie_rightlane.names compress_leftlane.fa compress_rightlane.fa bowtie_leftlane.fa bowtie_rightlane.fa" );
@@ -370,8 +370,8 @@ for ($nth_iteration=2; $nth_iteration<=$iteration; $nth_iteration++) {
 
 	if ($pair_end) {
 		do_this( "$blat_bin clean_blastn.fa -minIdentity=95 leftlane.fa leftlane.iteration.psl" );
-		file_check( 'leftlane.iteration.psl', 427 );
 		do_this( "$blat_bin clean_blastn.fa -minIdentity=95 rightlane.fa rightlane.iteration.psl" );
+		file_check( 'leftlane.iteration.psl', 427 );
 		file_check( 'rightlane.iteration.psl', 427 );
 	}
 	else {
@@ -437,8 +437,8 @@ file_check( 'non_human_contig_blastn.txt' );	#	NOTE  don't know how big an "empt
 
 if ($pair_end) {
 	do_this( "$blat_bin non_human_contig.fa -minIdentity=98 iteration_leftlane.fa leftlane.psl" );
-	file_check( 'leftlane.psl', 427 );
 	do_this( "$blat_bin non_human_contig.fa -minIdentity=98 iteration_rightlane.fa rightlane.psl" );
+	file_check( 'leftlane.psl', 427 );
 	file_check( 'rightlane.psl', 427 );
 }
 else {
@@ -470,6 +470,9 @@ system "date";
 sub file_check {
 	my ( $filename, $empty_size ) = @_;
 	$empty_size ||= 0;	# usually 0, but the psl files are 427 (header only)
+
+#	STDERR is not logged when using " | tee -a log"
+
 	die "$filename not created" unless -e $filename;
 	die "$filename empty ( <= $empty_size )" if( -s $filename <= $empty_size );
 }
