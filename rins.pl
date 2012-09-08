@@ -169,10 +169,10 @@ if ($file_format eq "fasta") {
 
 print "step 2 chop reads\n";
 
-if ($pair_end) {
 	#
 	#	TODO for some reason, blat doesn't work on the chopped????
 	#
+if ($pair_end) {
 #	do_this( "$chopreads_script leftlane.fa chopped_leftlane.fa $chop_read_length" );
 	do_this( "cp $leftlane_filename chopped_leftlane.fa" );
 #	do_this( "$chopreads_script rightlane.fa chopped_rightlane.fa $chop_read_length" );
@@ -181,7 +181,8 @@ if ($pair_end) {
 	file_check( 'chopped_rightlane.fa' );
 
 } else {
-	do_this( "$chopreads_script singlelane.fa chopped_singlelane.fa $chop_read_length" );
+#	do_this( "$chopreads_script singlelane.fa chopped_singlelane.fa $chop_read_length" );
+	do_this( "cp $singlelane_filename chopped_singlelane.fa" );
 	file_check( 'chopped_singlelane.fa' );
 }
 
