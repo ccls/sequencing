@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 # rins.pl is a tool to Rapidly Identify Nonhuman Sequences
-#	(This is a modified version of the Stanford rins.pl)
+#	(This is a CCLS modified version of the Stanford rins.pl by Jakeb)
 # 
 # script is written by Kun Qu and Aparna Bhaduri in Stanford Dermatology
 
@@ -59,7 +59,6 @@ my $raw_read_length = $config->get_value("raw_read_length") || 100;
 my $chop_read_length = $config->get_value("chop_read_length") || 25;
 my $minIdentity = $config->get_value("minIdentity") || 80;
 
-
 my $blat_reference = $config->get_value("blat_reference");
 
 my $compress_ratio_thrd = $config->get_value("compress_ratio_thrd") || 0.5;
@@ -86,7 +85,7 @@ my $blastn_evalue_thrd = $config->get_value("blastn_evalue_thrd") || 0.05;
 my $similarity_thrd = $config->get_value("similarity_thrd") || 0.8;
 
 
-# scripts' configurations
+# scripts' configurations (scripts are all in my path, so dir unnecessary)
 
 #my $scripts_directory = $config->get_value("scripts_directory");
 #my $fastq2fasta_script = "$scripts_directory/fastq2fasta.pl";
@@ -169,20 +168,22 @@ if ($file_format eq "fasta") {
 
 print "step 2 chop reads\n";
 
-	#
-	#	TODO for some reason, blat doesn't work on the chopped????
-	#
+#
+#	TODO for some reason, blat doesn't work on the chopped????
+#
+#	blat34(2007) works, blat35(2012) does not???  Substantial diffs somewhere.
+#
 if ($pair_end) {
-#	do_this( "$chopreads_script leftlane.fa chopped_leftlane.fa $chop_read_length" );
-	do_this( "cp $leftlane_filename chopped_leftlane.fa" );
-#	do_this( "$chopreads_script rightlane.fa chopped_rightlane.fa $chop_read_length" );
-	do_this( "cp $rightlane_filename chopped_rightlane.fa" );
+	do_this( "$chopreads_script leftlane.fa chopped_leftlane.fa $chop_read_length" );
+#	do_this( "cp $leftlane_filename chopped_leftlane.fa" );
+	do_this( "$chopreads_script rightlane.fa chopped_rightlane.fa $chop_read_length" );
+#	do_this( "cp $rightlane_filename chopped_rightlane.fa" );
 	file_check( 'chopped_leftlane.fa' );
 	file_check( 'chopped_rightlane.fa' );
 
 } else {
-#	do_this( "$chopreads_script singlelane.fa chopped_singlelane.fa $chop_read_length" );
-	do_this( "cp $singlelane_filename chopped_singlelane.fa" );
+	do_this( "$chopreads_script singlelane.fa chopped_singlelane.fa $chop_read_length" );
+#	do_this( "cp $singlelane_filename chopped_singlelane.fa" );
 	file_check( 'chopped_singlelane.fa' );
 }
 
@@ -222,17 +223,6 @@ print "step 5 compress raw reads\n";
 if ($pair_end) {
 	do_this( "$compress_script blat_out_candidate_leftlane.fa $compress_ratio_thrd > compress_leftlane.names" );
 	file_check( 'compress_leftlane.names' );
-
-
-
-#
-#	THIS IS WRONG!  Why is the leftlane file producing a rightlane file?
-#	If it is not wrong, it certainly would deserve an explanation.
-#
-#	do_this( "$compress_script blat_out_candidate_leftlane.fa $compress_ratio_thrd > compress_rightlane.names" );
-
-
-
 	do_this( "$compress_script blat_out_candidate_rightlane.fa $compress_ratio_thrd > compress_rightlane.names" );
 	file_check( 'compress_rightlane.names' );
 } else {
@@ -259,16 +249,6 @@ if ($pair_end) {
 	do_this( "$bowtie_bin -n $bowtie_mismatch -p $bowtie_threads -f -S $bowtie_index_human compress_rightlane.fa compress_rightlane.sam" );
 	file_check( 'compress_leftlane.sam' );
 	file_check( 'compress_rightlane.sam' );
-
-
-#
-#	sam files are empty
-
-#> bowtie -n 3 -p 6 -f -S /Users/jakewendt/rins_test/rins/indexes/hg18 compress_leftlane.fa newcompress_leftlane.sam
-#Segmentation fault
-#
-#
-
 
 	do_this( "$sam2names_script compress_leftlane.sam bowtie_leftlane.names" );
 	do_this( "$sam2names_script compress_rightlane.sam bowtie_rightlane.names" );
@@ -302,23 +282,6 @@ my $nth_iteration = 1;
 print "step 8 $nth_iteration iteration\n";
 
 print "de novo assembly using Trinity\n";
-
-
-
-#	bowtie_leftlane.fa and bowtie_rightlane.fa don't exist?	Typo?		 NO.	They are diff.
-#	I copied leftlane.fa to bowtie_leftlane.fa and same for right
-#	and ran the following line and at least it did something.
-#	In addition, it says it does ...
-#	ln -s /Users/jakewendt/rins_test/rins/bowtie_rightlane.fa right.fa
-#	but I've never found left.fa or right.fa
-#	I do see trinity_output/both.fa which was created by cating the 2 together?
-#	Trinity.pl seems to link them, then cat them, then unlink them.	Why bother linking?
-#
-#	pull_reads_fasta_script is supposed to create the bowtie_*lane.fa files
-#
-#	do_this( "$pull_reads_fasta_script bowtie_leftlane.names bowtie_rightlane.names compress_leftlane.fa compress_rightlane.fa bowtie_leftlane.fa bowtie_rightlane.fa" );
-#
-#	but they are empty
 
 
 
