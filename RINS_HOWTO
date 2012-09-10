@@ -12,6 +12,7 @@ http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download
 ( ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.2.26+-universal-macosx.tar.gz )
  
 http://users.soe.ucsc.edu/~kent/src/
+( http://users.soe.ucsc.edu/~kent/src/blatSrc34.zip )
 ( http://users.soe.ucsc.edu/~kent/src/blatSrc35.zip )
 
 
@@ -99,6 +100,10 @@ mv bin/* ~/rins/blast/
 
 --------------------------------------------------
 Install BLAT
+
+There is a difference between 34 and 35.  I don't know exactly what it is
+but 35 finds nothing and 34 finds a bunch.  Perhaps a change in parameters?
+34 also requires a few tweeks just to get it to compile?
 
 mkdir -p ~/rins/blat
 cd ~/temporary_rins
@@ -333,6 +338,13 @@ Created my own version
 Similar problem with write_result.pl
 	file format is even more different here?
 
+Old blastn output "-outfmt 6" format ...
+comp7_c0_seq1_FPKM_all:46727.836_FPKM_rel:46727.836_len:377_path:[0,586,641,781,805,811] chr3  99.26 136 0 1 242 377 197266575 197266441 2e-62  244
+New blastn output "-outfmt 6" format ...
+comp430_c0_seq1 chrX  97.24 398 10  1 1 398 108184401 108184005 0.0  673
+
+
+
 I have also modified to the script to have many defaults such as
 * command line defaults
     * input config file (-c) defaults to config.txt
@@ -369,12 +381,18 @@ I am considering logging the entire output of the scripts, but it is simply easi
 
 blat finds nothing with chopped reads.  Why?  I would expect it to be easier to find matches for smaller pieces?  For the moment, I skip the chopping.
 
+blatSrc35 is the latest, but blatSrc34 is what was used in RINS development.  HUGE difference, but 34 is 5 YEARS OLDER!  In software terms, pyramid times!
+
+#	users.soe.ucsc.edu/~kent/src/
+#	[ ]	blatSrc34.zip	20-Apr-2007 16:40 	2.0M
+#	[ ]	blatSrc35.zip	13-Aug-2012 20:07 	1.8M
+
 
 From the rins.pl script ...
   system "$compress_script blat_out_candidate_leftlane.fa $compress_ratio_thrd > compress_leftlane.names";
   system "$compress_script blat_out_candidate_leftlane.fa $compress_ratio_thrd > compress_rightlane.names";
 The second line creates compress_rightlane.names from the blat_out_candidate_leftlane.fa file???  Is this correct?  I would think not, but perhaps it is irrelevant if the contents are the same.  Of course, if they are the same, why is there a left and a right????  This needs resolved before any substantial science can be done.  For the moment, I have "corrected" this to use left for left and right for right.
-
+This is a typo and has been fixed in some versions of the script.
 
 
 
