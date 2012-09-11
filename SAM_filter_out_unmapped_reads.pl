@@ -23,7 +23,7 @@ main: {
 
 print STDERR "JAKE - BEGIN\n";
 print STDERR "JAKE - sam file: " . $sam_file . "\n";
-print STDERR "JAKE - file size: " . -s $sam_file . "\n";
+print STDERR "JAKE - file size: " . ((-s $sam_file)||"") . "\n";
 
 #	my printed output needs to go to STDERR
 #	as the calling script redirects the output of this to a file. 
