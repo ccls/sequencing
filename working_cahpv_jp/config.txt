@@ -9,7 +9,11 @@
 # Please fill all the required parameters
 #
 ###########################################################################
-
+#
+#	ftp://ftp.ddbj.nig.ac.jp/ddbj_database/dra/fastq/SRA026/SRA026688/SRX031910/SRR073726.fastq.bz2
+#	ftp://ftp.ddbj.nig.ac.jp/ddbj_database/dra/fastq/SRA026/SRA026688/SRX031910/SRR073726_1.fastq.bz2
+#	ftp://ftp.ddbj.nig.ac.jp/ddbj_database/dra/fastq/SRA026/SRA026688/SRX031910/SRR073726_2.fastq.bz2
+#
 
 # file format and names
 # file format can be either "fasta" or "fastq"
@@ -42,27 +46,31 @@ blat_reference = /Users/jakewendt/rins/indexes/virus.fa
 bowtie_index_human     = /Users/jakewendt/rins/indexes/hg18
 
 
-bowtie_threads  = 6
-bowtie_mismatch = 3
+#bowtie_threads  = 6
+#bowtie_mismatch = 3
 
-paired_fragment_length = 300
-min_contig_length = 300
-trinity_threads =  6
+#paired_fragment_length = 300
+#min_contig_length = 300
+#trinity_threads =  6
 
 blastn_index_human = /Users/jakewendt/rins/indexes/hg18
 blastn_index_non_human = /Users/jakewendt/rins/indexes/virus
-blastn_evalue_thrd = 0.05
+#blastn_evalue_thrd = 0.05
 
 # similarity_thrd shoud between 0.8 - 1.0
-similarity_thrd = 0.8 
+#similarity_thrd = 0.8 
 
 # modifiable parameters
 
-iteration = 2
+#iteration = 2
+
+
 raw_read_length = 80
-chop_read_length = 25
-minIdentity = 80
-compress_ratio_thrd = 0.5
+
+
+#chop_read_length = 25
+#minIdentity = 80
+#compress_ratio_thrd = 0.5
 
 
 

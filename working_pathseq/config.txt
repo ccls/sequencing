@@ -71,3 +71,7 @@ blastn_index_non_human = /Users/jakewendt/rins/indexes/virus
 #minIdentity = 80
 #compress_ratio_thrd = 0.5
 
+
+minIdentity = 70
+min_contig_length = 250
+
