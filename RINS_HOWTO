@@ -345,6 +345,17 @@ comp430_c0_seq1 chrX  97.24 398 10  1 1 398 108184401 108184005 0.0  673
 
 
 
+
+
+SAM_filter_out_unmapped_reads.pl raises divide by zero when total_count is 0
+I don't know if the total_count == 0 is bad anyway, but there is no check.
+This is part of Trinity and the script that calls it explicitly specifies
+the path so I had to actually edit the Trinity version. Or would have to
+modify and include the script that calls it, and the script that calls that,
+and the script that calls that, and .........
+
+
+
 I have also modified to the script to have many defaults such as
 * command line defaults
     * input config file (-c) defaults to config.txt
