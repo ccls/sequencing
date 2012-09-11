@@ -32,8 +32,9 @@ singlelane_filename = NA
 
 
 # reference files
+#	only the blat_reference has .fa suffix
 blat_reference = /Users/jakewendt/rins/indexes/virus.fa
 bowtie_index_human     = /Users/jakewendt/rins/indexes/hg18
 blastn_index_human = /Users/jakewendt/rins/indexes/hg18
-blastn_index_non_human = /Users/jakewendt/rins/indexes/virus.fa
+blastn_index_non_human = /Users/jakewendt/rins/indexes/virus
 

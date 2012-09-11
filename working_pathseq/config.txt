@@ -45,6 +45,7 @@ singlelane_filename = /Users/jakewendt/github_repo/ccls/sequencing/working_paths
 #mailto  = abhaduri@stanford.edu
 
 # reference files
+#	only the blat_reference has .fa suffix
 blat_reference = /Users/jakewendt/rins/indexes/virus.fa
 bowtie_index_human     = /Users/jakewendt/rins/indexes/hg18
 
@@ -56,7 +57,7 @@ bowtie_index_human     = /Users/jakewendt/rins/indexes/hg18
 #trinity_threads =  6
 
 blastn_index_human = /Users/jakewendt/rins/indexes/hg18
-blastn_index_non_human = /Users/jakewendt/rins/indexes/virus.fa
+blastn_index_non_human = /Users/jakewendt/rins/indexes/virus
 #blastn_evalue_thrd = 0.05
 
 # similarity_thrd shoud between 0.8 - 1.0

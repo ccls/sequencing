@@ -29,6 +29,7 @@ singlelane_filename = NA
 mailto  = jakewendt@berkeley.edu
 
 # reference files
+#	only the blat_reference has .fa suffix
 blat_reference = /Users/jakewendt/rins/indexes/virus.fa
 
 #	corrupt. fails blastdbcheck
