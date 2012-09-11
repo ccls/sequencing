@@ -110,7 +110,8 @@ my $blastn_cleanup_script = "blastn_cleanup.pl";
 my $candidate_non_human_script = "candidate_non_human.pl";
 my $write_result_script = "write_result.pl";
 
-my $die_on_failed_file_check = $config->get_value("die_on_failed_file_check") || 0;# false
+#my $die_on_failed_file_check = $config->get_value("die_on_failed_file_check") || 0;# false
+my $die_on_failed_file_check = $config->get_value("die_on_failed_file_check") || 1;# true
 
 
 my $mailto;
