@@ -448,7 +448,10 @@ sub file_check {
 			print "$msg\n";
 		}
 	}
-	if( -s $filename <= $empty_size ){
+	#	Need to check existance too because if not dying on failure
+	#	could have passed above check.  Then '-s $filename' is '' raising ...
+	#	Use of uninitialized value in numeric le (<=) at ...
+	if( ( -e $filename ) && ( -s $filename <= $empty_size ) ){
 		$msg = "$filename empty ( <= $empty_size )";
 		if( $die_on_failed_file_check ){
 			die $msg
