@@ -50,6 +50,7 @@ print STDERR "SAM ENTRY: " . $sam_entry->toString() . "\n";
 #	
 #	The calling script actually has the path to this script hard coded
 #	so this must be modified in place or linked.
+#	/Users/jakewendt/rins/trinity/util/SAM_filter_out_unmapped_reads.pl
 
 #-filtered 155 of 324 reads as unaligned = 47.84% unaligned reads
 

@@ -35,6 +35,7 @@ Preparation (for usage on a Mac using tcsh)
 	( don't know which ports )
 
 	sudo port install git-core
+	sudo port install libpng
 
 
 	R and some of these Perl libs are only needed for some tests.

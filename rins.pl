@@ -300,9 +300,13 @@ print "de novo assembly using Trinity\n";
 #	at gnu.getopt.Getopt.checkLongOption(Getopt.java:869)
 #	at gnu.getopt.Getopt.getopt(Getopt.java:1119)
 #	at TransAssembly_allProbPaths.main(TransAssembly_allProbPaths.java:193)
+#
+#	The compatible_path_extension option is not in TransAssembly_allProbPaths.java (it is the DEFAULT)
+#	It was last used in trinityrnaseq-r20110519
+#		trinityrnaseq-r20110519/Butterfly/src/src/TransAssembly_allProbPaths.java
+#
 
-
-
+#
 #	Downgraded to trinityrnaseq_r2011-08-20
 #	so can undo these parameter modifications.
 #	Hopefully this will change the output as well
@@ -310,16 +314,18 @@ print "de novo assembly using Trinity\n";
 #	blastn_cleanup.pl and write_results.pl
 #
 #	Downgraded Blat from 35 to 34
-#	and Blast from 2.2.27 to 2.2.24
-
+#	and Blast from 2.2.26 to 2.2.24
+#
 
 
 
 if ($pair_end) {
-	do_this( "$trinity_script --seqType fa --left bowtie_leftlane.fa --right bowtie_rightlane.fa --paired_fragment_length $paired_fragment_length --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
+	do_this( "$trinity_script --seqType fa --left bowtie_leftlane.fa --right bowtie_rightlane.fa --paired_fragment_length $paired_fragment_length --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\"" );
+#	do_this( "$trinity_script --seqType fa --left bowtie_leftlane.fa --right bowtie_rightlane.fa --paired_fragment_length $paired_fragment_length --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
 #	do_this( "$trinity_script --seqType fa --left bowtie_leftlane.fa --right bowtie_rightlane.fa --group_pairs_distance $paired_fragment_length --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\" --JM 1G" );
 } else {
-	do_this( "$trinity_script --seqType fa --single bowtie_singlelane.fa --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
+	do_this( "$trinity_script --seqType fa --single bowtie_singlelane.fa --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\"" );
+#	do_this( "$trinity_script --seqType fa --single bowtie_singlelane.fa --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
 #	do_this( "$trinity_script --seqType fa --single bowtie_singlelane.fa --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\" --JM 1G" );
 }
 
@@ -380,11 +386,13 @@ for ($nth_iteration=2; $nth_iteration<=$iteration; $nth_iteration++) {
 	do_this( "rm -r trinity_output" );
 
 	if ($pair_end) {
-		do_this( "$trinity_script --seqType fa --left iteration_leftlane.fa --right iteration_rightlane.fa --paired_fragment_length $paired_fragment_length --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
+		do_this( "$trinity_script --seqType fa --left iteration_leftlane.fa --right iteration_rightlane.fa --paired_fragment_length $paired_fragment_length --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\"" );
+#		do_this( "$trinity_script --seqType fa --left iteration_leftlane.fa --right iteration_rightlane.fa --paired_fragment_length $paired_fragment_length --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
 #		do_this( "$trinity_script --seqType fa --left iteration_leftlane.fa --right iteration_rightlane.fa --group_pairs_distance $paired_fragment_length --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\" --JM 1G" );
 	}	
 	else {
-		do_this( "$trinity_script --seqType fa --single iteration_singlelane.fa --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
+		do_this( "$trinity_script --seqType fa --single iteration_singlelane.fa --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\"" );
+#		do_this( "$trinity_script --seqType fa --single iteration_singlelane.fa --min_contig_length $min_contig_length --run_butterfly --output trinity_output --CPU $trinity_threads --bfly_opts \"--compatible_path_extension --stderr\"" );
 #		do_this( "$trinity_script --seqType fa --single iteration_singlelane.fa --min_contig_length $min_contig_length --output trinity_output --CPU $trinity_threads --bfly_opts \"--stderr\" --JM 1G" );
 	}
 
