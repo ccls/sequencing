@@ -35,37 +35,41 @@ Used GCC 421
 
 
 [RINS Package](http://khavarilab.stanford.edu/resources.html)
+
 Not including the virus index.
 
 [RINS Data (not included)](https://s3.amazonaws.com/changseq/kqu/rins/rins.tar.gz)
 
 [BLAST 2.2.27](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download)
+
 ( 'make'ing this generates about 4000 additional files.  Odd. )
  
 [Blat 34](http://users.soe.ucsc.edu/~kent/src/)
+
 THIS IS NOT THE LATEST VERSION.
 
 [Bowtie 0.12.8 and Bowtie 2.0.0 beta 7](http://bowtie-bio.sourceforge.net/)
 
 [Trinity 2012-06-08](http://trinityrnaseq.sourceforge.net)
+
 Not including the ~50MB of sample data
 
 ## Included BLAT 34 modifications required for me to compile
 
-blatSrc34/jkOwnLib/gfPcrLib.c
-  errAbort(buf);
-    ... changed to ...
-  errAbort("%s", buf);
+	blatSrc34/jkOwnLib/gfPcrLib.c
+	  errAbort(buf);
+	    ... changed to ...
+	  errAbort("%s", buf);
 
-blatSrc34/lib/errCatch.c
-  warn(errCatch->message->string);
-    ... changed to ...
-  warn("%s",errCatch->message->string);
+	blatSrc34/lib/errCatch.c
+	  warn(errCatch->message->string);
+	    ... changed to ...
+	  warn("%s",errCatch->message->string);
 
-blatSrc34/lib/htmlPage.c
-  warn(errCatch->message->string);
-    ... changed to ...
-  warn("%s", errCatch->message->string);
+	blatSrc34/lib/htmlPage.c
+	  warn(errCatch->message->string);
+	    ... changed to ...
+	  warn("%s", errCatch->message->string);
 
 
 
@@ -89,9 +93,9 @@ It appears that the field content has changed?
 
 ## INSTALLATION
 
-make clean
-make 
-make install
+	make clean
+	make 
+	make install
 
 
 This will create ~/RINS\_BIN with all of the scripts and binaries in it.
