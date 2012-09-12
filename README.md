@@ -11,14 +11,14 @@ collection of apps that it uses does and then replicate in ruby
 with testing.  RINS includes some examples, but none have
 worked for me, so far.
 
-Parameters have changed.  
-Databases are corrupt.
-Executables are seg faulting.
-Processing "chopped" files finds nothing.
-Parafly java crashes...
- 	( removed --compatible_path_extension)
-blastn output changed?
-	modified blastn_cleanup.pl and write_results.pl
+	Parameters have changed.  
+	Databases are corrupt.
+	Executables are seg faulting.
+	Processing "chopped" files finds nothing.
+	Parafly java crashes...
+	 	( removed --compatible_path_extension)
+	blastn output changed?
+		modified blastn_cleanup.pl and write_results.pl
 
 
 
@@ -34,24 +34,20 @@ Used GCC 421
 
 
 
-[RINS Package](http://khavarilab.stanford.edu/resources.html)
-
+[RINS Package](http://khavarilab.stanford.edu/resources.html) 
 Not including the virus index.
 
 [RINS Data (not included)](https://s3.amazonaws.com/changseq/kqu/rins/rins.tar.gz)
 
-[BLAST 2.2.27](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download)
-
+[BLAST 2.2.27](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download) 
 ( 'make'ing this generates about 4000 additional files.  Odd. )
  
-[Blat 34](http://users.soe.ucsc.edu/~kent/src/)
-
+[Blat 34](http://users.soe.ucsc.edu/~kent/src/) 
 THIS IS NOT THE LATEST VERSION.
 
 [Bowtie 0.12.8 and Bowtie 2.0.0 beta 7](http://bowtie-bio.sourceforge.net/)
 
-[Trinity 2012-06-08](http://trinityrnaseq.sourceforge.net)
-
+[Trinity 2012-06-08](http://trinityrnaseq.sourceforge.net) 
 Not including the ~50MB of sample data
 
 ## Included BLAT 34 modifications required for me to compile
