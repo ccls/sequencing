@@ -154,6 +154,9 @@ Install TRINITY (a bit of a clusterf*k to 'install')
 #		./configure --prefix=`pwd`
 #		make
 #		make install
+#		cd ../Chrysalis
+#		make clean UNSUPPORTED=yes
+#		make UNSUPPORTED=yes
 
 
 mkdir -p ~/rins/trinity
