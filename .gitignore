@@ -43,5 +43,9 @@ bowtie2-2.0.0-beta7/bowtie2-inspect
 bowtie2-2.0.0-beta7/bowtie2-inspect.dSYM/
 
 ncbi-blast-2.2.27+-src/c++/Makefile
-
 ncbi-blast-2.2.27+-src/c++/*-Debug/
+#
+#	MANY, MANY files are copies and/or created during the make process!
+#	Which to ignore?
+#
+
