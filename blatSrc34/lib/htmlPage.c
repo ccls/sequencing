@@ -944,7 +944,19 @@ if (errCatchStart(errCatch))
     page = htmlPageForwarded(url, cookies);
 errCatchEnd(errCatch);
 if (errCatch->gotError)
-    warn(errCatch->message->string);
+
+
+
+
+/* original line */
+/*    warn(errCatch->message->string); */
+/* Jake CCLS Corrected line */
+    warn("%s", errCatch->message->string);
+
+
+
+
+
 errCatchFree(&errCatch);
 return page;
 }

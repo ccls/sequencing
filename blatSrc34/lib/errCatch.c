@@ -90,7 +90,18 @@ if (errCatch != NULL)
     if (errCatch->gotError)
 	{
 	ok = FALSE;
-	warn(errCatch->message->string);
+
+
+
+/* original line */
+/*	warn(errCatch->message->string); */
+/* Jake CCLS "corrected" line */
+	warn("%s",errCatch->message->string);
+
+
+
+
+
 	}
     errCatchFree(pErrCatch);
     }

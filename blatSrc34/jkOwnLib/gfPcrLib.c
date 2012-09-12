@@ -395,7 +395,18 @@ for (;;)
     if (sameString(buf, "end"))
 	break;
     else if (startsWith("Error:", buf))
-	errAbort(buf);
+
+
+
+/* original line */
+/*	errAbort(buf); */
+/* Jake CCLS corrected line */
+	errAbort("%s", buf);
+
+
+
+
+
     else
 	{
 	char *s = buf;

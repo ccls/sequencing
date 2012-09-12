@@ -21,3 +21,7 @@ versions/
 
 working_*/*.outdir
 working_*/*log
+
+blatSrc34/*/*.o
+blatSrc34/*/*/*.o
+blatSrc34/*/*/*.a
