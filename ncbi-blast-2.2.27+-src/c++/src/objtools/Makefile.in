@@ -1,0 +1,13 @@
+# $Id: Makefile.in 373382 2012-08-29 14:09:59Z camacho $
+
+# Meta-makefile("objtools" project)
+#################################
+
+REQUIRES = objects
+
+SUB_PROJ = readers blast lds lds2 data_loaders simple alnmgr cddalignview \
+	test manip format validator asniotest align edit writers \
+	cleanup seqmasks_io eutils align_format snputil
+
+srcdir = @srcdir@
+include @builddir@/Makefile.meta

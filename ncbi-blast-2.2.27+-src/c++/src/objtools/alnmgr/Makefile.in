@@ -1,0 +1,7 @@
+# $Id: Makefile.in 56344 2005-02-22 14:40:54Z camacho $
+
+LIB_PROJ = alnmgr
+SUB_PROJ = demo
+
+srcdir = @srcdir@
+include @builddir@/Makefile.meta

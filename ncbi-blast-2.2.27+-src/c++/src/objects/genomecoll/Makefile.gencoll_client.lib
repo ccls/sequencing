@@ -1,0 +1,15 @@
+# $Id: Makefile.gencoll_client.lib 371868 2012-08-13 15:10:25Z rafanovi $
+
+ASN = gencoll_client
+
+# SRC = $(ASN:%=%__) $(ASN:%=%___)
+
+SRC = gencoll_client__ gencoll_client___ genomic_collections_cli genomic_collections_cli_
+
+LIB = gencoll_client
+
+LIB_OR_DLL = lib
+
+#REQUIRES = objects dbapi
+
+WATCHERS = kumarv2 dicuccio

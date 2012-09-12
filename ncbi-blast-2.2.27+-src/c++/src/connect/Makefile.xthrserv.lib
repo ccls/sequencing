@@ -1,0 +1,9 @@
+# $Id: Makefile.xthrserv.lib 194770 2010-06-17 10:35:19Z ivanovp $
+
+SRC      = threaded_server server server_monitor connection_pool
+LIB      = xthrserv
+PROJ_TAG = core
+LIBS     = $(NETWORK_LIBS)
+DLL_LIB  = xutil xconnect
+
+WATCHERS = ivanovp

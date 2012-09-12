@@ -1,0 +1,17 @@
+# $Id: Makefile.ncbi_xreader.lib 190691 2010-05-04 15:42:43Z vakatov $
+
+SRC = dispatcher reader writer processors \
+    reader_snp seqref blob_id split_parser request_result \
+    reader_id1_base reader_id2_base reader_service incr_time
+
+ASN_DEP = id1 id2 seqsplit seqset seq general
+
+LIB = ncbi_xreader
+
+# Build shared version when possible
+LIB_OR_DLL = both
+
+# Dependencies for shared library
+DLL_LIB = 
+
+WATCHERS = vasilche
