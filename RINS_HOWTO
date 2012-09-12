@@ -3,6 +3,9 @@ RINS (Rapid Identification of Non-human Sequence)
 http://khavarilab.stanford.edu/resources.html
 
 
+Still having some issues so trying to install the versions that were available when the paper was published.
+
+
 Downloaded ...
 
 http://khavarilab.stanford.edu/downloads/rins_core.tar.gz
@@ -143,6 +146,15 @@ mv bowtie2 bowtie2-build bowtie2-align bowtie2-inspect ${HOME}/rins/bowtie/
 
 --------------------------------------------------
 Install TRINITY (a bit of a clusterf*k to 'install')
+
+#	Trying to use older version so params match and can compare output.
+#	2011-08-20 version will require additional stuff
+#		cd Inchworm
+#		make clean
+#		./configure --prefix=`pwd`
+#		make
+#		make install
+
 
 mkdir -p ~/rins/trinity
 cd ~/temporary_rins
