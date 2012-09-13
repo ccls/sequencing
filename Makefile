@@ -1,10 +1,17 @@
 
-BASE_BIN_DIR = ${HOME}/RINS_BIN
-BLAT = "blatSrc34"
-BLAST = "ncbi-blast-2.2.27+-src/c++"
-BOWTIE = "bowtie-0.12.8"
-BOWTIE2 = "bowtie2-2.0.0-beta7"
-TRINITY = "trinityrnaseq_r2012-06-08"
+
+#	BLAST creates bin, lib and include
+#	I'm gonna need to change this to ~/rins
+#	and move these other binaries to bin/
+#	and make sure that PATH reflects it
+
+BASE_DIR = ${HOME}/RINS_BASE
+BASE_BIN_DIR = ${BASE_DIR}/bin
+BLAT = blatSrc34
+BLAST = ncbi-blast-2.2.27+-src/c++
+BOWTIE = bowtie-0.12.8
+BOWTIE2 = bowtie2-2.0.0-beta7
+TRINITY = trinityrnaseq_r2012-06-08
 
 #	mkdir will raise error if dir exists
 #	mkdir -p will not and would create full path
@@ -37,16 +44,18 @@ install:
 	$(MKDIR) $(BASE_BIN_DIR)
 	cd $(BOWTIE) && cp bowtie bowtie-build bowtie-inspect $(BASE_BIN_DIR)
 	cd $(BOWTIE2) && cp bowtie2 bowtie2-build bowtie2-align bowtie2-inspect $(BASE_BIN_DIR)
-	cd $(BLAT)/bin && cp * $(BASE_BIN_DIR)
+	cp $(BLAT)/bin/* $(BASE_BIN_DIR)
 	cd $(BLAST) && make install
-	cd $(TRINITY) && cp -r * $(BASE_BIN_DIR)
+	cp -r $(TRINITY)/* $(BASE_BIN_DIR)
 	cd rins_core && cp *pl $(BASE_BIN_DIR)
 	mv $(BASE_BIN_DIR)/rins.pl $(BASE_BIN_DIR)/rins.pl.original
 	mv $(BASE_BIN_DIR)/blastn_cleanup.pl $(BASE_BIN_DIR)/blastn_cleanup.pl.original
 	mv $(BASE_BIN_DIR)/write_result.pl $(BASE_BIN_DIR)/write_result.pl.original
 	cp rins.pl blastn_cleanup.pl write_result.pl $(BASE_BIN_DIR)
-	mv $(TRINITY)/util/SAM_filter_out_unmapped_reads.pl $(TRINITY)/util/SAM_filter_out_unmapped_reads.pl.original
-	cp SAM_filter_out_unmapped_reads.pl $(TRINITY)/util/
+	mv $(BASE_BIN_DIR)/$(TRINITY)/util/SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/$(TRINITY)/util/SAM_filter_out_unmapped_reads.pl.original
+	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/$(TRINITY)/util/
+#	mv $(TRINITY)/util/SAM_filter_out_unmapped_reads.pl $(TRINITY)/util/SAM_filter_out_unmapped_reads.pl.original
+#	cp SAM_filter_out_unmapped_reads.pl $(TRINITY)/util/
 	@echo "DONE INSTALLING ALL"
 	@echo
 	@echo "Add  $(BASE_BIN_DIR) TO YOUR PATH"
