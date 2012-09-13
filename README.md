@@ -92,7 +92,7 @@ passed to Trinity.  It appears that this was written for trinityrnaseq-r20110519
 
 	Removed ...
 
-		--run_butterfly : no longer needed as is default
+		--run_butterfly : no longer needed (or allowed) as is default
 
 		--compatible_path_extension : triggers java exception as is invalid
 			Exception in thread "main" java.lang.NullPointerException
@@ -102,14 +102,16 @@ passed to Trinity.  It appears that this was written for trinityrnaseq-r20110519
 			Not valid since trinityrnaseq-r20110519
 			( Butterfly/src/src/TransAssembly_allProbPaths.java )
 
-
 	Changed ...
 
 		--paired_fragment_length changed to --group_pairs_distance
+			Although I don't know that that was the right thing to do.
 
 	Added ...
 
 		--JM 1G : or some size
+			10G caused a lot of disk activity as I don't have 10G of memory.
+			Downsized to 1G and the test_sample run was done in 20 minutes vs 12 hours!
 
 
 Some file checking as been added.  Many defaults are also now set and are
@@ -121,15 +123,14 @@ It appears that the field content has changed?
 
 ## INSTALLATION
 
-	make clean
 	make 
 	make install
 
 
-This will create ~/RINS\_BIN with all of the scripts and binaries in it.
+This will create ~/RINS\_BASE with all of the scripts and binaries in it.
 You will need to modify your PATH to include this.  Feel free to rename it.
 
-setenv PATH ${HOME}/RINS\_BIN:${PATH}
+setenv PATH ${PATH}:${HOME}/RINS\_BASE/bin
 
 
 ## TODO
