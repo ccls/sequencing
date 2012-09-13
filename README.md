@@ -50,6 +50,21 @@ THIS IS NOT THE LATEST VERSION.
 [Trinity 2012-06-08](http://trinityrnaseq.sourceforge.net) 
 Not including the ~50MB of sample data
 
+
+## General modifications
+
+Changed all perl scripts she-bang to use environment selected perl.
+Blat doesn't have any perl, so this was just Bowtie, Bowtie2, Blast and Trinity.
+
+	From ...
+
+		#!/usr/bin/perl
+
+	... to ...
+
+		#!/usr/bin/env perl
+
+
 ## Included BLAT 34 modifications required for me to compile
 
 	blatSrc34/jkOwnLib/gfPcrLib.c

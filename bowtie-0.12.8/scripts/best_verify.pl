@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl -w
 
 #
 # Verifies that Bowtie's --better and --best alignment modes really

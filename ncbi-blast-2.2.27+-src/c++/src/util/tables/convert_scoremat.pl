@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl -w
 # $Id: convert_scoremat.pl 26434 2003-08-21 19:48:21Z ucko $
 
 use strict;

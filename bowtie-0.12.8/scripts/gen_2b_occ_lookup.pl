@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl -w
 
 #
 # Generate lookup table that, given two packed DNA bytes (eight bases)

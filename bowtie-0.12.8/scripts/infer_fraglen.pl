@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl -w
 
 ##
 # infer_fraglen.pl: Infer fragment length by looking separately for

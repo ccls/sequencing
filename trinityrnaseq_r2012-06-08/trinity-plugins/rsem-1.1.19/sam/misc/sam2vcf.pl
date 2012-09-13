@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl -w
 # 
 # VCF specs: http://www.1000genomes.org/wiki/doku.php?id=1000_genomes:analysis:vcf3.3
 # 
