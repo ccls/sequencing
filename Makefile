@@ -1,15 +1,9 @@
 
-
-#	BLAST creates bin, lib and include
-#	I'm gonna need to change this to ~/rins
-#	and move these other binaries to bin/
-#	and make sure that PATH reflects it
-
-BASE_DIR = ${HOME}/RINS_BASE
+BASE_DIR     = ${HOME}/RINS_BASE
 BASE_BIN_DIR = ${BASE_DIR}/bin
-BLAT = blatSrc34
-BLAST = ncbi-blast-2.2.27+-src/c++
-BOWTIE = bowtie-0.12.8
+BLAT    = blatSrc34
+BLAST   = ncbi-blast-2.2.27+-src/c++
+BOWTIE  = bowtie-0.12.8
 BOWTIE2 = bowtie2-2.0.0-beta7
 TRINITY = trinityrnaseq_r2012-06-08
 
@@ -75,7 +69,8 @@ bowtie2:
 
 blast:
 	@echo "MAKING BLAST"
-	cd $(BLAST) && ./configure --prefix=$(BASE_BIN_DIR) && make
+	#	Use BASE_DIR as blast creates bin/, lib/ and include/
+	cd $(BLAST) && ./configure --prefix=$(BASE_DIR) && make
 
 trinity:
 	@echo "MAKING TRINITY"
