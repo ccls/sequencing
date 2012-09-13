@@ -83,7 +83,7 @@ trinity:
 clean:
 	@echo "sparkling"
 	cd $(BLAT) && make clean && rm -f */*/*.a
-	/bin/rm -rf $(BLAST)/*-Debug
+	/bin/rm -rf $(BLAST)/*-Debug*
 	cd $(BOWTIE) && make clean
 	cd $(BOWTIE2) && make clean
 	cd $(TRINITY) && make clean
