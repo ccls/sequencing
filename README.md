@@ -69,7 +69,7 @@ Not including the ~50MB of sample data
 
 
 
-## Trinity modifications ( scripts to be copied in after via Makefile )
+## Trinity modifications ( scripts to be copied in via Makefile )
 
 SAM\_filter\_out\_unmapped\_reads.pl was modified due to some test
 data triggering a divide by zero error.
@@ -85,10 +85,32 @@ I doesn't seem needed on my Mac Pro, just my MacBook Pro?
 
 
 
-## RINS modifications ( scripts to be copied in after via Makefile )
+## RINS modifications ( scripts to be copied in via Makefile )
 
 Modified rins.pl for several reasons.  One major change is to the parameters
 passed to Trinity.  It appears that this was written for trinityrnaseq-r20110519.
+
+	Removed ...
+
+		--run_butterfly : no longer needed as is default
+
+		--compatible_path_extension : triggers java exception as is invalid
+			Exception in thread "main" java.lang.NullPointerException
+				at gnu.getopt.Getopt.checkLongOption(Getopt.java:869)
+				at gnu.getopt.Getopt.getopt(Getopt.java:1119)
+				at TransAssembly_allProbPaths.main(TransAssembly_allProbPaths.java:193)
+			Not valid since trinityrnaseq-r20110519
+			( Butterfly/src/src/TransAssembly_allProbPaths.java )
+
+
+	Changed ...
+
+		--paired_fragment_length changed to --group_pairs_distance
+
+	Added ...
+
+		--JM 1G : or some size
+
 
 Some file checking as been added.  Many defaults are also now set and are
 unnecessary at the command line or in the config file.
