@@ -47,7 +47,8 @@ install:
 #	mv $(BASE_BIN_DIR)/write_result.pl $(BASE_BIN_DIR)/write_result.pl.original
 	cp rins.pl blastn_cleanup.pl write_result.pl $(BASE_BIN_DIR)
 #	mv $(BASE_BIN_DIR)/$(TRINITY)/util/SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/$(TRINITY)/util/SAM_filter_out_unmapped_reads.pl.original
-	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/$(TRINITY)/util/
+#	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/$(TRINITY)/util/
+	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/util/
 #	mv $(TRINITY)/util/SAM_filter_out_unmapped_reads.pl $(TRINITY)/util/SAM_filter_out_unmapped_reads.pl.original
 #	cp SAM_filter_out_unmapped_reads.pl $(TRINITY)/util/
 	@echo "DONE INSTALLING ALL"
