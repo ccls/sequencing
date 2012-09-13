@@ -19,74 +19,93 @@ MKDIR        = mkdir -p
 #	Each line is its own thing so if a cd is used, needs to be same line.
 
 
-#	apparently by tagging these make targets as ".PHONY"
-#	they will always run when called and not hide behind ...
-#	make: Nothing to be done for `all'.
-#		OR
-#	make: `app1' is up to date.
-#	If files are actually created, this is probably not
-#	necessary as there are file dates to compare.
-#.PHONY: all blat blast bowtie bowtie2
-#.PHONY: blat blast bowtie bowtie2 trinity
-
 #	all is the default target that is used when none are given
 all: blat bowtie bowtie2 blast trinity
 
 #install: all
-install:
-	@echo "INSTALLING ALL"
-	$(MKDIR) $(BASE_BIN_DIR)
-	cd $(BOWTIE) && cp bowtie bowtie-build bowtie-inspect $(BASE_BIN_DIR)
-	cd $(BOWTIE2) && cp bowtie2 bowtie2-build bowtie2-align bowtie2-inspect $(BASE_BIN_DIR)
-	cp $(BLAT)/bin/* $(BASE_BIN_DIR)
-	cd $(BLAST) && make install
-	cp -r $(TRINITY)/* $(BASE_BIN_DIR)
+install: install_all install_bowtie install_bowtie2 install_blat install_blast install_trinity
+	@printf "\nINSTALLING SCRIPTS\n\n"
 	cd rins_core && cp *pl $(BASE_BIN_DIR)
-#	mv $(BASE_BIN_DIR)/rins.pl $(BASE_BIN_DIR)/rins.pl.original
-#	mv $(BASE_BIN_DIR)/blastn_cleanup.pl $(BASE_BIN_DIR)/blastn_cleanup.pl.original
-#	mv $(BASE_BIN_DIR)/write_result.pl $(BASE_BIN_DIR)/write_result.pl.original
 	cp rins.pl blastn_cleanup.pl write_result.pl $(BASE_BIN_DIR)
-#	mv $(BASE_BIN_DIR)/$(TRINITY)/util/SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/$(TRINITY)/util/SAM_filter_out_unmapped_reads.pl.original
-#	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/$(TRINITY)/util/
 	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/util/
-#	mv $(TRINITY)/util/SAM_filter_out_unmapped_reads.pl $(TRINITY)/util/SAM_filter_out_unmapped_reads.pl.original
-#	cp SAM_filter_out_unmapped_reads.pl $(TRINITY)/util/
-	@echo "DONE INSTALLING ALL"
-	@echo
-	@echo "Add  $(BASE_BIN_DIR) TO YOUR PATH"
-	@echo
+	@printf "\nDONE INSTALLING ALL\n\n"
+	@printf "Add  $(BASE_BIN_DIR) TO YOUR PATH\n\n"
+
+
+install_all:
+	@printf "\nINSTALLING ALL\n\n"
+	$(MKDIR) $(BASE_BIN_DIR)
 
 blat:
-	@echo "MAKING BLAT"
+	@printf "\nMAKING BLAT\n\n"
 	cd $(BLAT) && $(MKDIR) bin && make C_INCLUDE_PATH=/opt/local/include/ PNGLIB=/opt/local/lib/libpng.a BINDIR=`pwd`/bin
 
+install_blat:
+	@printf "\nINSTALLING BLAT\n\n"
+	cp $(BLAT)/bin/* $(BASE_BIN_DIR)
+
 bowtie:
-	@echo "MAKING BOWTIE"
+	@printf "\nMAKING BOWTIE\n\n"
 	cd $(BOWTIE) && make
 
+install_bowtie:
+	@printf "\nINSTALLING BOWTIE\n\n"
+	cd $(BOWTIE) && cp bowtie bowtie-build bowtie-inspect $(BASE_BIN_DIR)
+
 bowtie2:
-	@echo "MAKING BOWTIE2"
+	@printf "\nMAKING BOWTIE2\n\n"
 	cd $(BOWTIE2) && make
 
+install_bowtie2:
+	@printf "\nINSTALLING BOWTIE2\n\n"
+	cd $(BOWTIE2) && cp bowtie2 bowtie2-build bowtie2-align bowtie2-inspect $(BASE_BIN_DIR)
+
 blast:
-	@echo "MAKING BLAST"
-	#	Use BASE_DIR as blast creates bin/, lib/ and include/
+	@printf "\nMAKING BLAST\n\n"
+#	Use BASE_DIR as blast creates bin/, lib/ and include/
 	cd $(BLAST) && ./configure --prefix=$(BASE_DIR) && make
 
+install_blast:
+	@printf "\nINSTALLING BLAST\n\n"
+	cd $(BLAST) && make install
+
 trinity:
-	@echo "MAKING TRINITY"
+	@printf "\nMAKING TRINITY\n\n"
 	cd $(TRINITY) && make
 
+install_trinity:
+	@printf "\nINSTALLING TRINITY\n\n"
+#	this works, but copies too much
+#	cp -r $(TRINITY)/* $(BASE_BIN_DIR)
+	cp -r $(TRINITY)/Analysis $(BASE_BIN_DIR)
+	cp -r $(TRINITY)/Butterfly $(BASE_BIN_DIR)
+	cp -r $(TRINITY)/Chrysalis $(BASE_BIN_DIR)
+	cp -r $(TRINITY)/Inchworm $(BASE_BIN_DIR)
+	cp -r $(TRINITY)/PerlLib $(BASE_BIN_DIR)
+	cp -r $(TRINITY)/PerlLibAdaptors $(BASE_BIN_DIR)
+	cp -r $(TRINITY)/Trinity.pl $(BASE_BIN_DIR)
+	cp -r $(TRINITY)/trinity-plugins $(BASE_BIN_DIR)
+	cp -r $(TRINITY)/util $(BASE_BIN_DIR)
+
+#LICENSE
+#Makefile
+#README
+#Release.Notes
+#docs
+#misc
+#notes
+
+
 #rins:
-#	@echo "MAKING RINS WOULD BE NICE, BUT JUST SCRIPTS"
+#	@printf "\nMAKING RINS WOULD BE NICE, BUT JUST SCRIPTS\n\n"
 #
 #ccls:
-#	@echo "MAKING CCLS WOULD BE NICE, BUT JUST SCRIPTS"
+#	@printf "\nMAKING CCLS WOULD BE NICE, BUT JUST SCRIPTS\n\n"
 
 
 
 clean:
-	@echo "sparkling"
+	@printf "\nsparkling\n\n"
 	cd $(BLAT) && make clean && rm -f */*/*.a
 	/bin/rm -rf $(BLAST)/*-Debug*
 	cd $(BOWTIE) && make clean
@@ -96,7 +115,7 @@ clean:
 #	ccls nothing to clean
 
 test:
-	@echo "testing is nice, but not today"
+	@printf "\ntesting is nice, but not today\n\n"
 #	cd $(BLAT) && make test
 #	cd $(BLAST) && make test
 #	cd $(BOWTIE) && make test
