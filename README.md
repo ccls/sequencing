@@ -74,6 +74,16 @@ Not including the ~50MB of sample data
 SAM\_filter\_out\_unmapped\_reads.pl was modified due to some test
 data triggering a divide by zero error.
 
+Add an empty target to a Makefile.in.
+I doesn't seem needed on my Mac Pro, just my MacBook Pro?
+
+	> trinityrnaseq_r2012-06-08/trinity-plugins/jellyfish-1.1.5/Makefile.in 
+
+		doc/jellyfish.man:
+		#      this is just an empty placeholder
+
+
+
 
 ## RINS modifications ( scripts to be copied in after via Makefile )
 
