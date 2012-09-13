@@ -42,11 +42,11 @@ install:
 	cd $(BLAST) && make install
 	cp -r $(TRINITY)/* $(BASE_BIN_DIR)
 	cd rins_core && cp *pl $(BASE_BIN_DIR)
-	mv $(BASE_BIN_DIR)/rins.pl $(BASE_BIN_DIR)/rins.pl.original
-	mv $(BASE_BIN_DIR)/blastn_cleanup.pl $(BASE_BIN_DIR)/blastn_cleanup.pl.original
-	mv $(BASE_BIN_DIR)/write_result.pl $(BASE_BIN_DIR)/write_result.pl.original
+#	mv $(BASE_BIN_DIR)/rins.pl $(BASE_BIN_DIR)/rins.pl.original
+#	mv $(BASE_BIN_DIR)/blastn_cleanup.pl $(BASE_BIN_DIR)/blastn_cleanup.pl.original
+#	mv $(BASE_BIN_DIR)/write_result.pl $(BASE_BIN_DIR)/write_result.pl.original
 	cp rins.pl blastn_cleanup.pl write_result.pl $(BASE_BIN_DIR)
-	mv $(BASE_BIN_DIR)/$(TRINITY)/util/SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/$(TRINITY)/util/SAM_filter_out_unmapped_reads.pl.original
+#	mv $(BASE_BIN_DIR)/$(TRINITY)/util/SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/$(TRINITY)/util/SAM_filter_out_unmapped_reads.pl.original
 	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/$(TRINITY)/util/
 #	mv $(TRINITY)/util/SAM_filter_out_unmapped_reads.pl $(TRINITY)/util/SAM_filter_out_unmapped_reads.pl.original
 #	cp SAM_filter_out_unmapped_reads.pl $(TRINITY)/util/
