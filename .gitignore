@@ -44,6 +44,29 @@ bowtie2-2.0.0-beta7/bowtie2-inspect.dSYM/
 
 ncbi-blast-2.2.27+-src/c++/Makefile
 ncbi-blast-2.2.27+-src/c++/*-Debug/
+ncbi-blast-2.2.27+-src/c++/config.log
+ncbi-blast-2.2.27+-src/c++/include/objects/access/
+ncbi-blast-2.2.27+-src/c++/include/objects/biblio/
+ncbi-blast-2.2.27+-src/c++/include/objects/cn3d/
+ncbi-blast-2.2.27+-src/c++/include/objects/docsum/
+ncbi-blast-2.2.27+-src/c++/include/objects/featdef/
+ncbi-blast-2.2.27+-src/c++/include/objects/gbseq/
+ncbi-blast-2.2.27+-src/c++/include/objects/id2/
+ncbi-blast-2.2.27+-src/c++/include/objects/insdseq/
+ncbi-blast-2.2.27+-src/c++/include/objects/macro/
+ncbi-blast-2.2.27+-src/c++/include/objects/medlars/
+ncbi-blast-2.2.27+-src/c++/include/objects/mim/
+ncbi-blast-2.2.27+-src/c++/include/objects/mmdb2/
+ncbi-blast-2.2.27+-src/c++/include/objects/mmdb3/
+ncbi-blast-2.2.27+-src/c++/include/objects/objprt/
+ncbi-blast-2.2.27+-src/c++/include/objects/pcassay/
+ncbi-blast-2.2.27+-src/c++/include/objects/pcsubstance/
+ncbi-blast-2.2.27+-src/c++/include/objects/proj/
+ncbi-blast-2.2.27+-src/c++/include/objects/pubmed/
+ncbi-blast-2.2.27+-src/c++/include/objects/seqcode/
+ncbi-blast-2.2.27+-src/c++/include/objects/seqsplit/
+ncbi-blast-2.2.27+-src/c++/include/objects/seqtest/
+ncbi-blast-2.2.27+-src/c++/include/objects/tinyseq/
 #
 #	MANY, MANY files are copies and/or created during the make process!
 #	Which to ignore?
