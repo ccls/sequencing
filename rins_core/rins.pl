@@ -1,4 +1,5 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl -w
+##!/usr/bin/perl -w
 
 # rins.pl is a tool to Rapidly Identify Nonhuman Sequences
 # 

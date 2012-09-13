@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
+##!/usr/bin/perl
 #
 # used to clean up data and print out results
 #

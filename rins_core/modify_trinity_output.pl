@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
+##!/usr/bin/perl
 #
 # this script is used to modify Trinity.fasta file
 #

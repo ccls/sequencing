@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
+##!/usr/bin/perl
 #
 # This script is used to compress reads used the LZW compression ratio as a hard cutoff
 #

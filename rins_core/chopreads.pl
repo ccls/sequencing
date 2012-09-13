@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
+##!/usr/bin/perl
 #
 # This script is used to cut reads in fasta format into 25mers
 #

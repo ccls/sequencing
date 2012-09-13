@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
+##!/usr/bin/perl
 #
 # pull out the names of non-mappable sequence
 #
