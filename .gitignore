@@ -49,3 +49,36 @@ ncbi-blast-2.2.27+-src/c++/*-Debug/
 #	Which to ignore?
 #
 
+
+
+
+
+trinityrnaseq_r2012-06-08/trinity-plugins/slclust/src/*.o
+trinityrnaseq_r2012-06-08/Chrysalis/BreakTransByPairs
+trinityrnaseq_r2012-06-08/Chrysalis/Chrysalis
+trinityrnaseq_r2012-06-08/Chrysalis/GraphFromFasta
+trinityrnaseq_r2012-06-08/Chrysalis/IsoformAugment
+trinityrnaseq_r2012-06-08/Chrysalis/JoinTransByPairs
+trinityrnaseq_r2012-06-08/Chrysalis/MakeDepend
+trinityrnaseq_r2012-06-08/Chrysalis/QuantifyGraph
+trinityrnaseq_r2012-06-08/Chrysalis/ReadsToTranscripts
+trinityrnaseq_r2012-06-08/Chrysalis/RunButterfly
+trinityrnaseq_r2012-06-08/Chrysalis/TranscriptomeFromVaryK
+trinityrnaseq_r2012-06-08/Chrysalis/checkLock
+trinityrnaseq_r2012-06-08/Chrysalis/obj/
+trinityrnaseq_r2012-06-08/Inchworm/src/*.o
+trinityrnaseq_r2012-06-08/Inchworm/src/inchworm
+trinityrnaseq_r2012-06-08/Inchworm/src/FastaToDeBruijn
+trinityrnaseq_r2012-06-08/Inchworm/src/ParaFly
+trinityrnaseq_r2012-06-08/Inchworm/src/cigar_tweaker
+trinityrnaseq_r2012-06-08/Inchworm/src/pull_reads_with_kmers
+trinityrnaseq_r2012-06-08/trinity-plugins/fstrozzi-Fastool-16065e7/fastool
+trinityrnaseq_r2012-06-08/trinity-plugins/jellyfish-1.1.5/.libs/
+trinityrnaseq_r2012-06-08/trinity-plugins/jellyfish-1.1.5/bin/jellyfish
+trinityrnaseq_r2012-06-08/trinity-plugins/jellyfish-1.1.5/jellyfish/.libs/
+trinityrnaseq_r2012-06-08/trinity-plugins/jellyfish-1.1.5/jellyfish/*.o
+trinityrnaseq_r2012-06-08/trinity-plugins/jellyfish-1.1.5/jellyfish/libjellyfish_la-*.lo
+trinityrnaseq_r2012-06-08/trinity-plugins/jellyfish-1.1.5/jellyfish/libjellyfish_la-*.o
+trinityrnaseq_r2012-06-08/trinity-plugins/jellyfish-1.1.5/libjellyfish.la
+trinityrnaseq_r2012-06-08/trinity-plugins/rsem-1.1.19/rsem-for-ebseq-calculate-clustering-info
+trinityrnaseq_r2012-06-08/trinity-plugins/slclust/src/slclust
