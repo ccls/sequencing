@@ -36,5 +36,6 @@ singlelane_filename = NA
 blat_reference = /Users/jakewendt/rins/indexes/virus.fa
 bowtie_index_human     = /Users/jakewendt/rins/indexes/hg18
 blastn_index_human = /Users/jakewendt/rins/indexes/hg18
-blastn_index_non_human = /Users/jakewendt/rins/indexes/virus
+#blastn_index_non_human = /Users/jakewendt/rins/indexes/virus
+blastn_index_non_human = /Users/jakewendt/rins/indexes/nt
 

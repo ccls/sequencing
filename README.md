@@ -51,6 +51,31 @@ THIS IS NOT THE LATEST VERSION.
 Not including the ~50MB of sample data
 
 
+
+## Indexes Used
+
+Manually downloaded, but then for some reason couldn't actually use?
+ftp://ftp.ncbi.nlm.nih.gov/blast/db/
+ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nr.gz
+ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz
+
+
+So used update\_blastdb.pl to get them
+
+	update_blastdb.pl --decompress nt
+	update_blastdb.pl --decompress nr
+
+This will downloaded them to whereever you are so make sure you have ~50GB of space!
+
+
+http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/hg19.2bit
+twoBitToFa hg19.2bit hg19.fa
+#       generate ebwt files
+bowtie-build hg19.fa hg19
+
+The big rins.tar.gz includes hg18 and virus
+
+
 ## General modifications
 
 Changed all perl scripts she-bang to use environment selected perl.
