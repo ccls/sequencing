@@ -125,6 +125,24 @@ I doesn't seem needed on my Mac Pro, just my MacBook Pro?
 
 
 
+
+
+In addition, I think that the latest Trinity and its changes are responsible for
+the contig naming changes.  Its output file, Trinity.fasta, is just the short name 
+
+	comp5_c0_seq2
+
+versus the long name style in the examples 
+
+	comp0_c0_seq1_FPKM_all:1241158.424_FPKM_rel:626919.264_len:482_path:[1032,746,1102]
+
+This difference has led to the modifications of the parsing in 2 of the scripts
+and I think that that is causing some problems.
+
+
+
+
+
 ## RINS modifications ( scripts to be copied in via Makefile )
 
 Modified rins.pl for several reasons.  One major change is to the parameters

@@ -25,9 +25,25 @@ my %count = ();
 open (in, "<$contig_fa_file");
 while ($line=<in>) {
   chomp $line;
-  $name = $line;
-  $name =~s/\/[0-9]+$//;
+
+#	This is unnecessary with new style trinity output
+#  $name = $line;
+#  $name =~s/\/[0-9]+$//;
+#	New way?
+  my @data = split /\s+/, $line;
+	my $name = $data[0];
+
   $name =~s/^\>//;
+
+print "Saving SEQ Name:".$name.":\n";
+
+#	Old trinity style name 
+#	>comp0_c0_seq1_FPKM_all:1241158.424_FPKM_rel:626919.264_len:482_path:[1032,746,1102]
+#	New ...
+#	>comp39_c0_seq2 len=255 path=[218:0-1 450:2-3 221:4-254]
+
+#Saving SEQ Name:comp7_c0_seq3 len=319 path=[997:0-150 2576:151-244 1247:245-246 4242:247-282 3038:283-318]:
+#Looking for SEQ name:comp5_c0_seq2:
 
   $line = <in>;
   chomp $line;
@@ -80,6 +96,8 @@ while ($line=<in>) {
 #  if ($data[11]/$data[3] >= 0.75) {
 #	if data[3] is 0, skip?
   if (( $data[3] > 0 ) && ( $data[11]/$data[3] >= 0.75) ){
+
+print "Looking for SEQ name:".$data[0].":\n";
     $pline = "$data[0]\t$count{$data[0]}\t$data[1]\t$data[10]\t$data[11]\t$seq{$data[0]}";
     if (!$flag{$pline}) {
       print out "$pline\n";
