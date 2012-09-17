@@ -65,13 +65,13 @@ So used update\_blastdb.pl to get them
 	update_blastdb.pl --decompress nt
 	update_blastdb.pl --decompress nr
 
-This will downloaded them to whereever you are so make sure you have ~50GB of space!
+This will download them to whereever you are so make sure you have ~50GB of space!
 
 
-http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/hg19.2bit
-twoBitToFa hg19.2bit hg19.fa
-#       generate ebwt files
-bowtie-build hg19.fa hg19
+	http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/hg19.2bit
+	twoBitToFa hg19.2bit hg19.fa
+	#       generate ebwt files
+	bowtie-build hg19.fa hg19
 
 The big rins.tar.gz includes hg18 and virus
 
