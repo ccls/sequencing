@@ -35,7 +35,7 @@ while ($line=<in>) {
 
   $name =~s/^\>//;
 
-print "Saving SEQ Name:".$name.":\n";
+#print "Saving SEQ Name:".$name.":\n";
 
 #	Old trinity style name 
 #	>comp0_c0_seq1_FPKM_all:1241158.424_FPKM_rel:626919.264_len:482_path:[1032,746,1102]
@@ -97,7 +97,7 @@ while ($line=<in>) {
 #	if data[3] is 0, skip?
   if (( $data[3] > 0 ) && ( $data[11]/$data[3] >= 0.75) ){
 
-print "Looking for SEQ name:".$data[0].":\n";
+#print "Looking for SEQ name:".$data[0].":\n";
     $pline = "$data[0]\t$count{$data[0]}\t$data[1]\t$data[10]\t$data[11]\t$seq{$data[0]}";
     if (!$flag{$pline}) {
       print out "$pline\n";
