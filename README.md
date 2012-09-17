@@ -139,6 +139,10 @@ versus the long name style in the examples
 This difference has led to the modifications of the parsing in 2 of the scripts
 and I think that that is causing some problems.
 
+This also effected the write\_results.pl script in another place.  The sequences
+weren't included due to this change in name.  The hash then didn't contain any
+matching keys.
+
 
 
 
