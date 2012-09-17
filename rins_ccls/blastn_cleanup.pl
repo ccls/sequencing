@@ -65,8 +65,19 @@ open (out, ">$output");
 while ($line=<in>) {
   chomp $line;
 
-  my $name = $line;
-  $name =~s/\/[0-9]+$//;
+
+
+#
+#	This is probably wrong too.
+#
+#	old way ...
+#  my $name = $line;
+#  $name =~s/\/[0-9]+$//;
+#	new way ...
+	my @data = split /\s+/, $line;
+	my $name = $data[0];
+
+
   $name =~s/^\>//;
   
   if (!($flag{$name})) {
