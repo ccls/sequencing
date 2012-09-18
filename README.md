@@ -197,7 +197,21 @@ setenv PATH ${PATH}:${HOME}/RINS\_BASE/bin
 
 ## TODO
 
+
+
+Make FASTA copies of our data
+
+
+Add an option to LINK the raw data rather than copy it?
+Could be faster and would save disk space, if we needed it.
+
+
 Add testing.
+
+
+
+
+
 
 
 ----------
