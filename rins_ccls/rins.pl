@@ -52,6 +52,8 @@ $config->read($config_filename);
 my $file_format = $config->get_value("file_format");
 my $pair_end = $config->get_value("pair_end");
 
+my $link_sample_fa_files = $config->get_value("link_sample_fa_files") || 'false';
+
 my $leftlane_filename	= $config->get_value("leftlane_filename");
 my $rightlane_filename = $config->get_value("rightlane_filename");
 my $singlelane_filename = $config->get_value("singlelane_filename");
@@ -155,16 +157,28 @@ if ($file_format eq "fastq") {
 }
 
 if ($file_format eq "fasta") {
-	print "already fasta format, copy fasta files instead\n";
-	if ($pair_end) {
-		do_this( "cp $leftlane_filename leftlane.fa" );
-		do_this( "cp $rightlane_filename rightlane.fa" );
-		file_check( 'leftlane.fa' );
-		file_check( 'rightlane.fa' );
-	}
-	else {
-		do_this( "cp $singlelane_filename singlelane.fa" );
-		file_check( 'singlelane.fa' );
+	if( $link_sample_fa_files =~ /t/i ){
+		print "already fasta format, linking fasta files instead\n";
+		if ($pair_end) {
+			do_this( "ln -s $leftlane_filename leftlane.fa" );
+			do_this( "ln -s $rightlane_filename rightlane.fa" );
+			file_check( 'leftlane.fa' );
+			file_check( 'rightlane.fa' );
+		} else {
+			do_this( "ln -s $singlelane_filename singlelane.fa" );
+			file_check( 'singlelane.fa' );
+		}
+	} else {
+		print "already fasta format, copy fasta files instead\n";
+		if ($pair_end) {
+			do_this( "cp $leftlane_filename leftlane.fa" );
+			do_this( "cp $rightlane_filename rightlane.fa" );
+			file_check( 'leftlane.fa' );
+			file_check( 'rightlane.fa' );
+		} else {
+			do_this( "cp $singlelane_filename singlelane.fa" );
+			file_check( 'singlelane.fa' );
+		}
 	}
 }
 

@@ -202,11 +202,17 @@ setenv PATH ${PATH}:${HOME}/RINS\_BASE/bin
 Make FASTA copies of our data
 
 
-Add an option to LINK the raw data rather than copy it?
-Could be faster and would save disk space, if we needed it.
-
 
 Add testing.
+
+
+Make paired versus single more fluid in the code.
+"pair\_end" could be determined by the presence of a second file?
+"single" would be when only a left or right file is present?
+Every command being wrapped in an "if paired" could be simplified.
+
+
+
 
 
 

@@ -26,6 +26,8 @@ leftlane_filename = /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1
 rightlane_filename = /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2.fa
 singlelane_filename = NA
 
+link_sample_fa_files = true
+
 mailto  = jakewendt@berkeley.edu
 
 # reference files
