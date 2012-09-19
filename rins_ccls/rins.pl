@@ -58,7 +58,12 @@ my $leftlane_filename	= $config->get_value("leftlane_filename");
 my $rightlane_filename = $config->get_value("rightlane_filename");
 my $singlelane_filename = $config->get_value("singlelane_filename");
 
-my $raw_read_length = $config->get_value("raw_read_length") || 100;
+
+#
+#	Never used?
+#
+#my $raw_read_length = $config->get_value("raw_read_length") || 100;
+
 my $chop_read_length = $config->get_value("chop_read_length") || 25;
 my $minIdentity = $config->get_value("minIdentity") || 80;
 
