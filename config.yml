@@ -1,0 +1,36 @@
+###########################################################################
+#
+# Configuration file for RINS command line run
+#
+# Please give the Whole Path of a file, and do not include space in file names
+#
+# example as follows
+#
+# Please fill all the required parameters
+#
+###########################################################################
+
+
+# file format and names
+# file format can be either "fasta" or "fastq"
+
+:file_format: fasta
+
+:files:
+  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1.fa
+  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2.fa
+
+# email notification
+
+:mailto:  jakewendt@berkeley.edu
+
+:link_sample_fa_files: true
+
+
+# reference files
+#	Only the blat_reference index uses the .fa suffix 
+:blat_reference:         /Users/jakewendt/rins/indexes/virus.fa
+:bowtie_index_human:     /Users/jakewendt/rins/indexes/hg18
+:blastn_index_human:     /Users/jakewendt/rins/indexes/hg18
+:blastn_index_non_human: /Users/jakewendt/rins/indexes/virus
+
