@@ -1,142 +1,122 @@
-#!/usr/bin/env perl -w
-##!/usr/bin/perl -w
+#!/usr/bin/env ruby
 
-# rins.pl is a tool to Rapidly Identify Nonhuman Sequences
+# rins.rb is a tool to Rapidly Identify Nonhuman Sequences
 #	(This is a CCLS modified version of the Stanford rins.pl by Jakeb)
 # 
 # script is written by Kun Qu and Aparna Bhaduri in Stanford Dermatology
+#
+#	rubified by jake
+#
 
-use strict;
-use warnings FATAL => 'all';
-use Getopt::Std;
-use Getopt::Long;
-use File::Basename;
-use Cwd qw[abs_path];
-use File::Spec;
+require 'erb'
+require 'yaml'
+require 'optparse'
 
+config_filename = 'config.yml'
+output_filename = 'results.txt'
+start_step      = 0
 
-my @usage;
-push @usage, "Usage: ".basename($0)." [options]\n";
-push @usage, "Run the RINS pipeline to identify nonhuman sequences.\n";
-push @usage, "Command Line Example: rins.pl -c config.txt -o output.txt\n";
-push @usage, "	-h, --help    Displays this information\n";
-push @usage, "	-c, --config  Config Filename (default: config.txt)\n";
-push @usage, "	-o, --output  Output Filename (default: results.txt)\n";
-push @usage, "	-s, --start   Start Step (default: 0)\n";
+optparse = OptionParser.new do |opts|
+	# Set a banner, displayed at the top of the help screen.
+	#	on -h -help --help
+	opts.banner = "Usage: #{$0} [options]\n" <<
+		"Run the RINS pipeline to identify nonhuman sequences.\n" <<
+		"Command Line Example: rins.pl -c config.txt -o output.txt\n" <<
+		"	-h, --help    Displays this information\n" <<
+		"	-c, --config  Config Filename (default: config.txt)\n" <<
+		"	-o, --output  Output Filename (default: results.txt)\n" <<
+		"	-s, --start   Start Step (default: 0)\n"
 
+	# Define the options, and what they do
 
-my $help;
-my $output_filename;
-my $config_filename;
-my $start_step;
+	#	How to force this to be an integer?  Just cast it?
+	opts.on( '-s', '--start INTEGER', 'Start at step #' ) do |s|
+		start_step = s
+	end
+
+	opts.on( '-c', '--config FILENAME', 'Processing options in ...' ) do |s|
+		config_filename = s
+	end
+
+	opts.on( '-o', '--output FILENAME', 'Final output written to ...' ) do |s|
+		output_filename = s
+	end
+
+end
+ 
+# Parse the command-line. Remember there are two forms
+# of the parse method. The 'parse' method simply parses
+# ARGV, while the 'parse!' method parses ARGV and removes
+# any options found there, as well as any parameters for
+# the options. What's left is the list of files to resize.
+optparse.parse!
 
 system "date";
 
-GetOptions 
-(
- 'help'				=> \$help,
- 'output=s'		=> \$output_filename,
- 'config=s'		=> \$config_filename,
- 'start=i'		=> \$start_step,
-);
-
-not defined $help or die @usage;
-$config_filename ||= 'config.txt';
-#defined $config_filename or die @usage;
-$output_filename ||= 'results.txt';
-#defined $output_filename or die @usage;
-$start_step ||= 0;
-
-my $config = new();
-$config->read($config_filename);
-
+config = YAML::load( ERB.new( IO.read( File.join( config_filename ) ) ).result)
 
 # Config values of files and files' configurations
 
-my $file_format = $config->get_value("file_format");
-my $pair_end = $config->get_value("pair_end");
+file_format = config[:file_format]
+pair_end    = config[:pair_end]
+link_sample_fa_files = config[:link_sample_fa_files] || false
+leftlane_filename	  = config[:leftlane_filename]
+rightlane_filename  = config[:rightlane_filename]
+singlelane_filename = config[:singlelane_filename]
+chop_read_length = config[:chop_read_length] || 25
+minIdentity = config[:minIdentity] || 80
 
-my $link_sample_fa_files = $config->get_value("link_sample_fa_files") || 'false';
+blat_reference = config[:blat_reference]
 
-my $leftlane_filename	= $config->get_value("leftlane_filename");
-my $rightlane_filename = $config->get_value("rightlane_filename");
-my $singlelane_filename = $config->get_value("singlelane_filename");
-
-
-#
-#	Never used?
-#
-#my $raw_read_length = $config->get_value("raw_read_length") || 100;
-
-my $chop_read_length = $config->get_value("chop_read_length") || 25;
-my $minIdentity = $config->get_value("minIdentity") || 80;
-
-my $blat_reference = $config->get_value("blat_reference");
-
-my $compress_ratio_thrd = $config->get_value("compress_ratio_thrd") || 0.5;
-my $iteration = $config->get_value("iteration") || 2;
+compress_ratio_thrd = config[:compress_ratio_thrd] || 0.5
+iteration = config[:iteration] || 2
 
 # executables' configurations
+blat_bin = config[:blat_bin] || 'blat'
+bowtie_bin = config[:bowtie_bin] || 'bowtie'
+bowtie_build_bin = config[:bowtie_build_bin] || 'bowtie-build'
+bowtie_index_human = config[:bowtie_index_human]
+bowtie_threads = config[:bowtie_threads] || 6
+bowtie_mismatch = config[:bowtie_mismatch] || 3
 
-my $blat_bin = $config->get_value("blat_bin") || 'blat';
-my $bowtie_bin = $config->get_value("bowtie_bin") || 'bowtie';
-my $bowtie_build_bin = $config->get_value("bowtie_build_bin") || 'bowtie-build';
-my $bowtie_index_human = $config->get_value("bowtie_index_human");
-my $bowtie_threads = $config->get_value("bowtie_threads") || 6;
-my $bowtie_mismatch = $config->get_value("bowtie_mismatch") || 3;
+trinity_script = config[:trinity_script] || 'Trinity.pl'
+paired_fragment_length = config[:paired_fragment_length] || 300
+min_contig_length = config[:min_contig_length] || 300
+trinity_threads = config[:trinity_threads] || 6
 
-my $trinity_script = $config->get_value("trinity_script") || 'Trinity.pl';
-my $paired_fragment_length = $config->get_value("paired_fragment_length") || 300;
-my $min_contig_length = $config->get_value("min_contig_length") || 300;
-my $trinity_threads = $config->get_value("trinity_threads") || 6;
-
-my $blastn_bin = $config->get_value("blastn_bin") || 'blastn';
-my $blastn_index_human = $config->get_value("blastn_index_human");
-my $blastn_index_non_human = $config->get_value("blastn_index_non_human");
-my $blastn_evalue_thrd = $config->get_value("blastn_evalue_thrd") || 0.05;
-my $similarity_thrd = $config->get_value("similarity_thrd") || 0.8;
-
-
-# scripts' configurations (scripts are all in my path, so dir unnecessary)
-
-#my $scripts_directory = $config->get_value("scripts_directory");
-#my $fastq2fasta_script = "$scripts_directory/fastq2fasta.pl";
-#my $chopreads_script = "$scripts_directory/chopreads.pl";
-#my $blat_out_candidate_script = "$scripts_directory/blatoutcandidate.pl";
-#my $compress_script = "$scripts_directory/compress.pl";
-#my $pull_reads_fasta_script = "$scripts_directory/pull_reads_fasta.pl";
-#my $sam2names_script = "$scripts_directory/sam2names.pl";
-#my $modify_trinity_output_script = "$scripts_directory/modify_trinity_output.pl";
-#my $blastn_cleanup_script = "$scripts_directory/blastn_cleanup.pl";
-#my $candidate_non_human_script = "$scripts_directory/candidate_non_human.pl";
-#my $write_result_script = "$scripts_directory/write_result.pl";
-
-my $fastq2fasta_script = "fastq2fasta.pl";
-my $chopreads_script = "chopreads.pl";
-my $blat_out_candidate_script = "blatoutcandidate.pl";
-my $compress_script = "compress.pl";
-my $pull_reads_fasta_script = "pull_reads_fasta.pl";
-my $sam2names_script = "sam2names.pl";
-my $modify_trinity_output_script = "modify_trinity_output.pl";
-my $blastn_cleanup_script = "blastn_cleanup.pl";
-my $candidate_non_human_script = "candidate_non_human.pl";
-my $write_result_script = "write_result.pl";
-
-my $die_on_failed_file_check = $config->get_value("die_on_failed_file_check") || 0;# false
-#my $die_on_failed_file_check = $config->get_value("die_on_failed_file_check") || 1;# true
+blastn_bin = config[:blastn_bin] || 'blastn'
+blastn_index_human = config[:blastn_index_human]
+blastn_index_non_human = config[:blastn_index_non_human]
+blastn_evalue_thrd = config[:blastn_evalue_thrd] || 0.05
+similarity_thrd = config[:similarity_thrd] || 0.8
 
 
-my $mailto;
-if ($config->has_value("mailto")) {
-	$mailto = $config->get_value("mailto");
-}
+fastq2fasta_script = "fastq2fasta.pl";
+chopreads_script = "chopreads.pl";
+blat_out_candidate_script = "blatoutcandidate.pl";
+compress_script = "compress.pl";
+pull_reads_fasta_script = "pull_reads_fasta.pl";
+sam2names_script = "sam2names.pl";
+modify_trinity_output_script = "modify_trinity_output.pl";
+blastn_cleanup_script = "blastn_cleanup.pl";
+candidate_non_human_script = "candidate_non_human.pl";
+write_result_script = "write_result.pl";
+
+die_on_failed_file_check = config[:die_on_failed_file_check] || false
+#die_on_failed_file_check = config[:die_on_failed_file_check] || true
+
+mailto = config[:mailto] || ''
+
 
 
 # Possible Errors
 
-if (($file_format ne "fastq") and ($file_format ne "fasta")) {
-	die "File format can either be fastq or fasta\n";
-}
+raise "File format can either be fastq or fasta" unless( 
+	['fasta','fastq'].include?(file_format) )
+
+__END__
+
+
 
 
 #	make and use an outdir based on time now.
@@ -146,6 +126,11 @@ my $outdir = sprintf( "%4d%02d%02d%02d%02d%02d.outdir",
 mkdir $outdir;
 chdir $outdir;
 
+
+
+
+
+__END__
 
 
 # Steps from here
