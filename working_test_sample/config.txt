@@ -22,7 +22,7 @@ file_format = fasta
 
 pair_end = 1
 
-leftlane_filename = /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1.fa
+leftlane_filename  = /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1.fa
 rightlane_filename = /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2.fa
 singlelane_filename = NA
 
@@ -32,11 +32,78 @@ mailto  = jakewendt@berkeley.edu
 
 # reference files
 #	only the blat_reference has .fa suffix
-blat_reference = /Users/jakewendt/rins/indexes/virus.fa
-
-#	corrupt. fails blastdbcheck
+blat_reference         = /Users/jakewendt/rins/indexes/virus.fa
 bowtie_index_human     = /Users/jakewendt/rins/indexes/hg18
-
-blastn_index_human = /Users/jakewendt/rins/indexes/hg18
+blastn_index_human     = /Users/jakewendt/rins/indexes/hg18
 blastn_index_non_human = /Users/jakewendt/rins/indexes/virus
 
+###########################################################################
+#
+# Configuration file for RINS command line run
+#
+# Please give the Whole Path of a file, and do not include space in file names
+#
+# example as follows
+#
+# Please fill all the required parameters
+#
+###########################################################################
+#	
+#	
+#	# file format and names
+#	# file format can be either "fasta" or "fastq"
+#	
+#	file_format = fasta
+#	
+#	# if pair-end then "pair_end = 1", else, "pair_end = 0"
+#	# if pair-end, privide file names for both ends, and leave singlelane_filename as NA
+#	# else, provide file name of the single end and leave rightlane/leftlane_filename as NA
+#	
+#	pair_end = 1
+#	
+#	leftlane_filename = /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1.fa
+#	rightlane_filename = /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2.fa
+#	singlelane_filename = NA
+#	
+#	
+#	# email notification
+#	
+#	#mailto  = kqu@stanford.edu
+#	
+#	
+#	# reference files
+#	blat_reference = /Users/jakewendt/rins/indexes/virus.fa
+#	bowtie_index_human     = /Users/jakewendt/rins/indexes/hg18
+#	
+#	# scripts and executable directories
+#	
+#	scripts_directory = /Users/jakewendt/rins/core/
+#	blat_bin = /Users/jakewendt/RINS_BASE/bin/blat
+#	
+#	bowtie_bin         = /Users/jakewendt/RINS_BASE/bin/bowtie
+#	bowtie_build_bin  = /Users/jakewendt/RINS_BASE/bin/bowtie-build
+#	bowtie_threads  = 6
+#	bowtie_mismatch = 3
+#	
+#	trinity_script = /Users/jakewendt/rins/trinity/Trinity.pl
+#	paired_fragment_length = 300
+#	min_contig_length = 300
+#	trinity_threads =  6
+#	
+#	
+#	blastn_bin = /Users/jakewendt/RINS_BASE/bin/blastn
+#	blastn_index_human = /Users/jakewendt/rins/indexes/hg18
+#	blastn_index_non_human = /Users/jakewendt/rins/indexes/virus
+#	blastn_evalue_thrd = 0.05
+#	
+#	# similarity_thrd shoud between 0.8 - 1.0
+#	similarity_thrd = 0.8 
+#	
+#	# modifiable parameters
+#	
+#	iteration = 2
+#	raw_read_length = 100
+#	chop_read_length = 25
+#	minIdentity = 80
+#	compress_ratio_thrd = 0.5
+#	
