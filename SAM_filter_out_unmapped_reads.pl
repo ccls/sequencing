@@ -21,16 +21,16 @@ main: {
     my $total_count = 0;
 
 
-print STDERR "JAKE - BEGIN\n";
-print STDERR "JAKE - sam file: " . $sam_file . "\n";
-print STDERR "JAKE - file size: " . ((-s $sam_file)||"") . "\n";
+#print STDERR "JAKE - BEGIN\n";
+#print STDERR "JAKE - sam file: " . $sam_file . "\n";
+#print STDERR "JAKE - file size: " . ((-s $sam_file)||"") . "\n";
 
 #	my printed output needs to go to STDERR
 #	as the calling script redirects the output of this to a file. 
 
 	while ($sam_reader->has_next()) {
 
-print STDERR "JAKE - in has next while loop.\n";
+#print STDERR "JAKE - in has next while loop.\n";
 		
 		my $sam_entry = $sam_reader->get_next();
         $total_count++;
@@ -39,7 +39,7 @@ print STDERR "JAKE - in has next while loop.\n";
             $filtered_count++;
         }
         else {
-print STDERR "SAM ENTRY: " . $sam_entry->toString() . "\n";
+#print STDERR "SAM ENTRY: " . $sam_entry->toString() . "\n";
             print $sam_entry->toString() . "\n";
         }
     }
@@ -54,12 +54,12 @@ print STDERR "SAM ENTRY: " . $sam_entry->toString() . "\n";
 
 #-filtered 155 of 324 reads as unaligned = 47.84% unaligned reads
 
-print STDERR "JAKE - total count:" . $total_count . "\n";
+#print STDERR "JAKE - total count:" . $total_count . "\n";
 if( $total_count > 0 ){
     print STDERR "-filtered $filtered_count of $total_count reads as unaligned = " . sprintf("%.2f", $filtered_count / $total_count * 100) . "\% unaligned reads\n";
 }
     
-print STDERR "JAKE - END\n";
+#print STDERR "JAKE - END\n";
 
 	exit(0);
 
