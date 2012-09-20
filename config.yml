@@ -9,23 +9,28 @@
 # Please fill all the required parameters
 #
 ###########################################################################
+#
+#
+#				THIS IS FOR THE RUBY VERSION ONLY
+#
+#
+###########################################################################
 
 
-# file format and names
 # file format can be either "fasta" or "fastq"
-
 :file_format: fasta
 
+#	files is a hash
+#		the keys should either be left and right or just single
 :files:
   :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1.fa
   :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2.fa
 
-# email notification
-
+# email notification (not enabled at the moment, nevertheless)
 :mailto:  jakewendt@berkeley.edu
 
+#	if the raw files are fasta, link them instead of copying them in
 :link_sample_fa_files: true
-
 
 # reference files
 #	Only the blat_reference index uses the .fa suffix 
