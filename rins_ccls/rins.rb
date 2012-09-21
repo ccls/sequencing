@@ -30,24 +30,28 @@ end
 #
 start_step      = 0	
 
+#
+#	Default values
+#
 o = {
-	:config_filename => 'config.yml',
-	:output_filename => 'results.txt',
-	:link_sample_fa_files => false,
-	:chop_read_length => 25,
-	:minIdentity => 80,
-	:compress_ratio_thrd => 0.5,
-	:iteration => 2,
-	:bowtie_threads => 6,
-	:bowtie_mismatch => 3,
-	:paired_fragment_length => 300,
-	:min_contig_length => 300,
-	:trinity_threads => 6,
-	:blastn_evalue_thrd => 0.05,
-	:similarity_thrd => 0.8,
-	:mailto => '',
+	:config_filename          => 'config.yml',
+	:output_filename          => 'results.txt',
+	:link_sample_fa_files     => false,
+	:pre_chopped              => false,
+	:chop_read_length         => 25,
+	:minIdentity              => 80,
+	:compress_ratio_thrd      => 0.5,
+	:iteration                => 2,
+	:bowtie_threads           => 6,
+	:bowtie_mismatch          => 3,
+	:paired_fragment_length   => 300,
+	:min_contig_length        => 300,
+	:trinity_threads          => 6,
+	:blastn_evalue_thrd       => 0.05,
+	:similarity_thrd          => 0.8,
+	:mailto                   => '',
 	:die_on_failed_file_check => false,
-	:files => {}
+	:files                    => {}
 }
 
 optparse = OptionParser.new do |opts|
@@ -141,21 +145,17 @@ class RINS
 		FileUtils.chdir outdir
 		
 		puts "step 1 change fastq files to fasta files"
-		if( file_format == "fastq")
-			files.each_pair do |k,v|
+		files.each_pair do |k,v|
+			if( file_format == "fastq")
 				"fastq2fasta.pl #{v} #{k}lane.fa".execute
 				file_check( "#{k}lane.fa" );
-			end
-		else #if ($file_format eq "fasta") {
-			if( link_sample_fa_files )
-				puts "already fasta format, linking fasta files instead"
-				files.each_pair do |k,v|
+			else #if ($file_format eq "fasta") {
+				if( link_sample_fa_files )
+					puts "already fasta format, linking #{v} #{k}lane.fa instead"
 					FileUtils.ln_s(v,"#{k}lane.fa")
 					file_check( "#{k}lane.fa" );
-				end
-			else
-				puts "already fasta format, copy fasta files instead"
-				files.each_pair do |k,v|
+				else
+					puts "already fasta format, copying #{v} #{k}lane.fa instead"
 					FileUtils.cp(v,"#{k}lane.fa")
 					file_check( "#{k}lane.fa" );
 				end
@@ -171,8 +171,14 @@ class RINS
 		#
 		puts "step 2 chop reads"
 		files.each_pair do |k,v|
-			"chopreads.pl #{k}lane.fa chopped_#{k}lane.fa #{chop_read_length}".execute
-			file_check( "chopped_#{k}lane.fa" )
+			if( pre_chopped )
+				puts "files are pre-chopped so linking #{k}lane.fa chopped_#{k}lane.fa"
+				FileUtils.ln_s("#{k}lane.fa","chopped_#{k}lane.fa")
+				file_check( "chopped_#{k}lane.fa" )
+			else
+				"chopreads.pl #{k}lane.fa chopped_#{k}lane.fa #{chop_read_length}".execute
+				file_check( "chopped_#{k}lane.fa" )
+			end
 		end
 	end
 

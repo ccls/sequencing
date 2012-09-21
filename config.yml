@@ -23,14 +23,15 @@
 #	files is a hash
 #		the keys should either be left and right or just single
 :files:
-  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1.fa
-  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2.fa
+  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1_chopped_25.fa
+  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2_chopped_25.fa
 
 # email notification (not enabled at the moment, nevertheless)
 :mailto:  jakewendt@berkeley.edu
 
 #	if the raw files are fasta, link them instead of copying them in
 :link_sample_fa_files: true
+:pre_chopped: true
 
 # reference files
 #	Only the blat_reference index uses the .fa suffix 
