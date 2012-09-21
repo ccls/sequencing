@@ -172,8 +172,18 @@ class RINS
 		puts "step 2 chop reads"
 		files.each_pair do |k,v|
 			if( pre_chopped )
-				puts "files are pre-chopped so linking #{k}lane.fa chopped_#{k}lane.fa"
-				FileUtils.ln_s("#{k}lane.fa","chopped_#{k}lane.fa")
+#
+#	The raw files cannot be the same as the chopped files or
+#	trinity crashes.  Trying naming convention.
+#
+				#	.fa or .fasta should both work
+				chopped = v.gsub(/\.fa/,"_chopped_#{chop_read_length}.fa")
+				puts "files are pre-chopped so linking #{chopped} chopped_#{k}lane.fa"
+
+				FileUtils.ln_s(chopped,"chopped_#{k}lane.fa")
+##				FileUtils.ln_s("#{k}lane.fa","chopped_#{k}lane.fa")
+#puts "trinity having problems?  gonna copying chopped file"
+#FileUtils.cp("#{k}lane.fa","chopped_#{k}lane.fa")
 				file_check( "chopped_#{k}lane.fa" )
 			else
 				"chopreads.pl #{k}lane.fa chopped_#{k}lane.fa #{chop_read_length}".execute

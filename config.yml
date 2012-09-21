@@ -23,14 +23,24 @@
 #	files is a hash
 #		the keys should either be left and right or just single
 :files:
-  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1_chopped_25.fa
-  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2_chopped_25.fa
+  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1.fa
+  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2.fa
+#:files:
+#  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1_chopped_25.fa
+#  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2_chopped_25.fa
 
 # email notification (not enabled at the moment, nevertheless)
 :mailto:  jakewendt@berkeley.edu
 
 #	if the raw files are fasta, link them instead of copying them in
 :link_sample_fa_files: true
+
+#
+#	If pre_chopped, the chopped filename must be the same as the raw
+#	file name with "_chopped_#{chop_read_length}" at end before extension.
+#
+#	testset_forkun_1.fa -> testset_forkun_1_chopped_25.fa
+#
 :pre_chopped: true
 
 # reference files
