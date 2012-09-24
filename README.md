@@ -201,22 +201,13 @@ setenv PATH ${PATH}:${HOME}/RINS\_BASE/bin
 ## TODO
 
 
+Make FASTA copies of our FASTQ data and use it to avoid all the copying and converting.
 
-Make FASTA copies of our data
-
+blat can run for quite a long time without ever producing any output.
+Make it more verbose. ( using -dots=1 is helpfulish )
 
 
 Add testing.
-
-
-Make paired versus single more fluid in the code.
-"pair\_end" could be determined by the presence of a second file?
-"single" would be when only a left or right file is present?
-Every command being wrapped in an "if paired" could be simplified.
-
-
-
-
 
 
 

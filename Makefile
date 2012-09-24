@@ -1,7 +1,7 @@
 
 BASE_DIR     = ${HOME}/RINS_BASE
 BASE_BIN_DIR = ${BASE_DIR}/bin
-BLAT    = blatSrc35
+BLAT    = blatSrc34
 BLAST   = ncbi-blast-2.2.27+-src/c++
 BOWTIE  = bowtie-0.12.8
 BOWTIE2 = bowtie2-2.0.0-beta7
