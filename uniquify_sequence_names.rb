@@ -51,7 +51,7 @@ ARGV.each do |infilename|
 		next
 	end
 #	infilename = "indexes/virus.fa.ORIGINAL"
-	outfilename = "#{infilename}.out"
+	outfilename = "#{infilename}.#{$0}.out"
 	sequences = []
 
 	File.open(  infilename, 'r' ) { |infile|
