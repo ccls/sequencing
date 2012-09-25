@@ -19,18 +19,7 @@ optparse = OptionParser.new do |opts|
 		options[:dryrun] = true
 	end
 
-#	options[:suffix] = 'duplicate'
-#	opts.on( '-s', '--suffix STRING', 'Append duplicate sequence name with STRING' ) do |s|
-#		options[:suffix] = s
-#	end
-
-#	options[:verbose] = false
-#	opts.on( '-v', '--verbose', 'Output more information' ) do
-#		options[:verbose] = true
-#	end
-
-	# This displays the help screen, all programs are
-	# assumed to have this option.
+	# This displays the help screen, all programs are assumed to have this option.
 	opts.on( '-h', '--help', 'Display this screen' ) do
 		puts opts
 		exit

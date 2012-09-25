@@ -5,31 +5,28 @@ require 'optparse'
 # This hash will hold all of the options
 # parsed from the command-line by
 # OptionParser.
-options = {}
+options = {
+	:suffix  => 'duplicate',
+	:verbose => false
+}
 
 optparse = OptionParser.new do |opts|
 	# Set a banner, displayed at the top of the help screen.
-	opts.banner = "Usage: #{$0} [options] fa_in_file1 fa_in_file2 ..."
-
-#	options[:infile] = nil
-#		opts.on( '-l', '--infile FILE', '.fa infile' ) do |file|
-#		options[:infile] = file
-#	end
+	opts.banner = "Usage: #{$0} [options] fa_in_file1 fa_in_file2 ...\n" <<
+		"Loop over all sequence names and append '#{options[:suffix]}_#' to duplicates."
 
 	# Define the options, and what they do
 
-	options[:suffix] = 'duplicate'
-	opts.on( '-s', '--suffix STRING', 'Append duplicate sequence name with STRING' ) do |s|
+	opts.on( '-s', '--suffix STRING', 
+			"duplicate sequence suffix (default '#{options[:suffix]}_#')" ) do |s|
 		options[:suffix] = s
 	end
 
-	options[:verbose] = false
 	opts.on( '-v', '--verbose', 'Output more information' ) do
 		options[:verbose] = true
 	end
 
-	# This displays the help screen, all programs are
-	# assumed to have this option.
+	# This displays the help screen, all programs are assumed to have this option.
 	opts.on( '-h', '--help', 'Display this screen' ) do
 		puts opts
 		exit
@@ -75,6 +72,4 @@ ARGV.each do |infilename|
 		end
 	} }	#	File.open
 end
-
-
 

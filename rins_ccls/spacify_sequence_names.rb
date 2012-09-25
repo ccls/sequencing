@@ -11,17 +11,14 @@ options = {
 
 optparse = OptionParser.new do |opts|
 	# Set a banner, displayed at the top of the help screen.
-	opts.banner = "Usage: #{$0} [options] fa_in_file1 fa_in_file2 ..." <<
-"The purpose of this script is to convert ...." <<
-">gi_294756_gb_L11599.1_ROTVP4X_Lamb_rotavirus_Lp14_(VP4)_gene" <<
-" ... into ..." <<
-">gi|294756|gb|L11599.1| ROTVP4X Lamb rotavirus Lp14 (VP4) gene" <<
-" ... replacing the first 3 _'s with |'s " <<
-" ... the 4th _ with '| '" <<
-" ... and the rest with spaces."
-
-
-
+	opts.banner = "Usage: #{$0} [options] fa_in_file1 fa_in_file2 ...\n" <<
+		"The purpose of this script is to convert ....\n" <<
+		">gi_294756_gb_L11599.1_ROTVP4X_Lamb_rotavirus_Lp14_(VP4)_gene\n" <<
+		" ... into ...\n" <<
+		">gi|294756|gb|L11599.1| ROTVP4X Lamb rotavirus Lp14 (VP4) gene\n" <<
+		" ... replacing the first 3 _'s with |'s \n" <<
+		" ... the 4th _ with '| '\n" <<
+		" ... and the rest with spaces."
 
 	# Define the options, and what they do
 
@@ -29,18 +26,7 @@ optparse = OptionParser.new do |opts|
 		options[:dryrun] = true
 	end
 
-#	options[:suffix] = 'duplicate'
-#	opts.on( '-s', '--suffix STRING', 'Append duplicate sequence name with STRING' ) do |s|
-#		options[:suffix] = s
-#	end
-
-#	options[:verbose] = false
-#	opts.on( '-v', '--verbose', 'Output more information' ) do
-#		options[:verbose] = true
-#	end
-
-	# This displays the help screen, all programs are
-	# assumed to have this option.
+	# This displays the help screen, all programs are assumed to have this option.
 	opts.on( '-h', '--help', 'Display this screen' ) do
 		puts opts
 		exit
@@ -83,12 +69,12 @@ ARGV.each do |infilename|
 #	need to differentiate from the likes of ...
 # >gi_47177085_ref_NC_005874.1__Zinnia_leaf_curl_virus-assoc
 
-unless line.match(/\|/)
-				parts = line.split(/_+/)
-				line = parts[0..3].join('|')
-				line << "| "
-				line << parts[4..-1].join(' ')
-end
+				unless line.match(/\|/)
+					parts = line.split(/_+/)
+					line = parts[0..3].join('|')
+					line << "| "
+					line << parts[4..-1].join(' ')
+				end
 
 #				puts "Duplicate sequence name. Renaming."
 				puts line

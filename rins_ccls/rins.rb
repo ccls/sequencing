@@ -59,11 +59,7 @@ optparse = OptionParser.new do |opts|
 	#	on -h -help --help
 	opts.banner = "Usage: #{$0} [options]\n" <<
 		"Run the RINS pipeline to identify nonhuman sequences.\n" <<
-		"Command Line Example: rins.pl -c config.txt -o output.txt\n" <<
-		"	-h, --help    Displays this information\n" <<
-		"	-c, --config  Config Filename (default: config.txt)\n" <<
-		"	-o, --output  Output Filename (default: results.txt)\n" #<<
-#		"	-s, --start   Start Step (default: 0)\n"
+		"Command Line Example: rins.pl -c config.txt -o output.txt\n"
 
 	# Define the options, and what they do
 
@@ -72,14 +68,21 @@ optparse = OptionParser.new do |opts|
 #		start_step = s
 #	end
 
-	opts.on( '-c', '--config FILENAME', 'Processing options in ...' ) do |s|
+	opts.on( '-c', '--config FILENAME', 
+		"Processing options in (default #{o[:config_filename]})" ) do |s|
 		o[:config_filename] = s
 	end
 
-	opts.on( '-o', '--output FILENAME', 'Final output written to ...' ) do |s|
+	opts.on( '-o', '--output FILENAME', 
+		"Final output written to (default #{o[:output_filename]})" ) do |s|
 		o[:output_filename] = s
 	end
 
+	# This displays the help screen, all programs are assumed to have this option.
+	opts.on( '-h', '--help', 'Display this screen' ) do
+		puts opts
+		exit
+	end
 end
  
 # Parse the command-line. Remember there are two forms
@@ -277,9 +280,6 @@ class RINS
 		#	It was last used in trinityrnaseq-r20110519
 		#		trinityrnaseq-r20110519/Butterfly/src/src/TransAssembly_allProbPaths.java
 		#
-		#
-		#	BEGIN DUPLICATE CODE
-		#
 		print "de novo assembly using Trinity\n";
 		command = "Trinity.pl --seqType fa --group_pairs_distance #{paired_fragment_length} --min_contig_length #{min_contig_length} --output trinity_output --CPU #{trinity_threads} --bfly_opts \"--stderr\" --JM 1G "
 		files.each_pair { |k,v| command << "--#{k} bowtie_#{k}lane.fa " }
@@ -299,9 +299,6 @@ class RINS
 		"blastn_cleanup.pl human_contig.txt Trinity.fasta clean_blastn.fa #{similarity_thrd}".execute
 		file_check( 'clean_blastn.fa' );	#	NOTE  don't know how big an "empty" one is
 		FileUtils.rm_r("trinity_output")
-		#
-		#	END DUPLICATE CODE
-		#
 	end
 
 	def step8
@@ -345,6 +342,10 @@ class RINS
 		command = "write_result.pl non_human_contig.fa non_human_contig_blastn.txt "
 		files.each_pair { |k,v| command << "#{k}lane.psl " }
 		command << output_filename
+		command.execute
+
+		puts "parsing write results' results and adding a description"
+		command = "add_descriptions_to_results.rb #{output_filename} #{output_filename}.with_descriptions"
 		command.execute
 	end
 

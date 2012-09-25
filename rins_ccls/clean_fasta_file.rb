@@ -11,7 +11,8 @@ options = {
 
 optparse = OptionParser.new do |opts|
 	# Set a banner, displayed at the top of the help screen.
-	opts.banner = "Usage: #{$0} [options] fa_in_file1 fa_in_file2 ..."
+	opts.banner = "Usage: #{$0} [options] fa_in_file1 fa_in_file2 ...\n" <<
+		"I don't do anything."
 
 	# Define the options, and what they do
 
@@ -19,22 +20,12 @@ optparse = OptionParser.new do |opts|
 		options[:dryrun] = true
 	end
 
-#	options[:suffix] = 'duplicate'
-#	opts.on( '-s', '--suffix STRING', 'Append duplicate sequence name with STRING' ) do |s|
-#		options[:suffix] = s
-#	end
-
-#	options[:verbose] = false
-#	opts.on( '-v', '--verbose', 'Output more information' ) do
-#		options[:verbose] = true
-#	end
-
-	# This displays the help screen, all programs are
-	# assumed to have this option.
+	# This displays the help screen, all programs are assumed to have this option.
 	opts.on( '-h', '--help', 'Display this screen' ) do
 		puts opts
 		exit
 	end
+
 end
  
 # Parse the command-line. Remember there are two forms
