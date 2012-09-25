@@ -12,8 +12,9 @@ options = {
 
 optparse = OptionParser.new do |opts|
 	# Set a banner, displayed at the top of the help screen.
-	opts.banner = "Usage: #{$0} [options] fa_in_file1 fa_in_file2 ...\n" <<
-		"Loop over all sequence names and append '#{options[:suffix]}_#' to duplicates."
+	opts.banner = "\nUsage: #{File.basename($0)} [options] " <<
+			"fa_in_file1 fa_in_file2 ...\n\n" <<
+		"Loop over all sequence names and append '#{options[:suffix]}_#' to duplicates.\n\n"
 
 	# Define the options, and what they do
 
@@ -27,7 +28,8 @@ optparse = OptionParser.new do |opts|
 	end
 
 	# This displays the help screen, all programs are assumed to have this option.
-	opts.on( '-h', '--help', 'Display this screen' ) do
+	#	Add extra "\n" to last option for aesthetics.
+	opts.on( '-h', '--help', 'Display this screen',"\n" ) do
 		puts opts
 		exit
 	end
@@ -40,6 +42,12 @@ end
 # the options. What's left is the list of files to resize.
 optparse.parse!
  
+#	file required
+if ARGV.empty?
+	puts optparse	#	Basically display the command line help
+	exit
+end
+
 ARGV.each do |infilename|
 	if File.exists? infilename
 		puts "Processing #{infilename}"

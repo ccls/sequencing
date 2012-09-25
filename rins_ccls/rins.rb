@@ -57,9 +57,9 @@ o = {
 optparse = OptionParser.new do |opts|
 	# Set a banner, displayed at the top of the help screen.
 	#	on -h -help --help
-	opts.banner = "Usage: #{$0} [options]\n" <<
+	opts.banner = "\nUsage: #{File.basename($0)} [options]\n\n" <<
 		"Run the RINS pipeline to identify nonhuman sequences.\n" <<
-		"Command Line Example: rins.pl -c config.txt -o output.txt\n"
+		"Command Line Example: rins.pl -c config.txt -o output.txt\n\n"
 
 	# Define the options, and what they do
 
@@ -79,7 +79,8 @@ optparse = OptionParser.new do |opts|
 	end
 
 	# This displays the help screen, all programs are assumed to have this option.
-	opts.on( '-h', '--help', 'Display this screen' ) do
+	#	Add extra "\n" to last option for aesthetics.
+	opts.on( '-h', '--help', 'Display this screen',"\n" ) do
 		puts opts
 		exit
 	end

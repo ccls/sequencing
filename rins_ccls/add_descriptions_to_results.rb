@@ -12,9 +12,11 @@ options = {
 
 optparse = OptionParser.new do |opts|
 	# Set a banner, displayed at the top of the help screen.
-	opts.banner = "Usage: #{$0} [options] -i in_file -o out_file\n" <<
+	opts.banner = "\nUsage: #{File.basename($0)} [options] -i in_file -o out_file\n\n" <<
 		"This script was designed to add the sequence description\n" <<
-				"to the results.txt file produced by the write_result.pl script"
+		"to the results.txt file produced by the write_result.pl script.\n" <<
+		"It does this by looping through the input file and using\n" <<
+		"blastdbcmd on each entry and parsing the results.\n\n"
 
 	#	Define the options, and what they do
 
@@ -26,7 +28,8 @@ optparse = OptionParser.new do |opts|
 		options[:out] = file
 	end
 
-	opts.on( '-d', '--db BlastDB', "Blast database reference (default #{options[:db]})" ) do |db|
+	opts.on( '-d', '--db BlastDB', "Blast database reference",
+			"(default #{options[:db]})" ) do |db|
 		options[:db] = db
 	end
 
@@ -35,7 +38,8 @@ optparse = OptionParser.new do |opts|
 	end
 
 	# This displays the help screen, all programs are assumed to have this option.
-	opts.on( '-h', '--help', 'Display this help screen') do
+	#	Add extra "\n" to last option for aesthetics.
+	opts.on( '-h', '--help', 'Display this help screen',"\n") do
 		puts opts
 		exit
 	end
