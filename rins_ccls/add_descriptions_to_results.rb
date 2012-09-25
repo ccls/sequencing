@@ -83,6 +83,7 @@ File.open( options[:out], 'w' ) { |outfile|
 
 		description.gsub!(">#{parts[2]}",'')
 		description.gsub!(/^\s*/,'')
+		description.chomp!
 		puts "After parsing out seqid ...\n#{description}" if options[:verbose]
 
 #> blastdbcmd -entry "gi|301795361|emb|FQ312042.1|" -db /Volumes/cube/working/indexes/nt | head -1
