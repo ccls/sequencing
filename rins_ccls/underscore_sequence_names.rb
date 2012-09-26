@@ -47,7 +47,7 @@ ARGV.each do |infilename|
 		puts "#{infilename} not found. Skipping."
 		next
 	end
-	outfilename = "#{infilename}.#{$0}.out"
+	outfilename = "#{infilename}.#{File.basename($0)}.out"
 
 	File.open(  infilename, 'r' ) { |infile|
 	File.open( outfilename, 'w' ) { |outfile|
