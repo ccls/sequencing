@@ -13,7 +13,7 @@ optparse = OptionParser.new do |opts|
 	# Set a banner, displayed at the top of the help screen.
 	opts.banner = "\nUsage: #{File.basename($0)} [options] " <<
 			"fa_in_file1 fa_in_file2 ...\n\n" <<
-		"I don't do anything.\n\n"
+		"I remove non-word chars from sequences.\n\n"
 
 	# Define the options, and what they do
 
@@ -55,17 +55,23 @@ ARGV.each do |infilename|
 	File.open(  infilename, 'r' ) { |infile|
 	File.open( outfilename, 'w' ) { |outfile|
 		while( line = infile.gets )
-#			if line.match(/^>/)
-#				puts "Found sequence name."
-				puts line
-				line.chomp!
-#				line.gsub!(/\s*$/,'')
-				line.gsub!(/\s/,'_')
-#				puts "Duplicate sequence name. Renaming."
-				puts line
-#			end
+			if line.match(/^>/)
+##				puts "Found sequence name."
+#				puts line
+#				line.chomp!
+##				line.gsub!(/\s*$/,'')
+#				line.gsub!(/\s/,'_')
+##				puts "Duplicate sequence name. Renaming."
+#				puts line
+			else
+				if line.match(/\W/)
+					puts "Found non-Word char in ..."
+					puts line
+				end
+				line.gsub!(/\W/,'')
+			end
 #			puts line if options[:verbose]
-#			outfile.puts line unless options[:dryrun]
+			outfile.puts line unless options[:dryrun]
 		end
 	} }	#	File.open
 end
