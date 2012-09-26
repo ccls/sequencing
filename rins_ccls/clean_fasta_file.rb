@@ -64,6 +64,7 @@ ARGV.each do |infilename|
 ##				puts "Duplicate sequence name. Renaming."
 #				puts line
 			else
+				line.chomp!
 				if line.match(/\W/)
 					puts "Found non-Word char in ..."
 					puts line
