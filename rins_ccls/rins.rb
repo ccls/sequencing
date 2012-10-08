@@ -199,7 +199,7 @@ class RINS
 	def step3
 		puts "step 3 blat chopped reads"
 		files.each_pair do |k,v|
-			"blat #{blat_reference} -minIdentity=#{minIdentity} chopped_#{k}lane.fa chopped_#{k}lane.psl".execute
+			"blat #{blat_reference} -dots=1 -minIdentity=#{minIdentity} chopped_#{k}lane.fa chopped_#{k}lane.psl".execute
 			file_check( "chopped_#{k}lane.psl", 427 )
 		end
 	end
@@ -260,7 +260,7 @@ class RINS
 		file_check( "candidate_non_human.txt" )
 	end
 
-	def trinity_process
+	def trinity_process(nth_iteration)
 	
 		#	--paired_fragment_length changed to --group_pairs_distance
 		#	--run_butterfly no longer needed as is default
@@ -299,13 +299,14 @@ class RINS
 		puts "clean up blastn outputs"
 		"blastn_cleanup.pl human_contig.txt Trinity.fasta clean_blastn.fa #{similarity_thrd}".execute
 		file_check( 'clean_blastn.fa' );	#	NOTE  don't know how big an "empty" one is
-		FileUtils.rm_r("trinity_output")
+#		FileUtils.rm_r("trinity_output")
+		FileUtils.mv("trinity_output","trinity_output_#{nth_iteration}")
 	end
 
 	def step8
 		nth_iteration = 1
 		puts "step 8 #{nth_iteration} iteration"
-		trinity_process
+		trinity_process(nth_iteration)
 		for nth_iteration in 2..iteration
 			puts "step 8 #{nth_iteration} iteration"
 			puts "blat chopped reads"
@@ -323,7 +324,7 @@ class RINS
 				file_check( "blat_out_candidate_#{k}lane.fa" )
 				FileUtils.cp("blat_out_candidate_#{k}lane.fa","iteration_#{k}lane.fa")
 			end
-			trinity_process
+			trinity_process(nth_iteration)
 		end
 	end
 
