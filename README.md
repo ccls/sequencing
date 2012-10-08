@@ -203,8 +203,13 @@ setenv PATH ${PATH}:${HOME}/RINS\_BASE/bin
 
 Make FASTA copies of our FASTQ data and use it to avoid all the copying and converting.
 
+
 blat can run for quite a long time without ever producing any output.
 Make it more verbose. ( using -dots=1 is helpfulish )
+
+
+Find or create a file format detector and remove the "file\_format" option from
+the config file.
 
 
 Add testing.
