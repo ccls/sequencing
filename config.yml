@@ -25,12 +25,6 @@
 :files:
   :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1.fa
   :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2.fa
-#:files:
-#  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1_chopped_25.fa
-#  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2_chopped_25.fa
-
-# email notification (not enabled at the moment, nevertheless)
-:mailto:  jakewendt@berkeley.edu
 
 #	if the raw files are fasta, link them instead of copying them in
 :link_sample_fa_files: true
@@ -48,7 +42,9 @@
 #:blat_reference:         /Users/jakewendt/rins/indexes/virus.fa
 #:blat_reference:         /Volumes/cube/working/indexes/all_bacterial_and_virus.fa
 #:blat_reference:         /Volumes/cube/working/indexes/all_bacterial.fna
-:blat_reference:         /Volumes/cube/working/indexes/virus_and_all_bacterial.fa
+:blat_reference:         
+  - /Volumes/cube/working/indexes/all_bacterial.fna
+  - /Volumes/cube/working/indexes/virus_all.fasta
 :bowtie_index_human:     /Users/jakewendt/rins/indexes/hg18
 :blastn_index_human:     /Users/jakewendt/rins/indexes/hg18
 :blastn_index_non_human: /Users/jakewendt/rins/indexes/virus

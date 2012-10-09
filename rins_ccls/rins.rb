@@ -20,6 +20,9 @@ require 'yaml'
 require 'optparse'
 require 'fileutils'
 
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+require 'file_format_detector'
+
 class String
 	def execute
 		puts "Executing ..."
@@ -66,7 +69,26 @@ optparse = OptionParser.new do |opts|
 	#	on -h -help --help
 	opts.banner = "\nUsage: #{File.basename($0)} [options]\n\n" <<
 		"Run the RINS pipeline to identify nonhuman sequences.\n" <<
-		"Command Line Example: rins.pl -c config.txt -o output.txt\n\n"
+		"Command Line Example: rins.pl -c config.txt -o output.txt\n\n" <<
+		"In the config file ...\n\n" <<
+		"	(:files is a hash)\n" <<
+		"	:files:\n" <<
+		"	  :left:  somefile1.fa\n" <<
+		"	  :right: somefile2.fa\n" <<
+		"		OR\n" <<
+		"	:files:\n" <<
+		"	  :single:  somefile.fa\n\n" <<
+		"	(:blat_reference CAN be an array)\n" <<
+		"	:blat_reference:\n" <<
+		"	  - somefile1.fa\n" <<
+		"	  - somefile2.fa\n" <<
+		"		OR\n" <<
+		"	:blat_reference:\n" <<
+		"	  - somefile.fa\n" <<
+		"		OR\n" <<
+		"	:blat_reference: somefile.fa\n\n" <<
+		"------------------\n\n"
+
 
 	# Define the options, and what they do
 
@@ -121,6 +143,10 @@ class RINS
 		end
 	end
 
+	def blat_references
+		blat_reference
+	end
+
 	def file_check( filename, empty_size = 0 )
 	
 	#	STDERR is not logged when using " | tee -a log"
@@ -148,6 +174,15 @@ class RINS
 	end
 
 	def file_format_check_and_conversion
+
+
+#
+#	use file_format_detector
+#
+#		file_format = FileFormatDetector.new(files.first.value).format
+#
+
+
 		raise "File format can either be fastq or fasta" unless( 
 			['fasta','fastq'].include?(file_format) )
 		
@@ -205,10 +240,22 @@ class RINS
 
 	def blat_chopped_reads
 		puts "step 3 blat chopped reads"
+		blat_refs = [blat_references].flatten
 		files.each_pair do |k,v|
-			"blat #{blat_reference} -dots=1000 -minIdentity=#{minIdentity} chopped_#{k}lane.fa chopped_#{k}lane.psl".execute
-			file_check( "chopped_#{k}lane.psl", 427 )
+			blat_refs.each do |blat_ref|
+				basename = File.basename(blat_ref)
+				"blat #{blat_ref} -dots=1000 -minIdentity=#{minIdentity} chopped_#{k}lane.fa chopped_#{k}lane_#{basename}.psl".execute
+				file_check( "chopped_#{k}lane_#{basename}.psl", 427 )
+			end
+	
+			puts "Copying chopped_#{k}lane_#{File.basename(blat_refs[0])}.psl to chopped_#{k}lane.psl"
+			FileUtils.cp("chopped_#{k}lane_#{File.basename(blat_refs[0])}.psl", 
+				"chopped_#{k}lane.psl")
+			( blat_refs - blat_refs[0] ).each do |blat_ref|
+				"tail +2 chopped_#{k}lane_#{File.basename(blat_ref)}.psl >> chopped_#{k}lane.psl".execute
+			end
 		end
+
 	end
 
 	def blat_out_candidate_reads
