@@ -7,6 +7,13 @@
 #
 #	rubified by jake
 #
+#	NOTE THIS REQUIRES RUBY 1.9
+#		for at least 1 reason... an array of symbols doesn't sort in 1.8.7
+#			>> [:left,:right].sort
+#			NoMethodError: undefined method `<=>' for :left:Symbol
+#				from (irb):1:in `sort'
+#				from (irb):1
+#
 
 require 'erb'
 require 'yaml'
@@ -140,7 +147,7 @@ class RINS
 		end
 	end
 
-	def step1
+	def file_format_check_and_conversion
 		raise "File format can either be fastq or fasta" unless( 
 			['fasta','fastq'].include?(file_format) )
 		
@@ -167,7 +174,7 @@ class RINS
 		end
 	end
 
-	def step2
+	def chop_reads
 		#
 		#	TODO for some reason, blat doesn't work on the chopped????
 		#
@@ -196,15 +203,15 @@ class RINS
 		end
 	end
 
-	def step3
+	def blat_chopped_reads
 		puts "step 3 blat chopped reads"
 		files.each_pair do |k,v|
-			"blat #{blat_reference} -dots=100 -minIdentity=#{minIdentity} chopped_#{k}lane.fa chopped_#{k}lane.psl".execute
+			"blat #{blat_reference} -dots=1000 -minIdentity=#{minIdentity} chopped_#{k}lane.fa chopped_#{k}lane.psl".execute
 			file_check( "chopped_#{k}lane.psl", 427 )
 		end
 	end
 
-	def step4
+	def blat_out_candidate_reads
 		puts "step 4 find blat out candidate reads"
 		command = "blatoutcandidate.pl "
 		#	files is a hash and the keys are not guaranteed to be sorted
@@ -215,7 +222,7 @@ class RINS
 		files.each_pair { |k,v| file_check( "blat_out_candidate_#{k}lane.fa" ) }
 	end
 
-	def step5
+	def compress_raw_reads
 		puts "step 5 compress raw reads"
 		files.each_pair do |k,v|
 			"compress.pl blat_out_candidate_#{k}lane.fa #{compress_ratio_thrd} > compress_#{k}lane.names".execute
@@ -223,7 +230,7 @@ class RINS
 		end
 	end
 
-	def step6
+	def pull_reads_from_blat_out_candidates
 		puts "step 6 pull reads from blat_out_candidate fasta files"
 		command = "pull_reads_fasta.pl "
 		#	files is a hash and the keys are not guaranteed to be sorted
@@ -235,7 +242,7 @@ class RINS
 		files.each_pair { |k,v| file_check( "compress_#{k}lane.fa" ) }
 	end
 
-	def step7
+	def align_compressed_reads_to_human_genome_reference_using_bowtie
 		puts "step 7 align compressed reads to human genome reference using bowtie"
 		files.each_pair do |k,v|
 			"bowtie -n #{bowtie_mismatch} -p #{bowtie_threads} -f -S #{bowtie_index_human} compress_#{k}lane.fa compress_#{k}lane.sam".execute
@@ -328,7 +335,7 @@ class RINS
 		end
 	end
 
-	def step9
+	def detect_species_of_non_human_sequences
 		puts "step 9 detect species of non human sequences"
 		puts "blastn trinity output against non-human genome"
 		FileUtils.cp("clean_blastn.fa","non_human_contig.fa")
@@ -352,15 +359,15 @@ class RINS
 	end
 
 	def run
-		step1
-		step2
-		step3
-		step4
-		step5
-		step6
-		step7
+		file_format_check_and_conversion
+		chop_reads
+		blat_chopped_reads
+		blat_out_candidate_reads
+		compress_raw_reads
+		pull_reads_from_blat_out_candidates
+		align_compressed_reads_to_human_genome_reference_using_bowtie
 		step8
-		step9
+		detect_species_of_non_human_sequences
 	end
 
 end
