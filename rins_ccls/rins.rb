@@ -199,7 +199,7 @@ class RINS
 	def step3
 		puts "step 3 blat chopped reads"
 		files.each_pair do |k,v|
-			"blat #{blat_reference} -dots=1 -minIdentity=#{minIdentity} chopped_#{k}lane.fa chopped_#{k}lane.psl".execute
+			"blat #{blat_reference} -dots=100 -minIdentity=#{minIdentity} chopped_#{k}lane.fa chopped_#{k}lane.psl".execute
 			file_check( "chopped_#{k}lane.psl", 427 )
 		end
 	end
@@ -347,7 +347,7 @@ class RINS
 		command.execute
 
 		puts "parsing write results' results and adding a description"
-		command = "add_descriptions_to_results.rb #{output_filename} #{output_filename}.with_descriptions"
+		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions"
 		command.execute
 	end
 
