@@ -38,6 +38,7 @@ install_all:
 	@printf "\nINSTALLING ALL\n\n"
 	$(MKDIR) $(BASE_BIN_DIR)
 
+
 blat:
 	@printf "\nMAKING BLAT\n\n"
 	cd $(BLAT) && $(MKDIR) bin && make C_INCLUDE_PATH=/opt/local/include/ PNGLIB=/opt/local/lib/libpng.a BINDIR=`pwd`/bin
@@ -45,6 +46,11 @@ blat:
 install_blat:
 	@printf "\nINSTALLING BLAT\n\n"
 	cp $(BLAT)/bin/* $(BASE_BIN_DIR)
+
+clean_blat:
+	@printf "\nCLEANING BLAT\n\n"
+	cd $(BLAT) && make clean && rm -f */*/*.a
+
 
 bowtie:
 	@printf "\nMAKING BOWTIE\n\n"
@@ -106,9 +112,8 @@ install_trinity:
 
 
 
-clean:
-	@printf "\nsparkling\n\n"
-	cd $(BLAT) && make clean && rm -f */*/*.a
+clean: clean_blat
+	@printf "\nCLEANING\n\n"
 	/bin/rm -rf $(BLAST)/*-Debug*
 	cd $(BOWTIE) && make clean
 	cd $(BOWTIE2) && make clean
