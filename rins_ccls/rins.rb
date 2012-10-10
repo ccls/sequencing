@@ -514,7 +514,8 @@ class RINS
 		command.execute
 
 		puts "parsing write results' results and adding a description"
-		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions -d /Volumes/cube/working/indexes/all_bacterial_and_viral"
+#		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions -d /Volumes/cube/working/indexes/all_bacterial_and_viral"
+		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions"
 		command.execute
 	end
 
