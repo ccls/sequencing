@@ -58,7 +58,8 @@
 :bowtie_index_human:     /Volumes/cube/working/indexes/hg18
 :blastn_index_human:     /Volumes/cube/working/indexes/hg18
 #:blastn_index_non_human: /Users/jakewendt/rins/indexes/virus
-:blastn_index_non_human: /Volumes/cube/working/indexes/all_bacterial_and_viral
+#:blastn_index_non_human: /Volumes/cube/working/indexes/all_bacterial_and_viral
+:blastn_index_non_human: /Volumes/cube/working/indexes/nt
 
 
 #

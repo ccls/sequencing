@@ -534,6 +534,7 @@ class RINS
 		align_compressed_reads_to_human_genome_reference_using_bowtie
 		step8
 		detect_species_of_non_human_sequences
+		puts "All done."
 	end
 
 end
