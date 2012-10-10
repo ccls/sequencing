@@ -18,6 +18,9 @@
 
 
 # file format can be either "fasta" or "fastq"
+#
+#	This will soon be replaced by a file_format_detector
+#
 :file_format: fasta
 
 #	files is a hash
@@ -38,14 +41,66 @@
 :pre_chopped: true
 
 # reference files
-#	Only the blat_reference index uses the .fa suffix 
-#:blat_reference:         /Users/jakewendt/rins/indexes/virus.fa
-#:blat_reference:         /Volumes/cube/working/indexes/all_bacterial_and_virus.fa
-#:blat_reference:         /Volumes/cube/working/indexes/all_bacterial.fna
+#
+#	Blat requires the file suffix.
+#	The other references do not.
+#	There is a 4GB file size limit in blat.
+#	all_bacterial.fna is 4GB.
+#	virus_all.fasta is just a few hundred meg.
+#	Combining the 2 will raises errors.
+#	So, the blat_reference can be an array.
+#	blat will be run on each and the results combined.
+#
 :blat_reference:         
   - /Volumes/cube/working/indexes/all_bacterial.fna
   - /Volumes/cube/working/indexes/virus_all.fasta
-:bowtie_index_human:     /Users/jakewendt/rins/indexes/hg18
-:blastn_index_human:     /Users/jakewendt/rins/indexes/hg18
-:blastn_index_non_human: /Users/jakewendt/rins/indexes/virus
 
+:bowtie_index_human:     /Volumes/cube/working/indexes/hg18
+:blastn_index_human:     /Volumes/cube/working/indexes/hg18
+#:blastn_index_non_human: /Users/jakewendt/rins/indexes/virus
+:blastn_index_non_human: /Volumes/cube/working/indexes/all_bacterial_and_viral
+
+
+#
+#	Additional options with their defaults include ...
+#
+#	The results output filename 
+#	(can be specified on the command line or in the config file)
+#		:output_filename: results.txt
+#
+#	Size of the chopped reads for the initial blat call
+#		:chop_read_length: 25
+#
+#	MinIdentity match for the initial blat call
+#		:minIdentity: 80
+#
+#
+#		:compress_ratio_thrd: 0.5
+#
+#	The number of trinity iterations that are run
+#		:iteration: 2
+#
+#
+#		:bowtie_threads: 6
+#
+#
+#		:bowtie_mismatch: 3
+#
+#
+#		:paired_fragment_length: 300
+#
+#
+#		:min_contig_length: 300
+#
+#
+#		:trinity_threads: 6
+#
+#
+#		:blastn_evalue_thrd: 0.05
+#
+#
+#		:similarity_thrd: 0.8
+#
+#	Exit if an expected file is empty or missing
+#		:die_on_failed_file_check: false
+#

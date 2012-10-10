@@ -213,6 +213,20 @@ Add testing.
 
 
 
+Merged PathSeq fasta files for all\_bacterial and virus\_all
+Blat can't use it as it is too big (>4GB).
+Using it to create a blastdb
+
+makeblastdb -dbtype nucl -in all\_bacterial\_and\_viral.fa -out all\_bacterial\_and\_viral -title all\_bacterial\_and\_viral -parse\_seqids
+
+Having trouble. Generated db isn't searchable.  Think I need the parse seqids option...
+Yes.  -parse\_seqids is really needed when creating from a fasta file.
+Otherwise, new ones are made up which serves no purpose.
+
+
+
+
+
 
 
 ----------

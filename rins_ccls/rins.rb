@@ -67,27 +67,36 @@ o = {
 optparse = OptionParser.new do |opts|
 	# Set a banner, displayed at the top of the help screen.
 	#	on -h -help --help
-	opts.banner = "\nUsage: #{File.basename($0)} [options]\n\n" <<
-		"Run the RINS pipeline to identify nonhuman sequences.\n" <<
-		"Command Line Example: rins.pl -c config.txt -o output.txt\n\n" <<
-		"In the config file ...\n\n" <<
-		"	(:files is a hash)\n" <<
-		"	:files:\n" <<
-		"	  :left:  somefile1.fa\n" <<
-		"	  :right: somefile2.fa\n" <<
-		"		OR\n" <<
-		"	:files:\n" <<
-		"	  :single:  somefile.fa\n\n" <<
-		"	(:blat_reference CAN be an array)\n" <<
-		"	:blat_reference:\n" <<
-		"	  - somefile1.fa\n" <<
-		"	  - somefile2.fa\n" <<
-		"		OR\n" <<
-		"	:blat_reference:\n" <<
-		"	  - somefile.fa\n" <<
-		"		OR\n" <<
-		"	:blat_reference: somefile.fa\n\n" <<
-		"------------------\n\n"
+	#	This will be followed by the command line options.
+	opts.banner =<<EOB
+Usage: #{File.basename($0)} [options]
+   or: #{File.basename($0)} [options] | tee -a log &
+
+Run the RINS pipeline to identify nonhuman sequences.
+Command Line Example: rins.pl -c config.txt -o output.txt
+EOB
+
+#	opts.banner = "\nUsage: #{File.basename($0)} [options]\n\n" <<
+#		"Run the RINS pipeline to identify nonhuman sequences.\n" <<
+#		"Command Line Example: rins.pl -c config.txt -o output.txt\n\n" <<
+#		"In the config file ...\n\n" <<
+#		"	(:files is a hash)\n" <<
+#		"	:files:\n" <<
+#		"	  :left:  somefile1.fa\n" <<
+#		"	  :right: somefile2.fa\n" <<
+#		"		OR\n" <<
+#		"	:files:\n" <<
+#		"	  :single:  somefile.fa\n\n" <<
+#		"	(:blat_reference CAN be an array)\n" <<
+#		"	:blat_reference:\n" <<
+#		"	  - somefile1.fa\n" <<
+#		"	  - somefile2.fa\n" <<
+#		"		OR\n" <<
+#		"	:blat_reference:\n" <<
+#		"	  - somefile.fa\n" <<
+#		"		OR\n" <<
+#		"	:blat_reference: somefile.fa\n\n" <<
+#		"------------------\n\n"
 
 
 	# Define the options, and what they do
@@ -109,10 +118,113 @@ optparse = OptionParser.new do |opts|
 
 	# This displays the help screen, all programs are assumed to have this option.
 	#	Add extra "\n" to last option for aesthetics.
-	opts.on( '-h', '--help', 'Display this screen',"\n" ) do
+	opts.on( '-h', '--help', 'Display this screen' ) do
 		puts opts
 		exit
 	end
+
+	opts.separator <<EOB
+
+------------------
+
+In the config file ...
+
+	(:files IS a hash)
+	:files:
+	  :left:  somefile1.fa
+	  :right: somefile2.fa
+		OR
+	:files:
+	  :single:  somefile.fa
+
+	(:blat_reference CAN be an array)
+	:blat_reference:
+	  - somefile1.fa
+	  - somefile2.fa
+		OR
+	:blat_reference:
+	  - somefile.fa
+		OR
+	:blat_reference: somefile.fa
+
+
+	#	if the raw files are fasta, link them instead of copying them in
+	:link_sample_fa_files: true
+
+
+	#
+	#	Link if pre_chopped, the chopped filename must be the same as the raw
+	#	file name with "_chopped_(chop_read_length)" at end before extension.
+	#
+	#	testset_forkun_1.fa -> testset_forkun_1_chopped_25.fa
+	#
+	:pre_chopped: true
+
+
+	# reference files
+	#
+	#	Blat requires the file suffix.
+	#	The other references do not.
+	#	There is a 4GB file size limit in blat.
+	#	all_bacterial.fna is 4GB.
+	#	virus_all.fasta is just a few hundred meg.
+	#	Combining the 2 will raises errors.
+	#	So, the blat_reference can be an array.
+	#	blat will be run on each and the results combined.
+	#
+	:blat_reference:         
+	  - /Volumes/cube/working/indexes/all_bacterial.fna
+	  - /Volumes/cube/working/indexes/virus_all.fasta
+
+	:bowtie_index_human:     /Users/jakewendt/rins/indexes/hg18
+	:blastn_index_human:     /Users/jakewendt/rins/indexes/hg18
+	:blastn_index_non_human: /Users/jakewendt/rins/indexes/virus
+
+
+	#
+	#	Additional options with their defaults include ...
+	#
+	#	The results output filename 
+	#	(can be specified on the command line or in the config file)
+	#		:output_filename: results.txt
+	#
+	#	Size of the chopped reads for the initial blat call
+	:chop_read_length: 25
+	
+	#	MinIdentity match for the initial blat call
+	:minIdentity: 80
+	
+	#
+	:compress_ratio_thrd: 0.5
+	
+	#	The number of trinity iterations that are run
+	:iteration: 2
+	
+	#
+	:bowtie_threads: 6
+	
+	#
+	:bowtie_mismatch: 3
+	
+	#
+	:paired_fragment_length: 300
+	
+	#
+	:min_contig_length: 300
+	
+	#
+	:trinity_threads: 6
+	
+	#
+	:blastn_evalue_thrd: 0.05
+
+	#
+	:similarity_thrd: 0.8
+
+	#	Exit if an expected file is empty or missing
+	:die_on_failed_file_check: false
+	
+EOB
 end
  
 # Parse the command-line. Remember there are two forms
@@ -143,6 +255,7 @@ class RINS
 		end
 	end
 
+	#	just an alias really
 	def blat_references
 		blat_reference
 	end
@@ -251,7 +364,7 @@ class RINS
 			puts "Copying chopped_#{k}lane_#{File.basename(blat_refs[0])}.psl to chopped_#{k}lane.psl"
 			FileUtils.cp("chopped_#{k}lane_#{File.basename(blat_refs[0])}.psl", 
 				"chopped_#{k}lane.psl")
-			( blat_refs - blat_refs[0] ).each do |blat_ref|
+			( blat_refs - [blat_refs[0]] ).each do |blat_ref|
 				"tail +2 chopped_#{k}lane_#{File.basename(blat_ref)}.psl >> chopped_#{k}lane.psl".execute
 			end
 		end
@@ -401,7 +514,7 @@ class RINS
 		command.execute
 
 		puts "parsing write results' results and adding a description"
-		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions"
+		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions -d /Volumes/cube/working/indexes/all_bacterial_and_viral"
 		command.execute
 	end
 
