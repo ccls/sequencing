@@ -515,7 +515,12 @@ class RINS
 
 		puts "parsing write results' results and adding a description"
 #		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions -d /Volumes/cube/working/indexes/all_bacterial_and_viral"
-		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions"
+#		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions"
+#
+#	the database needs to be the same as the one blastn used
+#	otherwise, the sequence may not be in it.
+#
+		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions -d #{blastn_index_non_human}"
 		command.execute
 	end
 
