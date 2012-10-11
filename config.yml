@@ -52,8 +52,8 @@
 #	blat will be run on each and the results combined.
 #
 :blat_reference:         
-  - /Volumes/cube/working/indexes/all_bacterial.fna
   - /Volumes/cube/working/indexes/virus_all.fasta
+#  - /Volumes/cube/working/indexes/all_bacterial.fna
 
 :bowtie_index_human:     /Volumes/cube/working/indexes/hg18
 :blastn_index_human:     /Volumes/cube/working/indexes/hg18
