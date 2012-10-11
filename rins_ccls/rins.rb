@@ -357,10 +357,11 @@ class RINS
 		files.each_pair do |k,v|
 			blat_refs.each do |blat_ref|
 				basename = File.basename(blat_ref)
-				"blat #{blat_ref} -dots=1000 " <<
+				command = "blat #{blat_ref} -dots=1000 " <<
 					"-minIdentity=#{minIdentity} " <<
 					"chopped_#{k}lane.fa " <<
-					"chopped_#{k}lane_#{basename}.psl".execute
+					"chopped_#{k}lane_#{basename}.psl"
+				command.execute
 				file_check( "chopped_#{k}lane_#{basename}.psl", 427 )
 			end
 	
@@ -372,8 +373,9 @@ class RINS
 #
 #	The blat header is 5 lines, not just 1
 #
-				"tail +6 chopped_#{k}lane_#{File.basename(blat_ref)}.psl " <<
-					">> chopped_#{k}lane.psl".execute
+				command = "tail +6 chopped_#{k}lane_#{File.basename(blat_ref)}.psl " <<
+					">> chopped_#{k}lane.psl"
+				command.execute
 			end
 		end
 
@@ -393,8 +395,9 @@ class RINS
 	def compress_raw_reads
 		puts "step 5 compress raw reads"
 		files.each_pair do |k,v|
-			"compress.pl blat_out_candidate_#{k}lane.fa #{compress_ratio_thrd} " <<
-				"> compress_#{k}lane.names".execute
+			command = "compress.pl blat_out_candidate_#{k}lane.fa #{compress_ratio_thrd} " <<
+				"> compress_#{k}lane.names"
+			command.execute
 			file_check( "compress_#{k}lane.names" )
 		end
 	end
@@ -414,8 +417,9 @@ class RINS
 	def align_compressed_reads_to_human_genome_reference_using_bowtie
 		puts "step 7 align compressed reads to human genome reference using bowtie"
 		files.each_pair do |k,v|
-			"bowtie -n #{bowtie_mismatch} -p #{bowtie_threads} -f " <<
-				"-S #{bowtie_index_human} compress_#{k}lane.fa compress_#{k}lane.sam".execute
+			command = "bowtie -n #{bowtie_mismatch} -p #{bowtie_threads} -f " <<
+				"-S #{bowtie_index_human} compress_#{k}lane.fa compress_#{k}lane.sam"
+			command.execute
 			file_check( "compress_#{k}lane.sam" )
 			"sam2names.pl compress_#{k}lane.sam bowtie_#{k}lane.names".execute
 			file_check( "bowtie_#{k}lane.names" )
@@ -478,12 +482,14 @@ class RINS
 		#	This is kinda needed by blastn_cleanup.rb (not using the old perl version anymore)
 		"modify_trinity_output.pl Trinity.fasta".execute
 		puts "blastn trinity output against human genome"
-		"blastn -query=Trinity.fasta -db=#{blastn_index_human} " <<
-			"-evalue #{blastn_evalue_thrd} -outfmt 6 > human_contig.txt".execute
+		command = "blastn -query=Trinity.fasta -db=#{blastn_index_human} " <<
+			"-evalue #{blastn_evalue_thrd} -outfmt 6 > human_contig.txt"
+		command.execute
 		file_check( 'human_contig.txt' )	#	NOTE  don't know how big an "empty" one is
 		puts "clean up blastn outputs"
-		"blastn_cleanup.rb human_contig.txt Trinity.fasta " <<
-			"clean_blastn.fa #{similarity_thrd}".execute
+		command = "blastn_cleanup.rb human_contig.txt Trinity.fasta " <<
+			"clean_blastn.fa #{similarity_thrd}"
+		command.execute
 		file_check( 'clean_blastn.fa' );	#	NOTE  don't know how big an "empty" one is
 #		FileUtils.rm_r("trinity_output")
 		FileUtils.mv("trinity_output","trinity_output_#{nth_iteration}")
@@ -497,8 +503,9 @@ class RINS
 			puts "step 8 #{nth_iteration} iteration"
 			puts "blat chopped reads"
 			files.each_pair do |k,v|
-				"blat clean_blastn.fa -minIdentity=95 #{k}lane.fa " <<
-					"#{k}lane.iteration.psl".execute
+				command = "blat clean_blastn.fa -minIdentity=95 #{k}lane.fa " <<
+					"#{k}lane.iteration.psl"
+				command.execute
 				file_check( "#{k}lane.iteration.psl", 427 )
 			end
 			puts "find blat out candidate reads"
@@ -519,13 +526,15 @@ class RINS
 		puts "step 9 detect species of non human sequences"
 		puts "blastn trinity output against non-human genome"
 		FileUtils.cp("clean_blastn.fa","non_human_contig.fa")
-		"blastn -query=non_human_contig.fa -db=#{blastn_index_non_human} " <<
-			"-evalue #{blastn_evalue_thrd} -outfmt 6 > non_human_contig_blastn.txt".execute
+		command = "blastn -query=non_human_contig.fa -db=#{blastn_index_non_human} " <<
+			"-evalue #{blastn_evalue_thrd} -outfmt 6 > non_human_contig_blastn.txt"
+		command.execute
 		file_check( 'non_human_contig_blastn.txt' );	#	NOTE  don't know how big an "empty" one is
 		
 		files.each_pair do |k,v|
-			"blat non_human_contig.fa -minIdentity=98 " <<
-				"iteration_#{k}lane.fa #{k}lane.psl".execute
+			command = "blat non_human_contig.fa -minIdentity=98 " <<
+				"iteration_#{k}lane.fa #{k}lane.psl"
+			command.execute
 			file_check( "#{k}lane.psl", 427 )
 		end
 		
@@ -557,10 +566,11 @@ class RINS
 	def detect_unknown_sequences
 		puts "step X detect the unknowns (this is experimental)"
 #	make sure sequences are on single line
-		"blastn_cleanup.rb " <<
+		command = "blastn_cleanup.rb " <<
 			"non_human_contig_blastn.txt " <<
 			"non_human_contig.fa " <<
-			"unknown_sequences.fa 1".execute
+			"unknown_sequences.fa 1"
+		command.execute
 	end
 
 	def run
