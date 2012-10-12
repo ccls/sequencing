@@ -118,12 +118,20 @@ EOB
 
 	# This displays the help screen, all programs are assumed to have this option.
 	#	Add extra "\n" to last option for aesthetics.
-	opts.on( '-h', '--help', 'Display this screen' ) do
+#	opts.on( '-h', '--help', 'Display this screen' ) do
+#		puts opts
+#		exit
+#	end
+
+	opts.on( '-h', 'Display simple help screen' ) do
 		puts opts
+		puts
 		exit
 	end
 
-	opts.separator <<EOB
+	opts.on( '--help', 'Display thorough help screen' ) do
+		puts opts
+puts <<EOB
 
 ------------------
 
@@ -225,6 +233,8 @@ In the config file ...
 	:die_on_failed_file_check: false
 	
 EOB
+	exit
+end
 end
  
 # Parse the command-line. Remember there are two forms
