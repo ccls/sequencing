@@ -76,8 +76,8 @@ File.open(output_file, 'w') do |out|
 			name = parts[0]
 			bit_score = parts[-1]
 	
-			if( ( data[name][:length].to_i > 0 ) && 
-					( bit_score.to_i/data[name][:length].to_i >= 0.75) )
+			if( ( data[name][:length].to_f > 0 ) && 
+					( bit_score.to_f/data[name][:length].to_f >= 0.75) )
 	
 				pline = "#{parts[0]}\t#{data[parts[0]][:count]}\t#{parts[1]}\t#{parts[10]}\t#{parts[11]}\t#{data[parts[0]][:seq_line]}";
 	

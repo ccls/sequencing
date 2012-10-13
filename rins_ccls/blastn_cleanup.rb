@@ -69,7 +69,30 @@ end
 File.open(output,'w') do |f|
 	data.each_pair do |k,v|
 		max_bitscore = v[:bitscores].max
-		if( ((max_bitscore.to_i)/(v[:length].to_i)) >= similarity_thrd.to_i )
+		puts "#{k}..."
+		#	VERY POSSIBLY EMPTY (no blastn matches)
+		#puts "  bitscores    : #{v[:bitscores].join(',')}"	#	sometimes quite a few
+
+		puts "  max bitscore : #{max_bitscore}"	#	VERY POSSIBLY BLANK
+		#	if there are no bitscores, then max is nil
+		#	if there are no bitscores, does that mean that
+		puts "  length       : #{v[:length]}"
+
+		percent = ((max_bitscore.to_f)/(v[:length].to_f))
+
+		#	low value means less likely
+		puts "  percent      : #{percent}"
+		puts "  similarity   : #{similarity_thrd}"
+		
+		keep = percent <  similarity_thrd.to_f
+		puts "  ... #{(keep)? 'keeping' : 'cleaning'}"
+
+		#	original script did a (flag if >= and then print if !flagged)
+		#	because compared multiple times. Since using max and only
+		#	comparing once can just use < and not the !
+		#		if(! ((max_bitscore.to_f)/(v[:length].to_f)) >= similarity_thrd.to_f )
+
+		if( keep )
 			f.puts v[:name_line]
 			f.puts v[:seq_line]
 		end
