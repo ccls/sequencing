@@ -43,10 +43,10 @@ start_step      = 0
 #
 #	Default values
 #
+#	:output_suffix            => '',
 o = {
 	:config_filename          => 'config.yml',
 	:output_filename          => 'results.txt',
-	:output_suffix            => '',
 	:mode                     => 1,
 	:link_sample_fa_files     => false,
 	:pre_chopped              => false,
@@ -321,7 +321,7 @@ class RINS
 		raise "File format can either be fastq or fasta" unless( 
 			['fasta','fastq'].include?(file_format) )
 		
-		outdir = "#{Time.now.strftime("%Y%m%d%H%M%S")}.outdir#{output_suffix}"
+		outdir = ["#{Time.now.strftime("%Y%m%d%H%M%S")}.outdir",options[:output_suffix]].compact.join
 		FileUtils.mkdir outdir
 		FileUtils.chdir outdir
 		
@@ -603,8 +603,8 @@ class RINS
 
 	def run
 		file_format_check_and_conversion
-		chop_reads
 		if mode == 1	
+			chop_reads
 			blat_chopped_reads
 			blat_out_candidate_reads
 			compress_raw_reads
