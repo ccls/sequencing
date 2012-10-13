@@ -46,6 +46,7 @@ start_step      = 0
 o = {
 	:config_filename          => 'config.yml',
 	:output_filename          => 'results.txt',
+	:mode                     => 1,
 	:link_sample_fa_files     => false,
 	:pre_chopped              => false,
 	:chop_read_length         => 25,
@@ -114,6 +115,11 @@ EOB
 	opts.on( '-o', '--output FILENAME', 
 		"Final output written to (default #{o[:output_filename]})" ) do |s|
 		o[:output_filename] = s
+	end
+
+	opts.on( '-m', '--mode integer', 
+		"Development mode (default #{o[:mode]})" ) do |s|
+		o[:mode] = s
 	end
 
 	# This displays the help screen, all programs are assumed to have this option.
@@ -427,6 +433,9 @@ class RINS
 	def align_compressed_reads_to_human_genome_reference_using_bowtie
 		puts "step 7 align compressed reads to human genome reference using bowtie"
 		files.each_pair do |k,v|
+#	bowtie's verbose is RIDICULOUS!
+#	It prints way too much and adds way too much time.
+#				"--verbose "<<
 			command = "bowtie -n #{bowtie_mismatch} -p #{bowtie_threads} -f " <<
 				"-S #{bowtie_index_human} compress_#{k}lane.fa compress_#{k}lane.sam"
 			command.execute
@@ -476,13 +485,13 @@ class RINS
 		command = "Trinity.pl --seqType fa " <<
 			"--group_pairs_distance #{paired_fragment_length} " <<
 			"--min_contig_length #{min_contig_length} " <<
-			"--output trinity_output " <<
+			"--output trinity_output_#{nth_iteration} " <<
 			"--CPU #{trinity_threads} " <<
 			"--bfly_opts \"--stderr\" --JM 1G "
 		files.each_pair { |k,v| command << "--#{k} bowtie_#{k}lane.fa " }
 		command.execute
-		file_check( 'trinity_output/Trinity.fasta' )
-		FileUtils.cp("trinity_output/Trinity.fasta","Trinity.fasta")
+		file_check( "trinity_output_#{nth_iteration}/Trinity.fasta" )
+		FileUtils.cp("trinity_output_#{nth_iteration}/Trinity.fasta","Trinity.fasta")
 		#
 		#	This script just joins the sequence on a single line
 		#	rather that having it in 60 character line segments.
@@ -502,7 +511,10 @@ class RINS
 		command.execute
 		file_check( 'clean_blastn.fa' );	#	NOTE  don't know how big an "empty" one is
 #		FileUtils.rm_r("trinity_output")
-		FileUtils.mv("trinity_output","trinity_output_#{nth_iteration}")
+#
+#	Why move it?  Why not just process it there?
+#
+#		FileUtils.mv("trinity_output","trinity_output_#{nth_iteration}")
 	end
 
 	def step8
@@ -579,17 +591,21 @@ class RINS
 		command = "blastn_cleanup.rb " <<
 			"non_human_contig_blastn.txt " <<
 			"non_human_contig.fa " <<
-			"unknown_sequences.fa 1"
+			"unknown_sequences.fa 0.5"
 		command.execute
 	end
 
 	def run
 		file_format_check_and_conversion
 		chop_reads
-		blat_chopped_reads
-		blat_out_candidate_reads
-		compress_raw_reads
-		pull_reads_from_blat_out_candidates
+		if mode == 1	
+			blat_chopped_reads
+			blat_out_candidate_reads
+			compress_raw_reads
+			pull_reads_from_blat_out_candidates
+		elsif mode == 2
+			files.each_pair { |k,v| FileUtils.ln_s("#{k}lane.fa","compress_#{k}lane.fa") }
+		end
 		align_compressed_reads_to_human_genome_reference_using_bowtie
 		step8
 		detect_species_of_non_human_sequences
