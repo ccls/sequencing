@@ -46,6 +46,7 @@ start_step      = 0
 o = {
 	:config_filename          => 'config.yml',
 	:output_filename          => 'results.txt',
+	:output_suffix            => '',
 	:mode                     => 1,
 	:link_sample_fa_files     => false,
 	:pre_chopped              => false,
@@ -117,9 +118,14 @@ EOB
 		o[:output_filename] = s
 	end
 
-	opts.on( '-m', '--mode integer', 
+	opts.on( '-m', '--mode INTEGER', 
 		"Development mode (default #{o[:mode]})" ) do |s|
 		o[:mode] = s
+	end
+
+	opts.on( '--output_suffix STRING', 
+		"Output directory suffix (default '#{o[:output_suffix]}')" ) do |s|
+		o[:output_suffix] = s
 	end
 
 	# This displays the help screen, all programs are assumed to have this option.
@@ -315,7 +321,7 @@ class RINS
 		raise "File format can either be fastq or fasta" unless( 
 			['fasta','fastq'].include?(file_format) )
 		
-		outdir = "#{Time.now.strftime("%Y%m%d%H%M%S")}.outdir"
+		outdir = "#{Time.now.strftime("%Y%m%d%H%M%S")}.outdir#{output_suffix}"
 		FileUtils.mkdir outdir
 		FileUtils.chdir outdir
 		
