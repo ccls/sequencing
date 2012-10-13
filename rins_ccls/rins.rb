@@ -120,7 +120,7 @@ EOB
 
 	opts.on( '-m', '--mode INTEGER', 
 		"Development mode (default #{o[:mode]})" ) do |s|
-		o[:mode] = s
+		o[:mode] = s.to_i
 	end
 
 	opts.on( '--output_suffix STRING', 
