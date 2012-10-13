@@ -321,7 +321,7 @@ class RINS
 		raise "File format can either be fastq or fasta" unless( 
 			['fasta','fastq'].include?(file_format) )
 		
-		outdir = ["#{Time.now.strftime("%Y%m%d%H%M%S")}.outdir",options[:output_suffix]].compact.join
+		outdir = ["#{Time.now.strftime("%Y%m%d%H%M%S")}.outdir",options[:output_suffix]].compact.join('.')
 		FileUtils.mkdir outdir
 		FileUtils.chdir outdir
 		
