@@ -72,7 +72,6 @@ optparse = OptionParser.new do |opts|
 	#	This will be followed by the command line options.
 	opts.banner =<<EOB
 Usage: #{File.basename($0)} [options]
-   or: #{File.basename($0)} [options] | tee -a log &
 
 Run the RINS pipeline to identify nonhuman sequences.
 Command Line Example: rins.pl -c config.txt -o output.txt
@@ -264,6 +263,8 @@ o.update( config )
 class RINS
 
 	attr_accessor :options
+	attr_accessor :original_stdout
+	attr_accessor :original_stderr
 
 	def initialize(options={})
 		self.options = options
@@ -308,6 +309,25 @@ class RINS
 		end
 	end
 
+	def prepare_output_dir_and_log_file
+		puts "Preparing working dir and log file"
+		outdir = ["#{Time.now.strftime("%Y%m%d%H%M%S")}.outdir",
+			options[:output_suffix]].compact.join('.')
+		puts "Working dir is #{outdir}"
+		FileUtils.mkdir outdir
+		FileUtils.chdir outdir
+
+		puts "About to redirect STDOUT and STDERR."
+		puts "No output should go to the screen until complete."
+		puts "Perhaps put this process in the background with Ctrl-Z then 'bg'."
+		puts "Then use the following command to follow along ..."
+		puts "tail -f #{outdir}/log_file.txt"
+		self.original_stdout = STDOUT.clone
+		self.original_stderr = STDERR.clone
+		STDOUT.reopen('log_file.txt','a')
+		STDERR.reopen('log_file.txt','a')
+	end
+
 	def file_format_check_and_conversion
 
 
@@ -320,10 +340,6 @@ class RINS
 
 		raise "File format can either be fastq or fasta" unless( 
 			['fasta','fastq'].include?(file_format) )
-		
-		outdir = ["#{Time.now.strftime("%Y%m%d%H%M%S")}.outdir",options[:output_suffix]].compact.join('.')
-		FileUtils.mkdir outdir
-		FileUtils.chdir outdir
 		
 		puts "step 1 change fastq files to fasta files"
 		files.each_pair do |k,v|
@@ -601,7 +617,17 @@ class RINS
 		command.execute
 	end
 
+	def wrap_things_up
+		puts "Finished at ..."
+		system("date")
+		STDOUT.reopen(original_stdout)
+		STDERR.reopen(original_stderr)
+		puts "All done."
+		system("date")
+	end
+
 	def run
+		prepare_output_dir_and_log_file
 		file_format_check_and_conversion
 		if mode == 1	
 			chop_reads
@@ -616,7 +642,7 @@ class RINS
 		step8
 		detect_species_of_non_human_sequences
 		detect_unknown_sequences
-		puts "All done."
+		wrap_things_up
 	end
 
 end
@@ -624,22 +650,3 @@ end
 app = RINS.new(o)
 app.run
 
-
-
-#	TODO	insert some sort of check
-
-#&mailme();
-
-system "date";
-
-######################################################################
-
-__END__
-
-
-sub mailme {
-	return if not defined $mailto;
-	my $text = "RINS analysis completed";
-	print "Attempting to mail $mailto the complete notice\n";
-#	system "echo '$text' | mail -s 'RINS complete notice' $mailto";
-}
