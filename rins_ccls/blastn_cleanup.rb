@@ -2,6 +2,10 @@
 
 #
 #	This is my version of the cleanup script.
+#	The purpose of it is to basically filter out the
+#	input fasta based on the bitscores in the contig
+#	text file.
+#
 #	As the trinity output has changed, we need to get
 #	the contig length from the fasta file as it isn't
 #	in the blastn output.
