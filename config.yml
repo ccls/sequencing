@@ -26,8 +26,8 @@
 #	files is a hash
 #		the keys should either be left and right or just single
 :files:
-  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1.fa
-  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2.fa
+  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1_head.fa
+  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2_head.fa
 
 #	if the raw files are fasta, link them instead of copying them in
 :link_sample_fa_files: true
@@ -38,7 +38,7 @@
 #
 #	testset_forkun_1.fa -> testset_forkun_1_chopped_25.fa
 #
-:pre_chopped: true
+#:pre_chopped: true
 
 # reference files
 #
