@@ -15,6 +15,16 @@
 #				from (irb):1
 #
 
+#
+#
+#	TODO
+#
+#		Better file names and make scripts follow some conventions.
+#		If I'm gonna continue with this, I may have to re-write all
+#		of this.
+#
+#
+
 require 'erb'
 require 'yaml'
 require 'optparse'
@@ -38,7 +48,8 @@ end
 #	This could be useful, but would have to also
 #	specify the working directory.
 #
-start_step      = 0	
+#	start_step      = 0	
+#
 
 #
 #	Default values
@@ -274,6 +285,10 @@ class RINS
 	end
 
 	def method_missing(symb,*args,&block)
+		#
+		#	basically, check the config options for key/value
+		#	so don't need to 'options[key]' and can just 'key'
+		#
 		if options.has_key? symb.to_s.to_sym
 			options[symb.to_s.to_sym]
 		else
@@ -333,13 +348,11 @@ class RINS
 
 	def file_format_check_and_conversion
 
-
 #
 #	use file_format_detector
 #
 #		file_format = FileFormatDetector.new(files.first.value).format
 #
-
 
 		raise "File format can either be fastq or fasta" unless( 
 			['fasta','fastq'].include?(file_format) )
@@ -372,18 +385,15 @@ class RINS
 		puts "step 2 chop reads"
 		files.each_pair do |k,v|
 			if( pre_chopped )
-#
-#	The raw files cannot be the same as the chopped files or
-#	trinity crashes.  Trying naming convention.
-#
+				#
+				#	The raw files cannot be the same as the chopped files or
+				#	trinity crashes.  Trying naming convention.
+				#
 				#	.fa or .fasta should both work
 				chopped = v.gsub(/\.fa/,"_chopped_#{chop_read_length}.fa")
 				puts "files are pre-chopped so linking #{chopped} chopped_#{k}lane.fa"
 
 				FileUtils.ln_s(chopped,"chopped_#{k}lane.fa")
-##				FileUtils.ln_s("#{k}lane.fa","chopped_#{k}lane.fa")
-#puts "trinity having problems?  gonna copying chopped file"
-#FileUtils.cp("#{k}lane.fa","chopped_#{k}lane.fa")
 				file_check( "chopped_#{k}lane.fa" )
 			else
 				"chopreads.pl #{k}lane.fa chopped_#{k}lane.fa #{chop_read_length}".execute
@@ -403,43 +413,78 @@ class RINS
 					"chopped_#{k}lane.fa " <<
 					"chopped_#{k}lane_#{basename}.psl"
 				command.execute
+#
+#	"chopped_#{k}lane_#{basename}.psl" contains the candidates from the 
+#		blat_reference.  In these cases, they should be non-human matches.
+#
 				file_check( "chopped_#{k}lane_#{basename}.psl", 427 )
 			end
-	
-			puts "Copying chopped_#{k}lane_#{File.basename(blat_refs[0])}.psl " <<
-				"to chopped_#{k}lane.psl"
-			FileUtils.cp("chopped_#{k}lane_#{File.basename(blat_refs[0])}.psl", 
-				"chopped_#{k}lane.psl")
-			( blat_refs - [blat_refs[0]] ).each do |blat_ref|
-#
-#	The blat header is 5 lines, not just 1
-#
-				command = "tail +6 chopped_#{k}lane_#{File.basename(blat_ref)}.psl " <<
-					">> chopped_#{k}lane.psl"
-				command.execute
+
+			if blat_refs.length > 1
+				puts "Merging chopped_#{k}lane psl files."
+				puts "Copying chopped_#{k}lane_#{File.basename(blat_refs[0])}.psl " <<
+					"to chopped_#{k}lane.psl"
+				FileUtils.cp("chopped_#{k}lane_#{File.basename(blat_refs[0])}.psl", 
+					"chopped_#{k}lane.psl")
+				( blat_refs - [blat_refs[0]] ).each do |blat_ref|
+					#
+					#	The blat header is 5 lines, not just 1
+					#
+					command = "tail +6 chopped_#{k}lane_#{File.basename(blat_ref)}.psl " <<
+						">> chopped_#{k}lane.psl"
+					command.execute
+				end
+			else
+				FileUtils.ln_s("chopped_#{k}lane_#{File.basename(blat_refs[0])}.psl", 
+					"chopped_#{k}lane.psl")
 			end
 		end
-
 	end
+
+#
+#	blatoutcandidate.pl loops over the lines in the given psl files and
+#		gets the 10ths column ... @HWI-ST281_0133:3:1:6254:2049#0/1
+#		removes the trailing "/0" or "/1" leaving @HWI-ST281_0133:3:1:6254:2049#0
+#		and adds it to the hash
+#	Then it loops of the first fasta file 
+#		(left hopefully as it writes to blat_out_candidate_leftlane.fa)
+#		If the sequence line name is in the hash,
+#			prints it and the sequence to the output fasta file
+#	Then same thing for the second fasta file
+#		(right hopefully as it writes to blat_out_candidate_rightlane.fa)
+#
+#	Interesting that both psl files are actually used for each fasta file.
+#
 
 	def blat_out_candidate_reads
 		puts "step 4 find blat out candidate reads"
 		command = "blatoutcandidate.pl "
 		#	files is a hash and the keys are not guaranteed to be sorted
 		#	sort alphabetically and left is first, right is last (conveniently)
-		files.keys.sort.each{|k| command << "chopped_#{k}lane.psl " }
-		files.keys.sort.each{|k| command << "#{k}lane.fa " }
+		files.keys.sort.each{|k| command << "chopped_#{k}lane.psl " } #	non-human matches
+		files.keys.sort.each{|k| command << "#{k}lane.fa " } #	raw reads input
 		command.execute
-		files.each_pair { |k,v| file_check( "blat_out_candidate_#{k}lane.fa" ) }
+#
+#	blatoutcandidate.pl ALWAYS creates ... blat_out_candidate_#{k}lane.fa
+#	I REALLY don't like that.  So much inconsistancy. Will overwrite existing.
+#
+		files.each_pair { |k,v| 
+			#	
+			#	raw reads with names in the psl files.
+			#	
+			file_check(   "blat_out_candidate_#{k}lane.fa" )
+			FileUtils.mv( "blat_out_candidate_#{k}lane.fa",
+				"04_blat_out_candidate_#{k}lane.fa" ) 
+		}
 	end
 
 	def compress_raw_reads
 		puts "step 5 compress raw reads"
 		files.each_pair do |k,v|
-			command = "compress.pl blat_out_candidate_#{k}lane.fa #{compress_ratio_thrd} " <<
+			command = "compress.pl 04_blat_out_candidate_#{k}lane.fa #{compress_ratio_thrd} " <<
 				"> compress_#{k}lane.names"
 			command.execute
-			file_check( "compress_#{k}lane.names" )
+			file_check( "compress_#{k}lane.names" ) # non-human matches
 		end
 	end
 
@@ -448,41 +493,49 @@ class RINS
 		command = "pull_reads_fasta.pl "
 		#	files is a hash and the keys are not guaranteed to be sorted
 		#	sort alphabetically and left is first, right is last (conveniently)
-		files.keys.sort.each{|k| command << "compress_#{k}lane.names " }
-		files.keys.sort.each{|k| command << "blat_out_candidate_#{k}lane.fa " }
-		files.keys.sort.each{|k| command << "compress_#{k}lane.fa " }
+		files.keys.sort.each{|k| command << "compress_#{k}lane.names " }        #	input
+		files.keys.sort.each{|k| command << "04_blat_out_candidate_#{k}lane.fa " } #	input
+		files.keys.sort.each{|k| command << "compress_#{k}lane.fa " }           #	output
 		command.execute
-		files.each_pair { |k,v| file_check( "compress_#{k}lane.fa" ) }
+		files.each_pair { |k,v| file_check( "compress_#{k}lane.fa" ) } #	non-human matches
 	end
 
 	def align_compressed_reads_to_human_genome_reference_using_bowtie
 		puts "step 7 align compressed reads to human genome reference using bowtie"
 		files.each_pair do |k,v|
-#	bowtie's verbose is RIDICULOUS!
-#	It prints way too much and adds way too much time.
-#				"--verbose "<<
+			#	bowtie's verbose is RIDICULOUS!
+			#	It prints WAY too much and adds WAY too much time.
+			#				"--verbose "<<
 			command = "bowtie -n #{bowtie_mismatch} -p #{bowtie_threads} -f " <<
 				"-S #{bowtie_index_human} compress_#{k}lane.fa compress_#{k}lane.sam"
 			command.execute
-			file_check( "compress_#{k}lane.sam" )
+			file_check( "compress_#{k}lane.sam" )	#	the reads that DIDN'T align?	NO
+
 			"sam2names.pl compress_#{k}lane.sam bowtie_#{k}lane.names".execute
 			file_check( "bowtie_#{k}lane.names" )
 		end
+
 		command = "pull_reads_fasta.pl "
 		#	files is a hash and the keys are not guaranteed to be sorted
 		#	sort alphabetically and left is first, right is last (conveniently)
-		files.keys.sort.each{|k| command << "bowtie_#{k}lane.names " }
-		files.keys.sort.each{|k| command << "compress_#{k}lane.fa " }
-		files.keys.sort.each{|k| command << "bowtie_#{k}lane.fa " }
+		files.keys.sort.each{|k| command << "bowtie_#{k}lane.names " }  #	input
+		files.keys.sort.each{|k| command << "compress_#{k}lane.fa " }   #	input
+		files.keys.sort.each{|k| command << "bowtie_#{k}lane.fa " }     #	output
 		command.execute
-		files.each_pair { |k,v| file_check( "bowtie_#{k}lane.fa" ) }
+		files.each_pair { |k,v| file_check( "bowtie_#{k}lane.fa" ) }    #	non human?
 
-		command = "candidate_non_human.pl "
-		#	files is a hash and the keys are not guaranteed to be sorted
-		#	sort alphabetically and left is first, right is last (conveniently)
-		files.keys.sort.each{|k| command << "bowtie_#{k}lane.names " }
-		command.execute
-		file_check( "candidate_non_human.txt" )
+#
+#	This script has fixed input of chopped_leftlane.psl (and right or single)
+#	BAD. BAD. BAD.	TODO
+#	This is only informative and nothing uses the output
+#	so could be commented out.
+#
+#		command = "candidate_non_human.pl "
+#		#	files is a hash and the keys are not guaranteed to be sorted
+#		#	sort alphabetically and left is first, right is last (conveniently)
+#		files.keys.sort.each{|k| command << "bowtie_#{k}lane.names " }
+#		command.execute
+#		file_check( "candidate_non_human.txt" )
 	end
 
 	def trinity_process(nth_iteration)
@@ -513,9 +566,13 @@ class RINS
 			"--output trinity_output_#{nth_iteration} " <<
 			"--CPU #{trinity_threads} " <<
 			"--bfly_opts \"--stderr\" --JM 1G "
+#
+#	This is the only place where we NEED left and right or single.
+#	Trinity expects the options.
+#
 		files.each_pair { |k,v| command << "--#{k} bowtie_#{k}lane.fa " }
 		command.execute
-		file_check( "trinity_output_#{nth_iteration}/Trinity.fasta" )
+		file_check(  "trinity_output_#{nth_iteration}/Trinity.fasta" )
 		FileUtils.cp("trinity_output_#{nth_iteration}/Trinity.fasta","Trinity.fasta")
 		#
 		#	This script just joins the sequence on a single line
@@ -535,11 +592,6 @@ class RINS
 			"clean_blastn.fa #{similarity_thrd}"
 		command.execute
 		file_check( 'clean_blastn.fa' );	#	NOTE  don't know how big an "empty" one is
-#		FileUtils.rm_r("trinity_output")
-#
-#	Why move it?  Why not just process it there?
-#
-#		FileUtils.mv("trinity_output","trinity_output_#{nth_iteration}")
 	end
 
 	def step8
@@ -559,10 +611,17 @@ class RINS
 		
 			command = "blatoutcandidate.pl "
 			files.keys.sort.each{|k| command << "#{k}lane.iteration.psl " }
-			files.keys.sort.each{|k| command << "#{k}lane.fa " }
+			files.keys.sort.each{|k| command << "#{k}lane.fa " }	#	raw reads input
 			command.execute
+#
+#	FYI This overwrites first blat_out_candidate files.
+#
 			files.each_pair do |k,v|
+				#	
+				#	raw reads with names in the psl files.
+				#	
 				file_check( "blat_out_candidate_#{k}lane.fa" )
+#	why copy and not just move?
 				FileUtils.cp("blat_out_candidate_#{k}lane.fa","iteration_#{k}lane.fa")
 			end
 			trinity_process(nth_iteration)
@@ -589,6 +648,9 @@ class RINS
 #		command = "write_result.pl non_human_contig.fa non_human_contig_blastn.txt "
 #
 #	Using my ruby write result now
+#
+#	TODO now that I'm using my write_result.rb, should I 
+#		add the add_descriptions_to_results functionality?
 #
 		command = "write_result.rb non_human_contig.fa " <<
 			"non_human_contig_blastn.txt "
