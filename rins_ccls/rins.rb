@@ -77,29 +77,6 @@ Run the RINS pipeline to identify nonhuman sequences.
 Command Line Example: rins.pl -c config.txt -o output.txt
 EOB
 
-#	opts.banner = "\nUsage: #{File.basename($0)} [options]\n\n" <<
-#		"Run the RINS pipeline to identify nonhuman sequences.\n" <<
-#		"Command Line Example: rins.pl -c config.txt -o output.txt\n\n" <<
-#		"In the config file ...\n\n" <<
-#		"	(:files is a hash)\n" <<
-#		"	:files:\n" <<
-#		"	  :left:  somefile1.fa\n" <<
-#		"	  :right: somefile2.fa\n" <<
-#		"		OR\n" <<
-#		"	:files:\n" <<
-#		"	  :single:  somefile.fa\n\n" <<
-#		"	(:blat_reference CAN be an array)\n" <<
-#		"	:blat_reference:\n" <<
-#		"	  - somefile1.fa\n" <<
-#		"	  - somefile2.fa\n" <<
-#		"		OR\n" <<
-#		"	:blat_reference:\n" <<
-#		"	  - somefile.fa\n" <<
-#		"		OR\n" <<
-#		"	:blat_reference: somefile.fa\n\n" <<
-#		"------------------\n\n"
-
-
 	# Define the options, and what they do
 
 #	#	How to force this to be an integer?  Just cast it?
@@ -146,7 +123,31 @@ puts <<EOB
 
 ------------------
 
-In the config file ...
+command line
+
+	--mode INTEGER
+
+		By default this is 1, which is 'normal' RINS processing.
+		If set to 2, this will skip the chopping and initial blat calls.
+
+	--output_suffix STRING
+
+		By default this is blank and the working directory is just a date/time stamp.
+		If given, this string will by joined to the date/time stamp with 
+		a '.' between.
+
+		Example:
+
+			default
+				working dir -> 20121015091927.outdir
+
+			--output_suffix skip_blat
+				working dir -> 20121015091927.outdir.skip_blat
+
+
+------------------
+
+config file (yml format does not allow TABS) ...
 
 	(:files IS a hash)
 	:files:
@@ -210,7 +211,7 @@ In the config file ...
 	#	Size of the chopped reads for the initial blat call
 	:chop_read_length: 25
 	
-	#	MinIdentity match for the initial blat call
+	#	MinIdentity match for the initial blat candidate call
 	:minIdentity: 80
 	
 	#
@@ -237,7 +238,9 @@ In the config file ...
 	#
 	:blastn_evalue_thrd: 0.05
 
-	#
+	#	Used with the blastn_cleanup script to determine match quality.
+	#	Values seem to range from 0 to 2 with 0 being very unlikely
+	#	and 2 being very likely.
 	:similarity_thrd: 0.8
 
 	#	Exit if an expected file is empty or missing
