@@ -26,8 +26,10 @@
 #	files is a hash
 #		the keys should either be left and right or just single
 :files:
-  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1_head.fa
-  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2_head.fa
+  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1.fa
+  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2.fa
+#  :left:  /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_1_head.fa
+#  :right: /Users/jakewendt/rins_test/rins/test_sample/testset_forkun_2_head.fa
 
 #	if the raw files are fasta, link them instead of copying them in
 :link_sample_fa_files: true
@@ -38,7 +40,7 @@
 #
 #	testset_forkun_1.fa -> testset_forkun_1_chopped_25.fa
 #
-#:pre_chopped: true
+:pre_chopped: true
 
 # reference files
 #
@@ -55,7 +57,13 @@
   - /Volumes/cube/working/indexes/virus_all.fasta
 #  - /Volumes/cube/working/indexes/all_bacterial.fna
 
-:bowtie_index_human:     /Volumes/cube/working/indexes/hg18
+:bowtie_index_human: /Volumes/cube/working/indexes/hg18
+
+#	for dark
+:bowtie_human_indexes:     
+  - /Volumes/cube/working/indexes/hg18
+  - /Volumes/cube/working/indexes/hg19
+
 :blastn_index_human:     /Volumes/cube/working/indexes/hg18
 #:blastn_index_non_human: /Users/jakewendt/rins/indexes/virus
 #:blastn_index_non_human: /Volumes/cube/working/indexes/all_bacterial_and_viral

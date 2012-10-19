@@ -264,77 +264,13 @@ system "date";
 config = YAML::load( ERB.new( IO.read( File.join( o[:config_filename] ) ) ).result)
 o.update( config )
 
-class RINS
-
-	attr_accessor :options
-	attr_accessor :original_stdout
-	attr_accessor :original_stderr
-
-	def initialize(options={})
-		self.options = options
-	end
-
-	def method_missing(symb,*args,&block)
-		#
-		#	basically, check the config options for key/value
-		#	so don't need to 'options[key]' and can just 'key'
-		#
-		if options.has_key? symb.to_s.to_sym
-			options[symb.to_s.to_sym]
-		else
-			super
-		end
-	end
+class RINS < CclsSequencer
 
 	#	just an alias really
 	def blat_references
 		blat_reference
 	end
 
-	def file_check( filename, empty_size = 0 )
-	
-	#	STDERR is not logged when using " | tee -a log"
-	
-		msg = '';
-		unless( File.exists?(filename) )
-			msg = "#{filename} not created";
-			if( die_on_failed_file_check )
-				raise msg;
-			else
-				puts msg
-			end
-		end
-		#	Need to check existance too because if not dying on failure
-		#	could have passed above check.  Then '-s $filename' is '' raising ...
-		#	Use of uninitialized value in numeric le (<=) at ...
-		if( ( File.exists?(filename) ) && ( File.size(filename) <= empty_size ) )
-			msg = "#{filename} empty ( <= #{empty_size} )";
-			if( die_on_failed_file_check )
-				raise msg
-			else
-				puts msg
-			end
-		end
-	end
-
-	def prepare_output_dir_and_log_file
-		puts "Preparing working dir and log file"
-		outdir = ["#{Time.now.strftime("%Y%m%d%H%M%S")}.outdir",
-			options[:output_suffix]].compact.join('.')
-		puts "Working dir is #{outdir}"
-		FileUtils.mkdir outdir
-		FileUtils.chdir outdir
-
-		puts "About to redirect STDOUT and STDERR."
-		puts "No output should go to the screen until complete."
-		puts "Perhaps put this process in the background with Ctrl-Z then 'bg'."
-		puts "Then use the following command to follow along ..."
-		puts "tail -f #{outdir}/log_file.txt"
-		self.original_stdout = STDOUT.clone
-		self.original_stderr = STDERR.clone
-		STDOUT.reopen('log_file.txt','a')
-		STDERR.reopen('log_file.txt','a')
-	end
 
 	def file_format_check_and_conversion
 
@@ -351,16 +287,16 @@ class RINS
 		files.each_pair do |k,v|
 			if( file_format == "fastq")
 				"fastq2fasta.pl #{v} #{k}lane.fa".execute
-				file_check( "#{k}lane.fa" );
+				"#{k}lane.fa".file_check(die_on_failed_file_check)
 			else #if ($file_format eq "fasta") {
 				if( link_sample_fa_files )
 					puts "already fasta format, linking #{v} #{k}lane.fa instead"
 					FileUtils.ln_s(v,"#{k}lane.fa")
-					file_check( "#{k}lane.fa" );
+					"#{k}lane.fa".file_check(die_on_failed_file_check)
 				else
 					puts "already fasta format, copying #{v} #{k}lane.fa instead"
 					FileUtils.cp(v,"#{k}lane.fa")
-					file_check( "#{k}lane.fa" );
+					"#{k}lane.fa".file_check(die_on_failed_file_check)
 				end
 			end
 		end
@@ -384,10 +320,10 @@ class RINS
 				puts "files are pre-chopped so linking #{chopped} chopped_#{k}lane.fa"
 
 				FileUtils.ln_s(chopped,"chopped_#{k}lane.fa")
-				file_check( "chopped_#{k}lane.fa" )
+				"chopped_#{k}lane.fa".file_check(die_on_failed_file_check)
 			else
 				"chopreads.pl #{k}lane.fa chopped_#{k}lane.fa #{chop_read_length}".execute
-				file_check( "chopped_#{k}lane.fa" )
+				"chopped_#{k}lane.fa".file_check(die_on_failed_file_check)
 			end
 		end
 	end
@@ -407,7 +343,7 @@ class RINS
 #	"chopped_#{k}lane_#{basename}.psl" contains the candidates from the 
 #		blat_reference.  In these cases, they should be non-human matches.
 #
-				file_check( "chopped_#{k}lane_#{basename}.psl", 427 )
+				"chopped_#{k}lane_#{basename}.psl".file_check(die_on_failed_file_check,427)
 			end
 
 			if blat_refs.length > 1
@@ -467,7 +403,7 @@ class RINS
 			#	
 			#	raw reads with names in the psl files.
 			#	
-			file_check(   "blat_out_candidate_#{k}lane.fa" )
+			"blat_out_candidate_#{k}lane.fa".file_check(die_on_failed_file_check)
 			FileUtils.mv( "blat_out_candidate_#{k}lane.fa",
 				"04_blat_out_candidate_#{k}lane.fa" )	#	NON-HUMAN matches 
 		}
@@ -479,7 +415,7 @@ class RINS
 			command = "compress.pl 04_blat_out_candidate_#{k}lane.fa #{compress_ratio_thrd} " <<
 				"> compress_#{k}lane.names"
 			command.execute
-			file_check( "compress_#{k}lane.names" ) # NON-HUMAN matches
+			"compress_#{k}lane.names".file_check(die_on_failed_file_check) # NON-HUMAN matches
 		end
 	end
 
@@ -492,7 +428,7 @@ class RINS
 		files.keys.sort.each{|k| command << "04_blat_out_candidate_#{k}lane.fa " } #	input
 		files.keys.sort.each{|k| command << "compress_#{k}lane.fa " }           #	output
 		command.execute
-		files.each_pair { |k,v| file_check( "compress_#{k}lane.fa" ) } #	NON-HUMAN matches
+		files.each_pair { |k,v| "compress_#{k}lane.fa".file_check(die_on_failed_file_check) } #	NON-HUMAN matches
 	end
 
 
@@ -515,10 +451,10 @@ class RINS
 			command = "bowtie -n #{bowtie_mismatch} -p #{bowtie_threads} -f " <<
 				"-S #{bowtie_index_human} compress_#{k}lane.fa compress_#{k}lane.sam"
 			command.execute
-			file_check( "compress_#{k}lane.sam" )	#	the reads that DIDN'T align?	NO
+			"compress_#{k}lane.sam".file_check(die_on_failed_file_check) #	the reads that DIDN'T align?	NO
 
 			"sam2names.rb compress_#{k}lane.sam bowtie_#{k}lane.names".execute
-			file_check( "bowtie_#{k}lane.names" )
+			"bowtie_#{k}lane.names".file_check(die_on_failed_file_check)
 		end
 
 		command = "pull_reads_fasta.rb "
@@ -528,7 +464,7 @@ class RINS
 		files.keys.sort.each{|k| command << "compress_#{k}lane.fa " }   #	input
 		files.keys.sort.each{|k| command << "bowtie_#{k}lane.fa " }     #	output
 		command.execute
-		files.each_pair { |k,v| file_check( "bowtie_#{k}lane.fa" ) }    #	non human?
+		files.each_pair { |k,v| "bowtie_#{k}lane.fa".file_check(die_on_failed_file_check) }    #	non human?
 
 #
 #	This script has fixed input of chopped_leftlane.psl (and right or single)
@@ -582,7 +518,7 @@ class RINS
 #
 		files.each_pair { |k,v| command << "--#{k} bowtie_#{k}lane.fa " }
 		command.execute
-		file_check(  "trinity_output_#{nth_iteration}/Trinity.fasta" )
+		"trinity_output_#{nth_iteration}/Trinity.fasta".file_check(die_on_failed_file_check)
 		FileUtils.cp("trinity_output_#{nth_iteration}/Trinity.fasta","Trinity.fasta")
 		#
 		#	This script just joins the sequence on a single line
@@ -596,13 +532,13 @@ class RINS
 		command = "blastn -query=Trinity.fasta -db=#{blastn_index_human} " <<
 			"-evalue #{blastn_evalue_thrd} -outfmt 6 > human_contig.txt"
 		command.execute
-		file_check( 'human_contig.txt' )	#	NOTE  don't know how big an "empty" one is
+		'human_contig.txt'.file_check(die_on_failed_file_check)	#	NOTE  don't know how big an "empty" one is
 
 		puts "clean up blastn outputs"
 		command = "blastn_cleanup.rb human_contig.txt Trinity.fasta " <<
 			"clean_blastn.fa #{similarity_thrd}"
 		command.execute
-		file_check( 'clean_blastn.fa' );	#	NOTE  don't know how big an "empty" one is
+		'clean_blastn.fa'.file_check(die_on_failed_file_check) #	NOTE  don't know how big an "empty" one is
 	end
 
 	def step8
@@ -616,7 +552,7 @@ class RINS
 				command = "blat clean_blastn.fa -minIdentity=95 #{k}lane.fa " <<
 					"#{k}lane.iteration.psl"
 				command.execute
-				file_check( "#{k}lane.iteration.psl", 427 )
+				"#{k}lane.iteration.psl".file_check(die_on_failed_file_check,427)
 			end
 			puts "find blat out candidate reads"
 		
@@ -631,7 +567,7 @@ class RINS
 				#	
 				#	raw reads with names in the psl files.
 				#	
-				file_check( "blat_out_candidate_#{k}lane.fa" )
+				"blat_out_candidate_#{k}lane.fa".file_check(die_on_failed_file_check)
 #	why copy and not just move?
 				FileUtils.cp("blat_out_candidate_#{k}lane.fa","iteration_#{k}lane.fa")
 			end
@@ -646,13 +582,13 @@ class RINS
 		command = "blastn -query=non_human_contig.fa -db=#{blastn_index_non_human} " <<
 			"-evalue #{blastn_evalue_thrd} -outfmt 6 > non_human_contig_blastn.txt"
 		command.execute
-		file_check( 'non_human_contig_blastn.txt' );	#	NOTE  don't know how big an "empty" one is
+		'non_human_contig_blastn.txt'.file_check(die_on_failed_file_check) #	NOTE  don't know how big an "empty" one is
 		
 		files.each_pair do |k,v|
 			command = "blat non_human_contig.fa -minIdentity=98 " <<
 				"iteration_#{k}lane.fa #{k}lane.psl"
 			command.execute
-			file_check( "#{k}lane.psl", 427 )
+			"#{k}lane.psl".file_check(die_on_failed_file_check,427)
 		end
 		
 		puts "write results"
@@ -697,15 +633,6 @@ class RINS
 			"non_human_contig.fa " <<
 			"unknown_sequences.fa 0.5"
 		command.execute
-	end
-
-	def wrap_things_up
-		puts "Finished at ..."
-		system("date")
-		STDOUT.reopen(original_stdout)
-		STDERR.reopen(original_stderr)
-		puts "All done."
-		system("date")
 	end
 
 	def run
