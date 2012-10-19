@@ -31,18 +31,8 @@ require 'optparse'
 require 'fileutils'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
+require 'rins_ccls_lib'
 require 'file_format_detector'
-
-class String
-	def execute
-		puts "Executing ..."
-		puts self
-		#	status is true or false
-		status = system(self);
-		#	$? is the pid and the return code
-		puts ( "\n#{self} failed with #{$?}\n" ) unless ( status );
-	end
-end
 
 #
 #	This could be useful, but would have to also
@@ -58,7 +48,7 @@ end
 o = {
 	:config_filename          => 'config.yml',
 	:output_filename          => 'results.txt',
-	:mode                     => 1,
+#	:mode                     => 1,
 	:link_sample_fa_files     => false,
 	:pre_chopped              => false,
 	:chop_read_length         => 25,
@@ -105,10 +95,10 @@ EOB
 		o[:output_filename] = s
 	end
 
-	opts.on( '-m', '--mode INTEGER', 
-		"Development mode (default #{o[:mode]})" ) do |s|
-		o[:mode] = s.to_i
-	end
+#	opts.on( '-m', '--mode INTEGER', 
+#		"Development mode (default #{o[:mode]})" ) do |s|
+#		o[:mode] = s.to_i
+#	end
 
 	opts.on( '--output_suffix STRING', 
 		"Output directory suffix (default '#{o[:output_suffix]}')" ) do |s|
@@ -128,6 +118,11 @@ EOB
 		exit
 	end
 
+#	--mode INTEGER
+#
+#		By default this is 1, which is 'normal' RINS processing.
+#		If set to 2, this will skip the chopping and initial blat calls.
+#
 	opts.on( '--help', 'Display thorough help screen' ) do
 		puts opts
 puts <<EOB
@@ -135,11 +130,6 @@ puts <<EOB
 ------------------
 
 command line
-
-	--mode INTEGER
-
-		By default this is 1, which is 'normal' RINS processing.
-		If set to 2, this will skip the chopping and initial blat calls.
 
 	--output_suffix STRING
 
@@ -471,6 +461,8 @@ class RINS
 #	blatoutcandidate.pl ALWAYS creates ... blat_out_candidate_#{k}lane.fa
 #	I REALLY don't like that.  So much inconsistancy. Will overwrite existing.
 #
+#	TODO wrote my own version of blatoutcandidate so could change this
+#
 		files.each_pair { |k,v| 
 			#	
 			#	raw reads with names in the psl files.
@@ -493,7 +485,7 @@ class RINS
 
 	def pull_reads_from_blat_out_candidates
 		puts "step 6 pull reads from blat_out_candidate fasta files"
-		command = "pull_reads_fasta.pl "
+		command = "pull_reads_fasta.rb "
 		#	files is a hash and the keys are not guaranteed to be sorted
 		#	sort alphabetically and left is first, right is last (conveniently)
 		files.keys.sort.each{|k| command << "compress_#{k}lane.names " }        #	input
@@ -719,15 +711,15 @@ class RINS
 	def run
 		prepare_output_dir_and_log_file
 		file_format_check_and_conversion
-		if mode == 1	
+#		if mode == 1	
 			chop_reads
 			blat_chopped_reads
 			blat_out_candidate_reads
 			compress_raw_reads
 			pull_reads_from_blat_out_candidates
-		elsif mode == 2
-			files.each_pair { |k,v| FileUtils.ln_s("#{k}lane.fa","compress_#{k}lane.fa") }
-		end
+#		elsif mode == 2
+#			files.each_pair { |k,v| FileUtils.ln_s("#{k}lane.fa","compress_#{k}lane.fa") }
+#		end
 		align_compressed_reads_to_human_genome_reference_using_bowtie
 		step8
 		detect_species_of_non_human_sequences

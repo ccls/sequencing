@@ -25,12 +25,7 @@ def pull_reads( names, input_fasta, output_fasta)
 	File.open( input_fasta,'r') { |input|
 	File.open(output_fasta,'w') { |output|
 		while line = input.gets do
-			name = line.delane_sequence_name
-#
-#	The above regexes may not always work as there is no
-#	standard sequence naming convention.
-#
-    	if( names[name] )
+    	if( names[line.delane_sequence_name] )
       	output.puts line
       	output.puts input.gets
     	else

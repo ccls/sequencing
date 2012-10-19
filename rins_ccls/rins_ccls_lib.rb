@@ -1,4 +1,14 @@
 class String
+
+	def execute
+		puts "Executing ..."
+		puts self
+		#	status is true or false
+		status = system(self);
+		#	$? is the pid and the return code
+		puts ( "\n#{self} failed with #{$?}\n" ) unless ( status );
+	end
+
 	def delane_sequence_name
 		name = self.chomp
 		name.gsub!(/^>/,'')
@@ -13,4 +23,5 @@ class String
 		# 
 		name
 	end
+
 end

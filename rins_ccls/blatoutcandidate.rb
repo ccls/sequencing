@@ -62,7 +62,7 @@ if ARGV.length == 4
 	} }
 elsif ARGV.length == 2
 	#	single end
-	File.open(ARGV[3],'r') { |input|
+	File.open(ARGV[1],'r') { |input|
 	File.open('blat_out_candidate_singlelane.fa','w') { |output|
 		while( line = input.gets )
 			name = line.delane_sequence_name
