@@ -403,7 +403,7 @@ class RINS
 	end
 
 	def blat_chopped_reads
-		puts "step 3 blat chopped reads"
+		puts "step 3 blat chopped reads to KNOWN NON-HUMAN REFERENCES"
 		blat_refs = [blat_references].flatten
 		files.each_pair do |k,v|
 			blat_refs.each do |blat_ref|
@@ -446,6 +446,9 @@ class RINS
 #		gets the 10ths column ... @HWI-ST281_0133:3:1:6254:2049#0/1
 #		removes the trailing "/0" or "/1" leaving @HWI-ST281_0133:3:1:6254:2049#0
 #		and adds it to the hash
+#
+#	(our sequence names don't match this /0 or /1 so I wrote our own ruby version)
+#
 #	Then it loops of the first fasta file 
 #		(left hopefully as it writes to blat_out_candidate_leftlane.fa)
 #		If the sequence line name is in the hash,
@@ -458,10 +461,10 @@ class RINS
 
 	def blat_out_candidate_reads
 		puts "step 4 find blat out candidate reads"
-		command = "blatoutcandidate.pl "
+		command = "blatoutcandidate.rb "
 		#	files is a hash and the keys are not guaranteed to be sorted
 		#	sort alphabetically and left is first, right is last (conveniently)
-		files.keys.sort.each{|k| command << "chopped_#{k}lane.psl " } #	non-human matches
+		files.keys.sort.each{|k| command << "chopped_#{k}lane.psl " } #	NON-HUMAN matches
 		files.keys.sort.each{|k| command << "#{k}lane.fa " } #	raw reads input
 		command.execute
 #
@@ -474,7 +477,7 @@ class RINS
 			#	
 			file_check(   "blat_out_candidate_#{k}lane.fa" )
 			FileUtils.mv( "blat_out_candidate_#{k}lane.fa",
-				"04_blat_out_candidate_#{k}lane.fa" ) 
+				"04_blat_out_candidate_#{k}lane.fa" )	#	NON-HUMAN matches 
 		}
 	end
 
@@ -484,7 +487,7 @@ class RINS
 			command = "compress.pl 04_blat_out_candidate_#{k}lane.fa #{compress_ratio_thrd} " <<
 				"> compress_#{k}lane.names"
 			command.execute
-			file_check( "compress_#{k}lane.names" ) # non-human matches
+			file_check( "compress_#{k}lane.names" ) # NON-HUMAN matches
 		end
 	end
 
@@ -497,8 +500,19 @@ class RINS
 		files.keys.sort.each{|k| command << "04_blat_out_candidate_#{k}lane.fa " } #	input
 		files.keys.sort.each{|k| command << "compress_#{k}lane.fa " }           #	output
 		command.execute
-		files.each_pair { |k,v| file_check( "compress_#{k}lane.fa" ) } #	non-human matches
+		files.each_pair { |k,v| file_check( "compress_#{k}lane.fa" ) } #	NON-HUMAN matches
 	end
+
+
+
+#
+#	The bowtie created SAM file includes all sequences with info regarding
+#	its match or non-match.  The sam2names script selects only those
+#	entries which contain a "*" in what I suppose is the appropriate column
+#	that flags it as having not matched.  These unaligned sequence names
+#	are then pulled by pull_reads_fasta.rb to create the new filtered
+#	and paired fasta files.
+#
 
 	def align_compressed_reads_to_human_genome_reference_using_bowtie
 		puts "step 7 align compressed reads to human genome reference using bowtie"
@@ -511,11 +525,11 @@ class RINS
 			command.execute
 			file_check( "compress_#{k}lane.sam" )	#	the reads that DIDN'T align?	NO
 
-			"sam2names.pl compress_#{k}lane.sam bowtie_#{k}lane.names".execute
+			"sam2names.rb compress_#{k}lane.sam bowtie_#{k}lane.names".execute
 			file_check( "bowtie_#{k}lane.names" )
 		end
 
-		command = "pull_reads_fasta.pl "
+		command = "pull_reads_fasta.rb "
 		#	files is a hash and the keys are not guaranteed to be sorted
 		#	sort alphabetically and left is first, right is last (conveniently)
 		files.keys.sort.each{|k| command << "bowtie_#{k}lane.names " }  #	input
@@ -530,7 +544,11 @@ class RINS
 #	This is only informative and nothing uses the output
 #	so could be commented out.
 #
-#		command = "candidate_non_human.pl "
+#
+#	TODO Replaced with ruby version, but still in development
+#
+#
+#		command = "candidate_non_human.rb "
 #		#	files is a hash and the keys are not guaranteed to be sorted
 #		#	sort alphabetically and left is first, right is last (conveniently)
 #		files.keys.sort.each{|k| command << "bowtie_#{k}lane.names " }
@@ -587,6 +605,7 @@ class RINS
 			"-evalue #{blastn_evalue_thrd} -outfmt 6 > human_contig.txt"
 		command.execute
 		file_check( 'human_contig.txt' )	#	NOTE  don't know how big an "empty" one is
+
 		puts "clean up blastn outputs"
 		command = "blastn_cleanup.rb human_contig.txt Trinity.fasta " <<
 			"clean_blastn.fa #{similarity_thrd}"
@@ -609,7 +628,7 @@ class RINS
 			end
 			puts "find blat out candidate reads"
 		
-			command = "blatoutcandidate.pl "
+			command = "blatoutcandidate.rb "
 			files.keys.sort.each{|k| command << "#{k}lane.iteration.psl " }
 			files.keys.sort.each{|k| command << "#{k}lane.fa " }	#	raw reads input
 			command.execute
@@ -669,6 +688,12 @@ class RINS
 			"-i #{output_filename} " <<
 			"-o #{output_filename}.with_descriptions " <<
 			"-d #{blastn_index_non_human}"
+		command.execute
+
+		puts "parsing write results' results and selecting just first match"
+		command = "just_first_contig_match_results.rb " <<
+			"-i #{output_filename}.with_descriptions " <<
+			"-o #{output_filename}.with_descriptions.just_first_match"
 		command.execute
 	end
 
