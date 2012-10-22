@@ -7,16 +7,12 @@
 #@HWI-ST281_0133:3:1:13342:2066#0/2      4       *       0       0       *       *       0 0       CGGCATTCCAGCGGAACCGCTCGTCCGAGCCTCGGCATTCCTGGGGGCCCCCCCCTTTAAAAAAAAAAAAAAAAAGACGGGGAAGGGAAAGAGGTGAGCA    IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII    XM:i:0
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-require 'rins_ccls_lib'
+require 'sequencing_lib'
 
-samfile  = ARGV[0];
-namefile = ARGV[1];
-
-File.open( samfile,'r') { |input|
-File.open(namefile,'w') { |output|
+File.open( ARGV[0], 'r' ) { |input|   #	sam file
+File.open( ARGV[1], 'w' ) { |output|  #	names file
 	while( line = input.gets )
-		line.chomp!
-		data = line.split(/\t/)
+		data = line.chomp.split(/\t/)
 		if (data[2] == "*")
 			output.puts data[0].delane_sequence_name
 		end

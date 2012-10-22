@@ -7,7 +7,20 @@
 #	Rather than modify the perl script, create the ruby script.
 #
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-require 'rins_ccls_lib'
+require 'sequencing_lib'
+
+puts
+puts "pull_reads_fasta.rb name_files fasta_files output_files"
+puts
+puts "pull_reads_fasta.rb joins the sequence lists from the name_files,"
+puts "\tthen 'de-lanes' the list, removing the left/right, 0/1 or 1/2 suffixes,"
+puts "\tand uniquing them in order to keep both lanes in sync,"
+puts "\tthen selects those sequences from the inputs and placing then in the outputs."
+puts
+
+#
+#	This is very similar to blatoutcandidate.rb
+#
 
 def merge_names(*args)
 	names = {}
@@ -19,20 +32,6 @@ def merge_names(*args)
 		end
 	end
 	names
-end
-
-def pull_reads( names, input_fasta, output_fasta)
-	File.open( input_fasta,'r') { |input|
-	File.open(output_fasta,'w') { |output|
-		while line = input.gets do
-    	if( names[line.delane_sequence_name] )
-      	output.puts line
-      	output.puts input.gets
-    	else
-      	input.gets
-    	end
-		end
-	} }
 end
 
 if ARGV.length == 6
@@ -54,5 +53,7 @@ elsif ARGV.length == 3
 	names = merge_names(single_names_in)
 	pull_reads(names,single_fasta_in,single_fasta_out)
 else
-	puts "Unexpected number of arguments"
+	puts
+	puts "Unexpected number of arguments ( 3 or 6 )"
+	puts
 end

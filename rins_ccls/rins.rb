@@ -31,7 +31,7 @@ require 'optparse'
 require 'fileutils'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-require 'rins_ccls_lib'
+require 'sequencing_lib'
 require 'file_format_detector'
 
 #
@@ -271,37 +271,6 @@ class RINS < CclsSequencer
 		blat_reference
 	end
 
-
-	def file_format_check_and_conversion
-
-#
-#	use file_format_detector
-#
-#		file_format = FileFormatDetector.new(files.first.value).format
-#
-
-		raise "File format can either be fastq or fasta" unless( 
-			['fasta','fastq'].include?(file_format) )
-		
-		puts "step 1 change fastq files to fasta files"
-		files.each_pair do |k,v|
-			if( file_format == "fastq")
-				"fastq2fasta.pl #{v} #{k}lane.fa".execute
-				"#{k}lane.fa".file_check(die_on_failed_file_check)
-			else #if ($file_format eq "fasta") {
-				if( link_sample_fa_files )
-					puts "already fasta format, linking #{v} #{k}lane.fa instead"
-					FileUtils.ln_s(v,"#{k}lane.fa")
-					"#{k}lane.fa".file_check(die_on_failed_file_check)
-				else
-					puts "already fasta format, copying #{v} #{k}lane.fa instead"
-					FileUtils.cp(v,"#{k}lane.fa")
-					"#{k}lane.fa".file_check(die_on_failed_file_check)
-				end
-			end
-		end
-	end
-
 	def chop_reads
 		#
 		#	TODO for some reason, blat doesn't work on the chopped????
@@ -385,28 +354,33 @@ class RINS < CclsSequencer
 #	Interesting that both psl files are actually used for each fasta file.
 #
 
-	def blat_out_candidate_reads
+	def find_blat_out_candidate_reads
 		puts "step 4 find blat out candidate reads"
-		command = "blatoutcandidate.rb "
-		#	files is a hash and the keys are not guaranteed to be sorted
-		#	sort alphabetically and left is first, right is last (conveniently)
-		files.keys.sort.each{|k| command << "chopped_#{k}lane.psl " } #	NON-HUMAN matches
-		files.keys.sort.each{|k| command << "#{k}lane.fa " } #	raw reads input
-		command.execute
-#
-#	blatoutcandidate.pl ALWAYS creates ... blat_out_candidate_#{k}lane.fa
-#	I REALLY don't like that.  So much inconsistancy. Will overwrite existing.
-#
-#	TODO wrote my own version of blatoutcandidate so could change this
-#
-		files.each_pair { |k,v| 
-			#	
-			#	raw reads with names in the psl files.
-			#	
-			"blat_out_candidate_#{k}lane.fa".file_check(die_on_failed_file_check)
-			FileUtils.mv( "blat_out_candidate_#{k}lane.fa",
-				"04_blat_out_candidate_#{k}lane.fa" )	#	NON-HUMAN matches 
-		}
+		blat_out_candidate_reads(
+			files.keys.sort.collect{|k| "chopped_#{k}lane.psl " },
+			files.keys.sort.collect{|k| "#{k}lane.fa " },
+			files.keys.sort.collect{|k| "04_blat_out_candidate_#{k}lane.fa" })
+
+#		command = "blatoutcandidate.rb "
+#		#	files is a hash and the keys are not guaranteed to be sorted
+#		#	sort alphabetically and left is first, right is last (conveniently)
+#		files.keys.sort.each{|k| command << "chopped_#{k}lane.psl " } #	NON-HUMAN matches
+#		files.keys.sort.each{|k| command << "#{k}lane.fa " } #	raw reads input
+#		command.execute
+##
+##	blatoutcandidate.pl ALWAYS creates ... blat_out_candidate_#{k}lane.fa
+##	I REALLY don't like that.  So much inconsistancy. Will overwrite existing.
+##
+##	TODO wrote my own version of blatoutcandidate so could change this
+##
+#		files.each_pair { |k,v| 
+#			#	
+#			#	raw reads with names in the psl files.
+#			#	
+#			"blat_out_candidate_#{k}lane.fa".file_check(die_on_failed_file_check)
+#			FileUtils.mv( "blat_out_candidate_#{k}lane.fa",
+#				"04_blat_out_candidate_#{k}lane.fa" )	#	NON-HUMAN matches 
+#		}
 	end
 
 	def compress_raw_reads
@@ -421,16 +395,11 @@ class RINS < CclsSequencer
 
 	def pull_reads_from_blat_out_candidates
 		puts "step 6 pull reads from blat_out_candidate fasta files"
-		command = "pull_reads_fasta.rb "
-		#	files is a hash and the keys are not guaranteed to be sorted
-		#	sort alphabetically and left is first, right is last (conveniently)
-		files.keys.sort.each{|k| command << "compress_#{k}lane.names " }        #	input
-		files.keys.sort.each{|k| command << "04_blat_out_candidate_#{k}lane.fa " } #	input
-		files.keys.sort.each{|k| command << "compress_#{k}lane.fa " }           #	output
-		command.execute
-		files.each_pair { |k,v| "compress_#{k}lane.fa".file_check(die_on_failed_file_check) } #	NON-HUMAN matches
+		pull_reads_from_fastas(
+			files.keys.sort.collect{|k| "compress_#{k}lane.names" },
+			files.keys.sort.collect{|k| "04_blat_out_candidate_#{k}lane.fa" },
+			files.keys.sort.collect{|k| "compress_#{k}lane.fa" }) # NON-HUMAN matches
 	end
-
 
 
 #
@@ -457,14 +426,10 @@ class RINS < CclsSequencer
 			"bowtie_#{k}lane.names".file_check(die_on_failed_file_check)
 		end
 
-		command = "pull_reads_fasta.rb "
-		#	files is a hash and the keys are not guaranteed to be sorted
-		#	sort alphabetically and left is first, right is last (conveniently)
-		files.keys.sort.each{|k| command << "bowtie_#{k}lane.names " }  #	input
-		files.keys.sort.each{|k| command << "compress_#{k}lane.fa " }   #	input
-		files.keys.sort.each{|k| command << "bowtie_#{k}lane.fa " }     #	output
-		command.execute
-		files.each_pair { |k,v| "bowtie_#{k}lane.fa".file_check(die_on_failed_file_check) }    #	non human?
+		pull_reads_from_fastas(
+			files.keys.sort.collect{|k| "bowtie_#{k}lane.names" },
+			files.keys.sort.collect{|k| "compress_#{k}lane.fa" },
+			files.keys.sort.collect{|k| "bowtie_#{k}lane.fa" })
 
 #
 #	This script has fixed input of chopped_leftlane.psl (and right or single)
@@ -505,7 +470,7 @@ class RINS < CclsSequencer
 		#	It was last used in trinityrnaseq-r20110519
 		#		trinityrnaseq-r20110519/Butterfly/src/src/TransAssembly_allProbPaths.java
 		#
-		print "de novo assembly using Trinity\n";
+		puts "de novo assembly using Trinity"
 		command = "Trinity.pl --seqType fa " <<
 			"--group_pairs_distance #{paired_fragment_length} " <<
 			"--min_contig_length #{min_contig_length} " <<
@@ -554,23 +519,28 @@ class RINS < CclsSequencer
 				command.execute
 				"#{k}lane.iteration.psl".file_check(die_on_failed_file_check,427)
 			end
-			puts "find blat out candidate reads"
+#			puts "find blat out candidate reads"
 		
-			command = "blatoutcandidate.rb "
-			files.keys.sort.each{|k| command << "#{k}lane.iteration.psl " }
-			files.keys.sort.each{|k| command << "#{k}lane.fa " }	#	raw reads input
-			command.execute
-#
-#	FYI This overwrites first blat_out_candidate files.
-#
-			files.each_pair do |k,v|
-				#	
-				#	raw reads with names in the psl files.
-				#	
-				"blat_out_candidate_#{k}lane.fa".file_check(die_on_failed_file_check)
-#	why copy and not just move?
-				FileUtils.cp("blat_out_candidate_#{k}lane.fa","iteration_#{k}lane.fa")
-			end
+			blat_out_candidate_reads(
+				files.keys.sort.collect{|k| "#{k}lane.iteration.psl " },
+				files.keys.sort.collect{|k| "#{k}lane.fa " },
+				files.keys.sort.collect{|k| "iteration_#{k}lane.fa" })
+
+#			command = "blatoutcandidate.rb "
+#			files.keys.sort.each{|k| command << "#{k}lane.iteration.psl " }
+#			files.keys.sort.each{|k| command << "#{k}lane.fa " }	#	raw reads input
+#			command.execute
+##
+##	FYI This overwrites first blat_out_candidate files.
+##
+#			files.each_pair do |k,v|
+#				#	
+#				#	raw reads with names in the psl files.
+#				#	
+#				"blat_out_candidate_#{k}lane.fa".file_check(die_on_failed_file_check)
+##	why copy and not just move?
+#				FileUtils.cp("blat_out_candidate_#{k}lane.fa","iteration_#{k}lane.fa")
+#			end
 			trinity_process(nth_iteration)
 		end
 	end
@@ -635,27 +605,23 @@ class RINS < CclsSequencer
 		command.execute
 	end
 
-	def run
-		prepare_output_dir_and_log_file
-		file_format_check_and_conversion
-#		if mode == 1	
-			chop_reads
-			blat_chopped_reads
-			blat_out_candidate_reads
-			compress_raw_reads
-			pull_reads_from_blat_out_candidates
-#		elsif mode == 2
-#			files.each_pair { |k,v| FileUtils.ln_s("#{k}lane.fa","compress_#{k}lane.fa") }
-#		end
-		align_compressed_reads_to_human_genome_reference_using_bowtie
-		step8
-		detect_species_of_non_human_sequences
-		detect_unknown_sequences
-		wrap_things_up
-	end
-
 end
 
 app = RINS.new(o)
-app.run
+app.prepare_output_dir_and_log_file
+app.file_format_check_and_conversion
+#if mode == 2
+#		app.files.each_pair { |k,v| FileUtils.ln_s("#{k}lane.fa","compress_#{k}lane.fa") }
+#else #if mode == 1	
+		app.chop_reads
+		app.blat_chopped_reads
+		app.find_blat_out_candidate_reads
+		app.compress_raw_reads
+		app.pull_reads_from_blat_out_candidates
+#end
+app.align_compressed_reads_to_human_genome_reference_using_bowtie
+app.step8
+app.detect_species_of_non_human_sequences
+app.detect_unknown_sequences
+app.wrap_things_up
 
