@@ -157,7 +157,7 @@ class CclsSequencer
 		command = "blatoutcandidate.rb "
 		#	files is a hash and the keys are not guaranteed to be sorted
 		#	sort alphabetically and left is first, right is last (conveniently)
-		command << "#{blatpsls.joins(' ')} "
+		command << "#{blatpsls.join(' ')} "
 		command << "#{fastas.join(' ')} "
 		command << "#{outputs.join(' ')} "
 		command.execute
