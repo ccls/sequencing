@@ -1,8 +1,5 @@
 #!/usr/bin/env ruby
 
-#	It is sad that the original script is called sam2names, but it is not true.
-#	The script only prints the names that have a third column of "*"
-
 #@HWI-ST281_0133:3:1:10412:2250#0/2      0       chr4    83513690        255     100M    * 0       0       CGCCTCCAGACGCGGTTCCGCCCCCGGTCCCGGCTCCGCTTCCCGCCGCCGCCGCTGCCCCCTGTGTCGCCGCCACCATGGCTCCCCCCTGCTCGCCCGC    IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII    XA:i:1  MD:Z:0T85T13    NM:i:2
 #@HWI-ST281_0133:3:1:13342:2066#0/2      4       *       0       0       *       *       0 0       CGGCATTCCAGCGGAACCGCTCGTCCGAGCCTCGGCATTCCTGGGGGCCCCCCCCTTTAAAAAAAAAAAAAAAAAGACGGGGAAGGGAAAGAGGTGAGCA    IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII    XM:i:0
 
@@ -13,9 +10,7 @@ usage =<<EOUSAGE
 
 Usage: #{File.basename($0)} sam_in_file names_out_file
 
-It is sad that the script is called sam2names, because it is not accurate.
-
-The script only prints the names that have a third column of "*"
+It is sad that the script is called sam2names, because it is not accurate.  The script only prints the names that have a third column of "*", which means that it is unknown.  This is what I want, but not what the name implies.
 
 EOUSAGE
 

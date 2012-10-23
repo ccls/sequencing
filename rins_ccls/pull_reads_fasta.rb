@@ -56,23 +56,14 @@ end
 
 if ARGV.length == 6
 	#	pair_end
-	left_names_in   = ARGV[0]
-	right_names_in  = ARGV[1]
-	left_fasta_in   = ARGV[2]
-	right_fasta_in  = ARGV[3]
-	left_fasta_out  = ARGV[4]
-	right_fasta_out = ARGV[5]
-	names = merge_names(left_names_in,right_names_in)
-	pull_reads(names, left_fasta_in, left_fasta_out)
-	pull_reads(names,right_fasta_in,right_fasta_out)
+	names = merge_names(ARGV[0],ARGV[1])
+	pull_reads(names,ARGV[2],ARGV[4])
+	pull_reads(names,ARGV[3],ARGV[5])
 elsif ARGV.length == 3
 	#	single_end
-	single_names_in   = ARGV[0]
-	single_fasta_in   = ARGV[1]
-	single_fasta_out  = ARGV[2]
-	names = merge_names(single_names_in)
-	pull_reads(names,single_fasta_in,single_fasta_out)
-else
+	names = merge_names(ARGV[0])
+	pull_reads(names,ARGV[1],ARGV[2])
+else	#	shouldn't happen with above check
 	puts
 	puts "Unexpected number of arguments ( 3 or 6 )"
 	puts

@@ -19,14 +19,32 @@ require 'sequencing_lib'
 
 #	blatoutcandidate.rb psl_files fasta_files output_files
 
-puts
-puts "blatoutcandidate.rb psl_files fasta_files output_files"
-puts
-puts "blatoutcandidate.rb joins the sequence lists from the psl_files,"
-puts "\tthen 'de-lanes' the list, removing the left/right, 0/1 or 1/2 suffixes,"
-puts "\tand uniquing them in order to keep both lanes in sync,"
-puts "\tthen selects those sequences from the inputs and placing then in the outputs."
-puts
+usage =<<EOUSAGE
+
+Usage: #{File.basename($0)} psl_files fasta_files output_files
+
+#{File.basename($0)} joins the sequence lists from the psl_files, then 'de-lanes' the list, removing the left/right, 0/1 or 1/2 suffixes, and uniquing them in order to keep both lanes in sync, then selects those sequences from the inputs and placing then in the outputs.
+
+EOUSAGE
+
+#	show help if arg length is wrong or 
+#	used -h or --help (wouldn't be 3 or 6 anyways)
+if( ( !ARGV.empty? and ARGV[0].match(/-h/i) ) or
+	( ![3,6].include?(ARGV.length) ) )
+	puts usage
+	exit
+end
+
+#	Check all input files ... 0,1 or 0,1,2,3
+#ARGV[0..(ARGV.length-(ARGV.length/3)-1)].each do |f|
+#	or ...
+ARGV[0..(-(ARGV.length/3)-1)].each do |f|
+	unless File.exists?(f) 
+		puts "\nFile #{f} not found.\n"
+		puts usage
+		exit 
+	end
+end
 
 names = {}
 (1..(ARGV.length/3)).each do |arg|
@@ -40,52 +58,13 @@ names = {}
 end
 
 if ARGV.length == 6
-#	#	pair end
-#	File.open(ARGV[2],'r') { |input|
-##	File.open('blat_out_candidate_leftlane.fa','w') { |output|
-#	File.open(ARGV[4],'w') { |output|
-#		while( line = input.gets )
-#			name = line.delane_sequence_name
-#			if names[name]
-#				output.puts line
-#				output.puts input.gets
-#			else
-#				input.gets
-#			end
-#		end
-#	} }
-#	File.open(ARGV[3],'r') { |input|
-##	File.open('blat_out_candidate_rightlane.fa','w') { |output|
-#	File.open(ARGV[5],'w') { |output|
-#		while( line = input.gets )
-#			name = line.delane_sequence_name
-#			if names[name]
-#				output.puts line
-#				output.puts input.gets
-#			else
-#				input.gets
-#			end
-#		end
-#	} }
+	#	pair end
 	pull_reads(names,ARGV[2],ARGV[4])
 	pull_reads(names,ARGV[3],ARGV[5])
 elsif ARGV.length == 3
 	#	single end
 	pull_reads(names,ARGV[1],ARGV[2])
-#	File.open(ARGV[1],'r') { |input|
-##	File.open('blat_out_candidate_singlelane.fa','w') { |output|
-#	File.open(ARGV[2],'w') { |output|
-#		while( line = input.gets )
-#			name = line.delane_sequence_name
-#			if names[name]
-#				output.puts line
-#				output.puts input.gets
-#			else
-#				input.gets
-#			end
-#		end
-#	} }
-else
+else	#	shouldn't happen with above checks
 	puts
 	puts "Unexpected number of arguments ( 3 or 6 )"
 	puts

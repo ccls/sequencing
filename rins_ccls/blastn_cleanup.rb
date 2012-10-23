@@ -16,11 +16,6 @@
 #	THEN
 #	loop through the combined hash data
 
-#
-#	TODO allow multi-line sequences and deprecate remove modify_trinity_output.pl
-#		not needed now
-#
-
 usage =<<EOUSAGE
 
 Usage: #{File.basename($0)} [options] contigs_input fasta_input fasta_output similarity_thrd
@@ -60,20 +55,6 @@ File.open(fasta_input,'r') do|f|
 #	>comp629_c0_seq1 len=320 path=[298:0-60 359:61-166 465:167-207 506:208-235 534:236-259 558:260-271 570:272-319]
 #ATAGTTTCTATAGTTTAGTTTATTGCTGTATCATGCTTTCTGGCACGGCAAACTGTCTCCATTGCAAATTTAACAGCTTCTGGGCACCAACTTATTATGACTACTTTCACATAATTACTGTTCTGGCTGCGTTTTCTAGGTTGCCTTGCCAATAAAATGTGCTTCCAAATCTCCACCAAGACACACCTAATCCGGTCGCTGCTTGCTTTCTAGCTTTAATTAATGCAGTTGCTACACGTCTCTTTCTAACTATAATTATAAACTATAATCTAGACAATAATAAATAGGGAGGGACCGAATACGGTGCGACCGAATGGGGT
 
-
-#	while name_line = f.gets and sequence_line = f.gets
-#		#	>comp79_c0_seq1 len=714 path=[692:0-713]
-#		name_parts = name_line.chomp.split
-#		name   = name_parts[0].gsub(/^>/,'')
-#		length = name_parts[1].split(/=/).last
-##		puts "#{name}:#{length}"
-#		data[name] = {}
-#		data[name][:bitscores] = []	#	prepare to handle multiple bitscores from blastn
-#		data[name][:length]    = length
-#		data[name][:name_line] = name_line.chomp
-#		data[name][:sequence]  = sequence_line.chomp
-#	end
-
 	name = ''
 	while line = f.gets
 		if line =~ /^>/
@@ -88,11 +69,10 @@ File.open(fasta_input,'r') do|f|
 			data[name][:length]    = length
 			data[name][:name_line] = line.chomp
 		else
+			#	appending unchomped line
 			data[name][:sequence] << line
 		end
 	end
-
-
 
 end
 
