@@ -562,13 +562,6 @@ class RINS < CclsSequencer
 		end
 		
 		puts "write results"
-#		command = "write_result.pl non_human_contig.fa non_human_contig_blastn.txt "
-#
-#	Using my ruby write result now
-#
-#	TODO now that I'm using my write_result.rb, should I 
-#		add the add_descriptions_to_results functionality?
-#
 		command = "write_result.rb non_human_contig.fa " <<
 			"non_human_contig_blastn.txt "
 		files.each_pair { |k,v| command << "#{k}lane.psl " }
@@ -576,28 +569,25 @@ class RINS < CclsSequencer
 		command.execute
 
 		puts "parsing write results' results and adding a description"
-#		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions -d /Volumes/cube/working/indexes/all_bacterial_and_viral"
-#		command = "add_descriptions_to_results.rb -i #{output_filename} -o #{output_filename}.with_descriptions"
-#
-#	the database needs to be the same as the one blastn used
-#	otherwise, the sequence may not be in it.
-#
+		#	the database needs to be the same as the one blastn used
 		command = "add_descriptions_to_results.rb " <<
-			"-i #{output_filename} " <<
-			"-o #{output_filename}.with_descriptions " <<
-			"-d #{blastn_index_non_human}"
+			"-d #{blastn_index_non_human}" <<
+			"#{output_filename} " <<
+			"#{output_filename}.with_descriptions "
 		command.execute
 
 		puts "parsing write results' results and selecting just first match"
 		command = "just_first_contig_match_results.rb " <<
-			"-i #{output_filename}.with_descriptions " <<
-			"-o #{output_filename}.with_descriptions.just_first_match"
+			"#{output_filename}.with_descriptions " <<
+			"#{output_filename}.with_descriptions.just_first_match"
 		command.execute
 	end
 
 	def detect_unknown_sequences
 		puts "step X detect the unknowns (this is experimental)"
+#
 #	make sure sequences are on single line
+#
 		command = "blastn_cleanup.rb " <<
 			"non_human_contig_blastn.txt " <<
 			"non_human_contig.fa " <<

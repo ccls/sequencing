@@ -10,34 +10,49 @@
 #	the contig length from the fasta file as it isn't
 #	in the blastn output.
 #
-#	AHHH!  This is why the modify_trinity_output is called
-#	It puts the sequence on one line. 
-
-# blastn_cleanup.rb human_contig.txt Trinity.fasta clean_blastn.fa 0.8
-
 
 #	read the blastn output
 #	read the fasta
 #	THEN
 #	loop through the combined hash data
 
-#	data = {}
-#	data['comp430_c0_seq1'] = {
-#		:length(from_fasta)
-#		:bitscore(from blastn)	actually bitscores or max_bitscore
-#		:sequence
-#	}
+#
+#	TODO allow multi-line sequences and deprecate remove modify_trinity_output.pl
+#
 
+usage =<<EOUSAGE
 
-raise "BAD DOG.  Expected 4 args." if ARGV.length != 4
+Usage: #{File.basename($0)} [options] contigs_input fasta_input fasta_output similarity_thrd
 
-input = ARGV[0]            #	human_contig.txt
-fasta_input = ARGV[1]      #	Trinity.fasta
-output = ARGV[2]           #	clean_blastn.fa
+The contigs_input file is expected to be in blastn outfmt 6.
+
+The fasta_input file is currently expected to have the entire sequence on a single line.  This is why 'modify_trinity_output.pl' is used.
+
+What exactly is 'similarity_thrd'?
+
+EOUSAGE
+
+#	show help if arg lenght is wrong or used -h or --help (won't be 4 so would work anyways)
+if( ( ARGV.length != 4 ) ||
+	( !ARGV.empty? and ARGV[0].match(/-h/i) ) )
+	puts usage
+	exit
+end
+
+ARGV[0,1].each do |f|
+	unless File.exists?(f)
+		puts "\nFile #{f} not found.\n\n" 
+		puts usage
+		exit
+	end
+end
+
+input           = ARGV[0]  #	human_contig.txt
+fasta_input     = ARGV[1]  #	Trinity.fasta
+output          = ARGV[2]  #	clean_blastn.fa
 similarity_thrd = ARGV[3]  #	0.8
 
 data = {}
-
 
 File.open(fasta_input,'r') do|f|
 #	Expecting ....

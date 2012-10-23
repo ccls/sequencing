@@ -161,7 +161,7 @@ class CclsSequencer
 		command << "#{fastas.join(' ')} "
 		command << "#{outputs.join(' ')} "
 		command.execute
-		outputs.each{|outout| output.file_check(die_on_failed_file_check) }
+		outputs.each{|output| output.file_check(die_on_failed_file_check) }
 	end
 
 	def blastn_non_human(fasta)

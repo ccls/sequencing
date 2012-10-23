@@ -1,15 +1,30 @@
 #!/usr/bin/env ruby
-#
-# used to clean up data and print out results
-#
-#############################################
 
-#	write_result.rb non_human_contig.fa non_human_contig_blastn.txt leftlane.psl rightlane.psl results.txt
-#
-#	The results should be smaller than that of write_result.pl as it should
-#	be correctly using a larger length making the "percent" smaller
-#	and therefore less likely to be >= 0.75
-#
+usage =<<EOUSAGE
+
+Usage: #{File.basename($0)} non_human_contig.fa non_human_contig_blastn.txt leftlane.psl rightlane.psl results.txt
+
+(Could be 1 or 2 psl files.)
+
+used to clean up data based if the length > 0 and the bit_score/length >= 0.75 and then print out results
+
+EOUSAGE
+
+#	show help if arg length is wrong or 
+#	used -h or --help (wouldn't be 3 or 6 anyways)
+if( ( !ARGV.empty? and ARGV[0].match(/-h/i) ) or
+	( ![4,5].include?(ARGV.length) ) )
+	puts usage
+	exit
+end
+
+ARGV[0..-2].each do |f|
+	unless File.exists?(f)
+		puts "\nFile #{f} not found.\n"
+		puts usage
+		exit 
+	end
+end
 
 contig_fa_file     = ARGV[0]			#	first	(non_human_contig.fa)
 contig_blastn_file = ARGV[1]			#	second (non_human_contig_blastn.txt)

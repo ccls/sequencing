@@ -9,6 +9,32 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'sequencing_lib'
 
+usage =<<EOUSAGE
+
+Usage: #{File.basename($0)} sam_in_file names_out_file
+
+It is sad that the script is called sam2names, because it is not accurate.
+
+The script only prints the names that have a third column of "*"
+
+EOUSAGE
+
+#	show help if arg length is wrong or 
+#	used -h or --help (wouldn't be 3 or 6 anyways)
+if( ( !ARGV.empty? and ARGV[0].match(/-h/i) ) or
+	( ARGV.length != 2 ) )
+	puts usage
+	exit
+end
+
+unless File.exists?(ARGV[0]) 
+	puts "\nFile #{ARGV[0]} not found.\n"
+	puts usage
+	exit 
+end
+
+#
+#	This is very similar to blatoutcandidate.rb
 File.open( ARGV[0], 'r' ) { |input|   #	sam file
 File.open( ARGV[1], 'w' ) { |output|  #	names file
 	while( line = input.gets )

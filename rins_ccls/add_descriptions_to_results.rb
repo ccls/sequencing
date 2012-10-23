@@ -12,21 +12,14 @@ options = {
 
 optparse = OptionParser.new do |opts|
 	# Set a banner, displayed at the top of the help screen.
-	opts.banner = "\nUsage: #{File.basename($0)} [options] -i in_file -o out_file\n\n" <<
+	opts.banner = "\nUsage: #{File.basename($0)} [options] in_file out_file\n\n" <<
 		"This script was designed to add the sequence description\n" <<
-		"to the results.txt file produced by the write_result.pl script.\n" <<
+		"to the results.txt file produced by the write_result.rb script.\n" <<
 		"It does this by looping through the input file and using\n" <<
-		"blastdbcmd on each entry and parsing the results.\n\n"
+		"blastdbcmd on each entry and parsing the results.\n\n" <<
+		"The in file is expected to be in blastn outfmt 6.\n\n"
 
 	#	Define the options, and what they do
-
-	opts.on( '-i', '--in FILE', 'tab delimited txt infile (required)' ) do |file|
-		options[:in] = file
-	end
-
-	opts.on( '-o', '--out FILE', 'tab delimited txt outfile (required)' ) do |file|
-		options[:out] = file
-	end
 
 	opts.on( '-d', '--db BlastDB', "Blast database reference",
 			"(default #{options[:db]})" ) do |db|
@@ -53,18 +46,18 @@ end
 optparse.parse!
 
 #	Infile and outfile required
-unless options[:in] and options[:out]
+unless ARGV.length == 2
 	puts optparse	#	Basically display the command line help
 	exit
 end
 
-unless File.exists?(options[:in])
-	puts "File #{options[:in]} not found." 
+unless File.exists?(ARGV[0])
+	puts "File #{ARGV[0]} not found." 
 	exit
 end
  
-File.open(  options[:in], 'r' ) { |infile|
-File.open( options[:out], 'w' ) { |outfile|
+File.open( ARGV[0], 'r' ) { |infile|
+File.open( ARGV[1], 'w' ) { |outfile|
 
 #	first line better be a header line
 #	   contig_name^Inumber_of_raw_reads_fall_on_this_contig^Inon_human_species^IE-value^Ibit_scor     e^Icontig_sequence$
