@@ -492,7 +492,9 @@ class RINS < CclsSequencer
 		#
 		#	modify_trinity_output.pl just puts the sequence on a single line
 		#	This is kinda needed by blastn_cleanup.rb (not using the old perl version anymore)
-		"modify_trinity_output.pl Trinity.fasta".execute
+#	blastn_cleanup.rb and write_results.rb can deal with multi-line sequence
+#		"modify_trinity_output.pl Trinity.fasta".execute
+
 		puts "blastn trinity output against human genome"
 		command = "blastn -query=Trinity.fasta -db=#{blastn_index_human} " <<
 			"-evalue #{blastn_evalue_thrd} -outfmt 6 > human_contig.txt"

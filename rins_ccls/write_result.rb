@@ -8,6 +8,8 @@ Usage: #{File.basename($0)} non_human_contig.fa non_human_contig_blastn.txt left
 
 used to clean up data based if the length > 0 and the bit_score/length >= 0.75 and then print out results
 
+Input fasta can now have multi-line sequences.
+
 EOUSAGE
 
 #	show help if arg length is wrong or 
@@ -36,19 +38,40 @@ File.open(contig_fa_file,'r') do|f|
 #	Expecting ....
 #	>comp629_c0_seq1 len=320 path=[298:0-60 359:61-166 465:167-207 506:208-235 534:236-259 558:260-271 570:272-319]
 #ATAGTTTCTATAGTTTAGTTTATTGCTGTATCATGCTTTCTGGCACGGCAAACTGTCTCCATTGCAAATTTAACAGCTTCTGGGCACCAACTTATTATGACTACTTTCACATAATTACTGTTCTGGCTGCGTTTTCTAGGTTGCCTTGCCAATAAAATGTGCTTCCAAATCTCCACCAAGACACACCTAATCCGGTCGCTGCTTGCTTTCTAGCTTTAATTAATGCAGTTGCTACACGTCTCTTTCTAACTATAATTATAAACTATAATCTAGACAATAATAAATAGGGAGGGACCGAATACGGTGCGACCGAATGGGGT
-	while name_line = f.gets and sequence_line = f.gets
-		#	>comp79_c0_seq1 len=714 path=[692:0-713]
-		name_parts = name_line.chomp.split
-		name   = name_parts[0].gsub(/^>/,'')
-		length = name_parts[1].split(/=/).last
-#		puts "#{name}:#{length}"
-		data[name] = {}
-		data[name][:count]     = 0	#	prepare to handle counting
-#		data[name][:bitscores] = []	#	prepare to handle multiple bitscores from blastn
-		data[name][:length]    = length
-		data[name][:name_line] = name_line.chomp
-		data[name][:seq_line]  = sequence_line.chomp
+
+#	while name_line = f.gets and sequence_line = f.gets
+#		#	>comp79_c0_seq1 len=714 path=[692:0-713]
+#		name_parts = name_line.chomp.split
+#		name   = name_parts[0].gsub(/^>/,'')
+#		length = name_parts[1].split(/=/).last
+##		puts "#{name}:#{length}"
+#		data[name] = {}
+#		data[name][:count]     = 0	#	prepare to handle counting
+##		data[name][:bitscores] = []	#	prepare to handle multiple bitscores from blastn
+#		data[name][:length]    = length
+#		data[name][:name_line] = name_line.chomp
+#		data[name][:sequence]  = sequence_line.chomp
+#	end
+
+	name = ''
+	while line = f.gets
+		if line =~ /^>/
+			#	>comp79_c0_seq1 len=714 path=[692:0-713]
+			name_parts = line.chomp.split
+			name   = name_parts[0].gsub(/^>/,'')
+			length = name_parts[1].split(/=/).last
+			#		puts "#{name}:#{length}"
+			data[name] = {}
+			data[name][:count]     = 0	#	prepare to handle counting
+			#		data[name][:bitscores] = []	#	prepare to handle multiple bitscores from blastn
+			data[name][:sequence]  = ''	#	prepare to handle multi-line sequence
+			data[name][:length]    = length
+			data[name][:name_line] = line.chomp
+		else
+			data[name][:sequence] << line.chomp	#	chomp it as outputing to text file
+		end
 	end
+
 end
 
 psl_files.each do |psl_file|
@@ -94,7 +117,7 @@ File.open(output_file, 'w') do |out|
 			if( ( data[name][:length].to_f > 0 ) && 
 					( bit_score.to_f/data[name][:length].to_f >= 0.75) )
 	
-				pline = "#{parts[0]}\t#{data[parts[0]][:count]}\t#{parts[1]}\t#{parts[10]}\t#{parts[11]}\t#{data[parts[0]][:seq_line]}";
+				pline = "#{parts[0]}\t#{data[parts[0]][:count]}\t#{parts[1]}\t#{parts[10]}\t#{parts[11]}\t#{data[parts[0]][:sequence]}";
 	
 				#	only print it once
 				if( flag[pline].nil? )
