@@ -118,7 +118,7 @@ class Darkness < CclsSequencer
 		pull_reads_from_fastas(
 			files.keys.sort.collect{|k| "#{k}#{outbase}.names" },
 			files.keys.sort.collect{|k| "#{k}lane.fa" },
-			files.keys.sort.collect{|k| "#{k}lane_bowtie_non_human.fa" })
+			files.keys.sort.collect{|k| "#{k}lane_bowtie_non_human.fasta" })
 
 		puts "de novo assembly using Trinity"
 		command = "Trinity.pl --seqType fa " <<
@@ -137,6 +137,16 @@ class Darkness < CclsSequencer
 		command.execute
 		"trinity_output/Trinity.fasta".file_check(die_on_failed_file_check)
 		FileUtils.cp("trinity_output/Trinity.fasta","trinity_non_human.fasta")
+
+
+		#	Ray doesn't like ".fa" so make sure that pull_reads output ".fasta"
+		puts "de novo assembly using Ray"
+		command = "mpiexec -n 1 Ray " <<
+			"-p leftlane_bowtie_non_human.fasta rightlane_bowtie_non_human.fasta " <<
+			"-o RayOutput"
+		command.execute
+
+
 	end
 
 end
