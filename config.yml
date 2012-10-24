@@ -63,6 +63,8 @@
 :bowtie_human_indexes:     
   - /Volumes/cube/working/indexes/hg18
   - /Volumes/cube/working/indexes/hg19
+  - /Volumes/cube/working/indexes/Blast1
+  - /Volumes/cube/working/indexes/Blast2
 
 :blastn_index_human:     /Volumes/cube/working/indexes/hg18
 #:blastn_index_non_human: /Users/jakewendt/rins/indexes/virus
