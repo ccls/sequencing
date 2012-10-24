@@ -100,6 +100,7 @@ class Darkness < CclsSequencer
 				#
 				command.execute
 				"#{k}#{outbase}.sam".file_check(die_on_failed_file_check)
+				"#{k}#{outbase}.fa".file_check(die_on_failed_file_check)
 		
 			end	#	%w( hg18 hg19 ).each do |hg|
 			
@@ -133,20 +134,22 @@ class Darkness < CclsSequencer
 #	This is the only place where we NEED left and right or single.
 #	Trinity expects the options.
 #
-		files.each_pair { |k,v| command << "--#{k} #{k}lane_bowtie_non_human.fa " }
+		files.each_pair { |k,v| command << "--#{k} #{k}lane_bowtie_non_human.fasta " }
 		command.execute
 		"trinity_output/Trinity.fasta".file_check(die_on_failed_file_check)
 		FileUtils.cp("trinity_output/Trinity.fasta","trinity_non_human.fasta")
 
-
-		#	Ray doesn't like ".fa" so make sure that pull_reads output ".fasta"
-		puts "de novo assembly using Ray"
-		command = "mpiexec -n 1 Ray " <<
-			"-p leftlane_bowtie_non_human.fasta rightlane_bowtie_non_human.fasta " <<
-			"-o RayOutput"
-		command.execute
-
-
+#		#	Ray doesn't like ".fa" so make sure that pull_reads output ".fasta"
+#		puts "de novo assembly using Ray"
+#		command = "mpiexec -n 1 Ray " <<
+#			"-p leftlane_bowtie_non_human.fasta rightlane_bowtie_non_human.fasta " <<
+#			"-o RayOutput"
+#		command.execute
+#
+#	Which is the comparable output?
+#		RayOutput/Contigs.fasta
+#		RayOutput/Scaffolds.fasta
+#
 	end
 
 end
