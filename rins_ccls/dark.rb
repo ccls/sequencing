@@ -85,10 +85,11 @@ class Darkness < CclsSequencer
 		outbase = ''	#	outside to save last value for pull_reads_fasta
 		files.each_pair do |k,v|	#	left,right
 			outbase = 'lane'
-			[bowtie_human_indexes].flatten.each do |bowtie_human_index|
+			[bowtie_human_indexes].flatten.each_with_index do |bowtie_human_index,i|
 				prevbase = String.new(outbase)	#	DO NOT JUST SET = AS WILL NOT CREATE NEW STRING!
 				name = File.basename(bowtie_human_index)
-				outbase << "_not_#{name}"
+				outbase << "_not" if i == 0
+				outbase << "_#{name}"
 		
 				command = "bowtie -n 3 -p 6 -f -S " <<
 					"#{bowtie_human_index} #{k}#{prevbase}.fa " <<
