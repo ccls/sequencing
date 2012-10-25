@@ -47,7 +47,7 @@ def merge_names(*args)
 	args.each do |arg|
 		File.open(arg,'r') do |f|
 			while line = f.gets do
-				names[line.chomp] = true
+				names[line.delane_sequence_name] = true
 			end
 		end
 	end
