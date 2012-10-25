@@ -30,8 +30,9 @@ install: install_all install_bowtie install_bowtie2 install_blat install_blast i
 install_scripts:
 	@printf "\nINSTALLING SCRIPTS\n\n"
 	cp rins_core/*pl $(BASE_BIN_DIR)
-#	no more perl scripts here
-#	cp rins_ccls/*pl $(BASE_BIN_DIR)
+#	no more perl scripts here 
+#	Oops.  Had to modify compress.pl
+	cp rins_ccls/*pl $(BASE_BIN_DIR)
 	cp rins_ccls/*rb $(BASE_BIN_DIR)
 	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/util/
 
