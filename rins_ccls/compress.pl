@@ -10,7 +10,7 @@ use strict;
 
 my $input = $ARGV[0];
 my $bits = 8;
-my $compress_ratio_thrd = $ARGV[1];
+my $compress_ratio_thrd = $ARGV[1];	#	This is usually 0.5
 
 open (IN, "<$input");
 
@@ -70,6 +70,34 @@ while (my $line = <IN>){
 	if ($compression_ratio > $compress_ratio_thrd){
 
 		$namesfastq =~s/\/[0-9]+$//;
+#
+#	The above is removing the trailing "lane specifier", but it is
+#	not standard.  Our lane data is different.
+#
+#	(from my ruby script)
+#		# >@HWI-ST281_0133:3:1:1222:2139#0/1
+#		name.gsub!(/^>/,'')
+#		# @HWI-ST281_0133:3:1:1222:2139#0/1
+#		# 
+#		# @HWI-ST281_0133:3:1:1222:2139#0/1
+#		name.gsub!(/\/\d+$/,'')
+#		# @HWI-ST281_0133:3:1:1222:2139#0
+#		# 
+#		# @HWI-ST977:132:C09W8ACXX:7:2307:10304:95858_2:N:0:CGTAGG
+#		name.gsub!(/_\d{1}:.*$/,'')
+#		# @HWI-ST977:132:C09W8ACXX:7:2307:10304:95858
+#		# 
+#
+#	Adding this to "delane" our data...
+		$namesfastq =~s/_\d{1}:.*$//;
+
+#
+#	I have modified the scripts that read this output
+#	to "delane" it before doing anything
+#	so this may not be entirely necessary now.
+#
+
+
 		$namesfastq =~s/^\>//;
 
 		print "$namesfastq\n";
