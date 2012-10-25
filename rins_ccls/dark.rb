@@ -91,7 +91,8 @@ class Darkness < CclsSequencer
 				outbase << "_not" if i == 0
 				outbase << "_#{name}"
 		
-				command = "bowtie -n 3 -p 6 -f -S " <<
+#				command = "bowtie -n 3 -p 6 -f -S " <<
+				command = "bowtie2 -n 3 -p 6 -f -S " <<
 					"#{bowtie_human_index} #{k}#{prevbase}.fa " <<
 					"#{k}#{outbase}.sam --un #{k}#{outbase}.fa"
 				#
