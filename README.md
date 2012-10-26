@@ -45,9 +45,14 @@ Not including the virus index.
 [Blat 34](http://users.soe.ucsc.edu/~kent/src/) 
 THIS IS NOT THE LATEST VERSION.
 
+[Blat 35](http://users.soe.ucsc.edu/~kent/src/) 
+
 [Bowtie 0.12.8 and Bowtie 2.0.0 beta 7](http://bowtie-bio.sourceforge.net/)
 
 [Trinity 2012-06-08](http://trinityrnaseq.sourceforge.net) 
+Not including the ~50MB of sample data
+
+[Trinity 2012-10-05](http://trinityrnaseq.sourceforge.net) 
 Not including the ~50MB of sample data
 
 
@@ -109,7 +114,7 @@ Blat doesn't have any perl, so this was just Bowtie, Bowtie2, Blast and Trinity.
 
 
 
-## Trinity modifications ( scripts to be copied in via Makefile )
+## Trinity 2012-06-08 modifications ( scripts to be copied in via Makefile )
 
 SAM\_filter\_out\_unmapped\_reads.pl was modified due to some test
 data triggering a divide by zero error.

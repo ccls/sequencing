@@ -3802,3 +3802,6 @@ trinityrnaseq_r2012-06-08/trinity-plugins/jellyfish-1.1.5/tests/compat.sh
 trinityrnaseq_r2012-06-08/trinity-plugins/rsem-1.1.19/rsem-for-ebseq-calculate-clustering-info
 trinityrnaseq_r2012-06-08/trinity-plugins/slclust/src/slclust
 trinityrnaseq_r2012-06-08/trinity-plugins/slclust/src/*.o
+
+
+trinityrnaseq_r2012-10-05/sample_data

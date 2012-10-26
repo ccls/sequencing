@@ -5,7 +5,8 @@ BLAT    = blatSrc34
 BLAST   = ncbi-blast-2.2.27+-src/c++
 BOWTIE  = bowtie-0.12.8
 BOWTIE2 = bowtie2-2.0.0-beta7
-TRINITY = trinityrnaseq_r2012-06-08
+#TRINITY = trinityrnaseq_r2012-06-08
+TRINITY = trinityrnaseq_r2012-10-05
 
 #	mkdir will raise error if dir exists
 #	mkdir -p will not and would create full path
@@ -34,7 +35,8 @@ install_scripts:
 #	Oops.  Had to modify compress.pl
 	cp rins_ccls/*pl $(BASE_BIN_DIR)
 	cp rins_ccls/*rb $(BASE_BIN_DIR)
-	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/util/
+#	using latest trinity which may not need this
+#	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/util/
 
 install_all:
 	@printf "\nINSTALLING ALL\n\n"
