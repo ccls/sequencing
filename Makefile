@@ -99,6 +99,10 @@ install_trinity:
 	cp -r $(TRINITY)/trinity-plugins $(BASE_BIN_DIR)
 	cp -r $(TRINITY)/util $(BASE_BIN_DIR)
 
+clean_trinity:
+	@printf "\nCLEANING TRINITY\n\n"
+	cd $(TRINITY) && make clean
+
 #LICENSE
 #Makefile
 #README
@@ -116,12 +120,11 @@ install_trinity:
 
 
 
-clean: clean_blat
+clean: clean_blat clean_trinity
 	@printf "\nCLEANING\n\n"
 	/bin/rm -rf $(BLAST)/*-Debug*
 	cd $(BOWTIE) && make clean
 	cd $(BOWTIE2) && make clean
-	cd $(TRINITY) && make clean
 #	rins nothing to clean
 #	ccls nothing to clean
 
