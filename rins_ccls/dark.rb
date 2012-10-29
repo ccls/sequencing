@@ -15,6 +15,7 @@ o = {
 	:config_filename          => 'config.yml',
 	:output_filename          => 'results.txt',
 	:output_suffix            => 'dark',
+	:bowtie_version           => 1,
 	:link_sample_fa_files     => false,
 	:pre_chopped              => false,
 	:chop_read_length         => 25,
@@ -91,10 +92,31 @@ class Darkness < CclsSequencer
 				outbase << "_not" if i == 0
 				outbase << "_#{name}"
 		
-#				command = "bowtie -n 3 -p 6 -f -S " <<
-				command = "bowtie2 -n 3 -p 6 -f -S " <<
-					"#{bowtie_human_index} #{k}#{prevbase}.fa " <<
-					"#{k}#{outbase}.sam --un #{k}#{outbase}.fa"
+				command = if bowtie_version > 1
+
+#	bowtie2
+#		no -n
+#		sam file must immediate follow -S
+
+					"bowtie2 -p 6 -f " <<
+						"#{bowtie_human_index} #{k}#{prevbase}.fa " <<
+						"-S #{k}#{outbase}.sam --un #{k}#{outbase}.fa"
+
+#Executing ...
+#bowtie2 -p 6 -f /Volumes/cube/working/indexes/hg18 leftlane.fa -S leftlane_not_hg18.sam --un leftlane_not_hg18.fa
+#bowtie2-align(20730) malloc: *** mmap(size=952680448) failed (error code=12)
+#*** error: can't allocate region
+#*** set a breakpoint in malloc_error_break to debug
+#Out of memory allocating the ebwt[] array for the Bowtie index.  Please try
+#again on a computer with more memory.
+#Error: Encountered internal Bowtie 2 exception (#1)
+#Command: /Users/jakewendt/RINS_BASE/bin/bowtie2-align --wrapper basic-0 -p 6 -f --passthrough /Volumes/cube/working/indexes/hg18 leftlane.fa 
+
+				else
+					"bowtie -n 3 -p 6 -f -S " <<
+						"#{bowtie_human_index} #{k}#{prevbase}.fa " <<
+						"#{k}#{outbase}.sam --un #{k}#{outbase}.fa"
+				end
 				#
 				#	add the --un for use with the next call
 				#	I think that only the last .sam file will be needed to sync
