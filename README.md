@@ -120,7 +120,8 @@ SAM\_filter\_out\_unmapped\_reads.pl was modified due to some test
 data triggering a divide by zero error.
 
 Add an empty target to a Makefile.in.
-I doesn't seem needed on my Mac Pro, just my MacBook Pro?
+I doesn't seem needed on my Mac Pro, just my MacBook Pro? 
+Different version of make? XCode?
 
 	> trinityrnaseq_r2012-06-08/trinity-plugins/jellyfish-1.1.5/Makefile.in 
 
@@ -147,6 +148,15 @@ and I think that that is causing some problems.
 This also effected the write\_results.pl script in another place.  The sequences
 weren't included due to this change in name.  The hash then didn't contain any
 matching keys.
+
+
+
+Also, many of these scripts seem to expect a "standard" sequence name style
+of having a trailing /1 or /2 for the respective left and right lanes.
+Our data is not like this.  
+
+### TODO 
+  Is this really a standard?  Change our sequence names or modify all of the scripts to work with both style?
 
 
 
@@ -200,23 +210,28 @@ Requirements may include libpng
 This will create ~/RINS\_BASE with all of the scripts and binaries in it.
 You will need to modify your PATH to include this.  Feel free to rename it.
 
-setenv PATH ${PATH}:${HOME}/RINS\_BASE/bin
+setenv PATH ${HOME}/RINS\_BASE/bin:${PATH}
 
 
-## TODO
-
+### TODO
 
 Make FASTA copies of our FASTQ data and use it to avoid all the copying and converting.
 
+
+### TODO
 
 blat can run for quite a long time without ever producing any output.
 Make it more verbose. ( using -dots=10000 is helpfulish )
 
 
+### TODO
+
 Add testing.
 
 
 
+
+### TODO
 
 Merged PathSeq fasta files for all\_bacterial and virus\_all
 Blat can't use it as it is too big (>4GB).
@@ -229,6 +244,39 @@ Yes.  -parse\_seqids is really needed when creating from a fasta file.
 Otherwise, new ones are made up which serves no purpose.
 
 
+### NOTE
+
+Always use -parse\_seqids option when making a blastdb from a fasta file.
+Otherwise the sequence names in the fasta file are not used and
+new ones are made up.
+
+
+### TODO
+
+Bowtie2 won't run on my MacPro
+
+  Executing ...
+  bowtie2 -p 6 -f /Volumes/cube/working/indexes/hg19 leftlane\_not\_hg18.fa -S leftlane\_not\_hg18\_hg19.sam --un leftlane\_not\_hg18\_hg19.fa
+  bowtie2-align(20745) malloc: \*\*\* mmap(size=965771264) failed (error code=12)
+  \*\*\* error: can't allocate region
+  \*\*\* set a breakpoint in malloc\_error\_break to debug
+  Out of memory allocating the ebwt[] array for the Bowtie index.  Please try
+  again on a computer with more memory.
+  Error: Encountered internal Bowtie 2 exception (#1)
+  Command: /Users/jakewendt/RINS\_BASE/bin/bowtie2-align --wrapper basic-0 -p 6 -f --passthrough /Volumes/cube/working/indexes/hg19 leftlane\_not\_hg18.fa 
+  
+
+### TODO
+
+Can't make trinity r2012-10-05 on my MacPro
+It will generate many, seemingly random, ...
+
+  /bin/sh: fork: Resource temporarily unavailable
+
+
+### TODO
+
+Change all of the perl shebang lines to "/usr/bin/env perl"
 
 
 
