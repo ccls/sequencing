@@ -8,6 +8,7 @@ BOWTIE2 = bowtie2-2.0.0-beta7
 #TRINITY = trinityrnaseq_r2012-06-08
 TRINITY = trinityrnaseq_r2012-10-05
 BWA = bwa-0.6.2
+PRICE = PriceSource120527
 
 #	mkdir will raise error if dir exists
 #	mkdir -p will not and would create full path
@@ -25,7 +26,7 @@ MKDIR        = mkdir -p
 all: blat bowtie bowtie2 blast bwa trinity
 
 #install: all
-install: install_all install_bowtie install_bowtie2 install_blat install_blast install_trinity install_bwa install_scripts
+install: install_all install_bowtie install_bowtie2 install_blat install_blast install_trinity install_bwa install_price install_scripts
 	@printf "\nDONE INSTALLING ALL\n\n"
 	@printf "Add  $(BASE_BIN_DIR) TO YOUR PATH\n\n"
 
@@ -133,7 +134,21 @@ clean_bwa:
 
 
 
-clean: clean_blat clean_bwa clean_trinity
+price:
+	@printf "\nMAKING PRICE\n\n"
+	cd $(PRICE) && make
+
+install_price:
+	@printf "\nINSTALLING PRICE\n\n"
+	cp $(PRICE)/PriceTI $(BASE_BIN_DIR)
+
+clean_price:
+	@printf "\nCLEANING PRICE\n\n"
+	cd $(PRICE) && make clean
+
+
+
+clean: clean_blat clean_bwa clean_trinity clean_price
 	@printf "\nCLEANING\n\n"
 	/bin/rm -rf $(BLAST)/*-Debug*
 	cd $(BOWTIE) && make clean
