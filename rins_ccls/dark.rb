@@ -113,9 +113,9 @@ class Darkness < CclsSequencer
 #Command: /Users/jakewendt/RINS_BASE/bin/bowtie2-align --wrapper basic-0 -p 6 -f --passthrough /Volumes/cube/working/indexes/hg18 leftlane.fa 
 
 				else
-					"bowtie -n 3 -p 6 -f -S " <<
+					"bowtie -n 3 -p 6 -f " <<
 						"#{bowtie_human_index} #{k}#{prevbase}.fa " <<
-						"#{k}#{outbase}.sam --un #{k}#{outbase}.fa"
+						"-S #{k}#{outbase}.sam --un #{k}#{outbase}.fa"
 				end
 				#
 				#	add the --un for use with the next call

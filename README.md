@@ -55,6 +55,7 @@ Not including the ~50MB of sample data
 [Trinity 2012-10-05](http://trinityrnaseq.sourceforge.net) 
 Not including the ~50MB of sample data
 
+[BWA 0.6.2](http://sourceforge.net/projects/bio-bwa/files/)
 
 
 ## Indexes Used
@@ -268,10 +269,27 @@ Bowtie2 won't run on my MacPro
 
 ### TODO
 
-Can't make trinity r2012-10-05 on my MacPro
+Bowtie2 will run on Steve's MacPro, but the --un file is always empty?
+
+### TODO
+
+Can't make trinity r2012-10-05 on my MacPro or Steve's
 It will generate many, seemingly random, ...
 
   /bin/sh: fork: Resource temporarily unavailable
+
+
+Solution.  Well, not quite.  These failures appear to occur during the compilation
+of the coreutils.  The script actually deals with the failed compilation so
+this newer script is not required.  However, Chrysalis has a path hard coded in its 
+code so it is expecting a sort command in trinity-plugins/coreutils/bin.
+The sole purpose is to allow or deal with a sort command which can do so --parallel.  
+sudo port install coreutils will install the same, newer actually, however it
+will be gsort.  The contents of /opt/local/libexec/gnubin/ will contain links 
+to these "g" utils.  We could install this port, and manually copy gsort to
+our path and then this script will notice it and not run the part
+that will fail.
+
 
 
 ### TODO
@@ -279,6 +297,40 @@ It will generate many, seemingly random, ...
 Change all of the perl shebang lines to "/usr/bin/env perl"
 
 
+
+
+
+
+
+### TODO
+
+Try bwa?
+
+### TODO
+
+Try some other assemblers ....
+
+
+Price
+
+
+
+Velvet
+
+
+
+Ray/RayPlatform
+	I compiled and ran this.  Seemed to work, but was taking forever
+	so it was killed.  Perhaps give it another go on a big machine.
+	http://denovoassembler.sourceforge.net/
+	https://github.com/sebhtml/ray.git
+	https://github.com/sebhtml/RayPlatform
+	(  have "ray" and "RayPlatform" parallel.
+	  "ray" has a link to this expected location of "RayPlatform". )
+
+	If it works, add them to our repo as a submodule ...
+	git submodule add https://github.com/sebhtml/ray.git
+	git submodule add https://github.com/sebhtml/RayPlatform.git
 
 
 

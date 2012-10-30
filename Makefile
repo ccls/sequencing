@@ -7,6 +7,7 @@ BOWTIE  = bowtie-0.12.8
 BOWTIE2 = bowtie2-2.0.0-beta7
 #TRINITY = trinityrnaseq_r2012-06-08
 TRINITY = trinityrnaseq_r2012-10-05
+BWA = bwa-0.6.2
 
 #	mkdir will raise error if dir exists
 #	mkdir -p will not and would create full path
@@ -21,10 +22,10 @@ MKDIR        = mkdir -p
 
 
 #	all is the default target that is used when none are given
-all: blat bowtie bowtie2 blast trinity
+all: blat bowtie bowtie2 blast bwa trinity
 
 #install: all
-install: install_all install_bowtie install_bowtie2 install_blat install_blast install_trinity install_scripts
+install: install_all install_bowtie install_bowtie2 install_blat install_blast install_trinity install_bwa install_scripts
 	@printf "\nDONE INSTALLING ALL\n\n"
 	@printf "Add  $(BASE_BIN_DIR) TO YOUR PATH\n\n"
 
@@ -118,9 +119,21 @@ clean_trinity:
 #ccls:
 #	@printf "\nMAKING CCLS WOULD BE NICE, BUT JUST SCRIPTS\n\n"
 
+bwa:
+	@printf "\nMAKING BWA\n\n"
+	cd $(BWA) && make
+
+install_bwa:
+	@printf "\nINSTALLING BWA\n\n"
+	cp $(BWA)/bwa $(BASE_BIN_DIR)
+
+clean_bwa:
+	@printf "\nCLEANING BWA\n\n"
+	cd $(BWA) && make clean
 
 
-clean: clean_blat clean_trinity
+
+clean: clean_blat clean_bwa clean_trinity
 	@printf "\nCLEANING\n\n"
 	/bin/rm -rf $(BLAST)/*-Debug*
 	cd $(BOWTIE) && make clean

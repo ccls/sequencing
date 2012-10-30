@@ -3945,3 +3945,8 @@ trinityrnaseq_r2012-10-05/trinity-plugins/slclust/src/graph.o
 trinityrnaseq_r2012-10-05/trinity-plugins/slclust/src/graphnode.o
 trinityrnaseq_r2012-10-05/trinity-plugins/slclust/src/slclust
 trinityrnaseq_r2012-10-05/trinity-plugins/slclust/src/slcluster.o
+
+
+bwa-0.6.2/*.o
+bwa-0.6.2/bwa
+bwa-0.6.2/libbwa.a
