@@ -57,6 +57,9 @@ Not including the ~50MB of sample data
 
 [BWA 0.6.2](http://sourceforge.net/projects/bio-bwa/files/)
 
+[PRICE 20120527](http://derisilab.ucsf.edu/software/price/)
+
+
 
 ## Indexes Used
 
