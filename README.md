@@ -204,7 +204,7 @@ It appears that the field content has changed?
 
 ## INSTALLATION
 
-Requirements may include libpng
+Requirements may include libpng, coreutils, texlive
 
 
 	make 
