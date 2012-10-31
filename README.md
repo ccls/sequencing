@@ -205,7 +205,7 @@ It appears that the field content has changed?
 ## INSTALLATION
 
 Requirements may include libpng, coreutils, texlive
-	sudo port install libpng coreutils textlive
+	sudo port install autoconf automake libpng coreutils texlive
 
 
 	make 
