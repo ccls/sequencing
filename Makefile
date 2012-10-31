@@ -203,15 +203,15 @@ clean-ray:
 
 velvet:
 	@printf "\nMAKING VELVET\n\n"
-#	cd $(VELVET) && make
+	cd $(VELVET) && make
 
 install-velvet:
 	@printf "\nINSTALLING VELVET\n\n"
-#	cp $(VELVET)/velvet $(BASE_BIN_DIR)
+	cp $(VELVET)/velvet? $(BASE_BIN_DIR)
 
 clean-velvet:
 	@printf "\nCLEANING VELVET\n\n"
-#	cd $(VELVET) && make clean
+	cd $(VELVET) && make clean
 
 
 
