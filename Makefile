@@ -30,7 +30,11 @@ TARGETS = blat bowtie bowtie2 blast bwa trinity price velvet ray
 
 #	all is the default target that is used when none are given
 #all: blat bowtie bowtie2 blast bwa trinity price
-all: $(TARGETS)
+all: make-all $(TARGETS)
+	@printf "\nDONE MAKING ALL\n\n"
+
+make-all:
+	@printf "\nMAKING ALL\n\n"
 
 #install: all
 #install: install_all install_bowtie install_bowtie2 install_blat install_blast install_trinity install_bwa install_price install_scripts
