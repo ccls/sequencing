@@ -1,0 +1,94 @@
+With Ray, you can generate biological abundances.
+This is done by providing Ray with a set of reference fasta sequences.
+Ray Communities will use them to color the k-mers in the graph.
+
+
+
+For example, let's say we have 1_1.fastq and 1_2.fastq containing a lot of sequences
+from a given microbiome. To get the biological abundances of all NCBI viruses and
+all NCBI bacteria as well as identified contigs, you can use Ray for that.
+
+For any species that you want to check in your sample, you need to provide a single fasta
+file. This file can contain chromosomes, genes, or both.
+
+Now, you need a directory containing all viruses in fasta format (one virus per file) and
+another directory containing all bacteria in fasta format (one bacterium per file as well).
+
+These can be downloaded from NCBI right away.
+
+== Command ==
+
+mpiexec -n 64 Ray \
+-p 1_1.fastq -p 1_2.fastq \
+-search NCBI-bacteria-directory \
+-search NCBI-viruses-directory \
+-o RayMicrobiomeAnalysis
+
+== Input directories ==
+
+NCBI-bacteria-directory/ecoli.fasta
+NCBI-bacteria-directory/spneumo.fasta
+...
+
+NCBI-viruses-directory/phix.fasta
+...
+
+
+== Output ==
+
+RayMicrobiomeAnalysis/ contains the usual files.
+
+For a list of output files, see Ray -help
+
+The new files produced by the -search option are:
+
+
+RayMicrobiomeAnalysis/
+	BiologicalAbundances/
+		_DenovoAssembly/
+			Contigs.tsv
+			*.CoverageData.xml
+
+		_Coloring/
+		_Frequencies/
+
+		NCBI-bacteria-directory/
+			ContigIdentifications.tsv
+			_Files.tsv
+			SequenceAbundances.xml
+
+		NCBI-viruses-directory/
+			ContigIdentifications.tsv
+			_Files.tsv
+			SequenceAbundances.xml
+
+Hello,
+
+On 19/09/12 11:45 PM, Habib R wrote:
+> From previous build version of Ray, I found 0.Profile.Bacteria.tsv under the
+> BiologicalAbundances dir. 
+> What is this? How can I related this file to the ContigIdentification.tsv
+> and/or 
+> SequenceAbundances.xml under Bacteria subdir?
+> 
+
+SequenceAbundances.xml contains the primary copy of information for your
+profiled sample. There are XSL files in ray/scripts/xsl-xml/ to convert the XML file to
+tabular format, albeit with less information in it though.
+
+
+With -search, Ray colors the graph after the de novo assembly to assign "what
+is where".
+
+For each contig path in your graph (that is, in your assembly), Ray counts the
+number
+of matches in the contig path.
+
+So a line in ContigIdentification.tsv tells you that a given contig has N
+"Matches in contig" for a given reference sequence, and that the matches cover "Contig length
+ratio" of the contig, and "Sequence length ratio"
+
+
+== Note ==
+
+The virtual processor and communicator are heavily utilised here.

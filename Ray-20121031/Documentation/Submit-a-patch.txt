@@ -1,0 +1,24 @@
+
+If you want to contribute, clone the git repository, make changes
+and I (Sébastien Boisvert) will pull from you after reviewing
+the code changes. You can use "Fork/Pull request" on github for
+that.
+
+You can also submit a signed-off patch.
+
+=== A good patch ===
+
+A patch should:
+
+- be concise
+- address one issue/bug/feature (not many)
+    (in that case, submit more than one patch)
+- should compile cleanly with -std=c++98 (or -ansi) -Wall with g++
+
+
+- should pass all system tests
+- should pass all unit tests
+
+
+Read http://www.kernel.org/doc/Documentation/SubmittingPatches to learn
+more.

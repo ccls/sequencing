@@ -319,7 +319,7 @@ Price
 
 
 Velvet
-
+	https://github.com/dzerbino/velvet
 
 
 Ray/RayPlatform
@@ -334,6 +334,9 @@ Ray/RayPlatform
 	If it works, add them to our repo as a submodule ...
 	git submodule add https://github.com/sebhtml/ray.git
 	git submodule add https://github.com/sebhtml/RayPlatform.git
+
+	submodules suck.  They get "dirty" and would need cleaned before commit
+	just going to download the code locally.
 
 
 

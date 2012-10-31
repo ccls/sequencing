@@ -1,0 +1,46 @@
+Modularity of Ray using handlers
+Sébastien Boisvert
+2011-01-16
+
+
+
+== Illustration ==
+
++--------------------------------------------------------------------------+
+|                                                                          |
+|                                Application                               |
+|                                                                          |
++------------------------+------------------------+------------------------+
+|                        |                        |                        |
+|         Plugin         |         Plugin         |         Plugin         |
+|                        |                        |                        |
++---------+---------+    +---------+---------+    +---------+---------+    +
+|         |         |    |         |         |    |         |         |    |
+| Adapter | Adapter |    | Adapter | Adapter |    | Adapter | Adapter |    |
+|         |         |    |         |         |    |         |         |    |
++---------+---------+----+---------+---------+----+---------+---------+----+
+|                                                                          |
+|                                RayPlatform                               |
+|                                                                          |
++--------------------------------------------------------------------------+
+|                                                                          |
+|                        Message Passing Interface                         |
+|                                                                          |
++--------------------------------------------------------------------------+
+
+In Ray, the code to execute that depends on slave modes, master modes, and message tags
+is handled by handlers.
+
+There are 3 handler classes:
+
+- MessageTagHandler
+- MasterModeHandler
+- SlaveModeHandler
+
+
+This makes Ray (or any application using the RayPlatform) modular.
+
+== MACROS ==
+
+see plugins.txt
+

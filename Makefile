@@ -9,10 +9,16 @@ BOWTIE2 = bowtie2-2.0.0-beta7
 TRINITY = trinityrnaseq_r2012-10-05
 BWA = bwa-0.6.2
 PRICE = PriceSource120527
+RAY = ray
+VELVET = velvet
 
 #	mkdir will raise error if dir exists
 #	mkdir -p will not and would create full path
 MKDIR        = mkdir -p
+
+
+#	In the preferred compilation order ...
+TARGETS = blat bowtie bowtie2 blast bwa trinity price velvet ray
 
 
 #	the @ prefix means the line will be executed, but not printed
@@ -23,14 +29,20 @@ MKDIR        = mkdir -p
 
 
 #	all is the default target that is used when none are given
-all: blat bowtie bowtie2 blast bwa trinity
+#all: blat bowtie bowtie2 blast bwa trinity price
+all: $(TARGETS)
 
 #install: all
-install: install_all install_bowtie install_bowtie2 install_blat install_blast install_trinity install_bwa install_price install_scripts
+#install: install_all install_bowtie install_bowtie2 install_blat install_blast install_trinity install_bwa install_price install_scripts
+install: install-all $(TARGETS:%=install-%) install-scripts
 	@printf "\nDONE INSTALLING ALL\n\n"
 	@printf "Add  $(BASE_BIN_DIR) TO YOUR PATH\n\n"
 
-install_scripts:
+install-all:
+	@printf "\nINSTALLING ALL\n\n"
+	$(MKDIR) $(BASE_BIN_DIR)
+
+install-scripts:
 	@printf "\nINSTALLING SCRIPTS\n\n"
 	cp rins_core/*pl $(BASE_BIN_DIR)
 #	no more perl scripts here 
@@ -40,54 +52,78 @@ install_scripts:
 #	using latest trinity which may not need this
 #	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/util/
 
-install_all:
-	@printf "\nINSTALLING ALL\n\n"
-	$(MKDIR) $(BASE_BIN_DIR)
+
+#clean: clean_blat clean_bwa clean_trinity clean_price
+clean: clean-all $(TARGETS:%=clean-%)
+	@printf "\nDONE CLEANING\n\n"
+
+clean-all:
+	@printf "\nCLEANING ALL\n\n"
+#	rins nothing to clean
+#	ccls nothing to clean
 
 
 blat:
 	@printf "\nMAKING BLAT\n\n"
 	cd $(BLAT) && $(MKDIR) bin && make C_INCLUDE_PATH=/opt/local/include/ PNGLIB=/opt/local/lib/libpng.a BINDIR=`pwd`/bin
 
-install_blat:
+install-blat:
 	@printf "\nINSTALLING BLAT\n\n"
 	cp $(BLAT)/bin/* $(BASE_BIN_DIR)
 
-clean_blat:
+clean-blat:
 	@printf "\nCLEANING BLAT\n\n"
 	cd $(BLAT) && make clean && rm -f */*/*.a
+
 
 
 bowtie:
 	@printf "\nMAKING BOWTIE\n\n"
 	cd $(BOWTIE) && make
 
-install_bowtie:
+install-bowtie:
 	@printf "\nINSTALLING BOWTIE\n\n"
 	cd $(BOWTIE) && cp bowtie bowtie-build bowtie-inspect $(BASE_BIN_DIR)
+
+clean-bowtie:
+	@printf "\nCLEANING BOWTIE\n\n"
+	cd $(BOWTIE) && make clean
+
+
 
 bowtie2:
 	@printf "\nMAKING BOWTIE2\n\n"
 	cd $(BOWTIE2) && make
 
-install_bowtie2:
+install-bowtie2:
 	@printf "\nINSTALLING BOWTIE2\n\n"
 	cd $(BOWTIE2) && cp bowtie2 bowtie2-build bowtie2-align bowtie2-inspect $(BASE_BIN_DIR)
+
+clean-bowtie2:
+	@printf "\nCLEANING BOWTIE2\n\n"
+	cd $(BOWTIE2) && make clean
+
 
 blast:
 	@printf "\nMAKING BLAST\n\n"
 #	Use BASE_DIR as blast creates bin/, lib/ and include/
 	cd $(BLAST) && ./configure --prefix=$(BASE_DIR) && make
 
-install_blast:
+install-blast:
 	@printf "\nINSTALLING BLAST\n\n"
 	cd $(BLAST) && make install
+
+clean-blast:
+	@printf "\nCLEANING BLAST\n\n"
+	/bin/rm -rf $(BLAST)/*-Debug*
+
+
 
 trinity:
 	@printf "\nMAKING TRINITY\n\n"
 	cd $(TRINITY) && make
 
-install_trinity:
+install-trinity:
 	@printf "\nINSTALLING TRINITY\n\n"
 #	this works, but copies too much
 #	cp -r $(TRINITY)/* $(BASE_BIN_DIR)
@@ -101,7 +137,7 @@ install_trinity:
 	cp -r $(TRINITY)/trinity-plugins $(BASE_BIN_DIR)
 	cp -r $(TRINITY)/util $(BASE_BIN_DIR)
 
-clean_trinity:
+clean-trinity:
 	@printf "\nCLEANING TRINITY\n\n"
 	cd $(TRINITY) && make clean
 
@@ -124,11 +160,11 @@ bwa:
 	@printf "\nMAKING BWA\n\n"
 	cd $(BWA) && make
 
-install_bwa:
+install-bwa:
 	@printf "\nINSTALLING BWA\n\n"
 	cp $(BWA)/bwa $(BASE_BIN_DIR)
 
-clean_bwa:
+clean-bwa:
 	@printf "\nCLEANING BWA\n\n"
 	cd $(BWA) && make clean
 
@@ -138,23 +174,50 @@ price:
 	@printf "\nMAKING PRICE\n\n"
 	cd $(PRICE) && make
 
-install_price:
+install-price:
 	@printf "\nINSTALLING PRICE\n\n"
 	cp $(PRICE)/PriceTI $(BASE_BIN_DIR)
 
-clean_price:
+clean-price:
 	@printf "\nCLEANING PRICE\n\n"
 	cd $(PRICE) && make clean
 
 
 
-clean: clean_blat clean_bwa clean_trinity clean_price
-	@printf "\nCLEANING\n\n"
-	/bin/rm -rf $(BLAST)/*-Debug*
-	cd $(BOWTIE) && make clean
-	cd $(BOWTIE2) && make clean
-#	rins nothing to clean
-#	ccls nothing to clean
+#	The dir name is ray so 'make ray' will not run.
+.PHONY: ray
+ray:
+	@printf "\nMAKING RAY\n\n"
+	cd $(RAY) && make
+
+install-ray:
+	@printf "\nINSTALLING RAY\n\n"
+	cp $(RAY)/Ray $(BASE_BIN_DIR)
+
+clean-ray:
+	@printf "\nCLEANING RAY\n\n"
+	cd $(RAY) && make clean
+
+
+
+
+velvet:
+	@printf "\nMAKING VELVET\n\n"
+#	cd $(VELVET) && make
+
+install-velvet:
+	@printf "\nINSTALLING VELVET\n\n"
+#	cp $(VELVET)/velvet $(BASE_BIN_DIR)
+
+clean-velvet:
+	@printf "\nCLEANING VELVET\n\n"
+#	cd $(VELVET) && make clean
+
+
+
+
+
+
 
 test:
 	@printf "\ntesting is nice, but not today\n\n"

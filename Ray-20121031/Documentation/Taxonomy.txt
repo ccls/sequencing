@@ -1,0 +1,61 @@
+Ray Communities is a set of RayPlatform-compatible plugins that adds search
+capabilities to the Ray distributed k-mer storage engine.
+
+== Ray command ==
+
+mpiexec -n 4 Ray \
+-p s1.fastq s2.fastq \
+-search NCBI-Bacteria \
+-with-taxonomy \
+Genome-to-Taxon.tsv \
+TreeOfLife-Edges.tsv \
+Taxon-Names.tsv
+
+
+The directory NCBI-Bacteria/ contains one fasta file per strain/species.
+Each header should be like:
+
+>gi|225853611|ref|NC_012466.1| Streptococcus pneumoniae JJA, complete genome                                                                                                                         |
+
+The identifiers (225853611 in this example) are used to place things in the tree of life.
+The mapping from gi numbers to taxonomy numbers is done using the file
+Genome-to-Taxon.tsv. The taxonomy tree edges is contained in
+TreeOfLife-Edges.tsv. Finally, the name of the taxons are provided in
+Taxon-Names.tsv.
+
+
+For the NCBI taxonomy, see Documentation/NCBI-Taxonomy.txt
+
+
+== Genome-to-Taxon.tsv ==
+
+Each line has 2 columns (tab-separated):
+
+	GenBankIdentifier	taxonIdentifier
+
+Both are integers.
+
+
+
+== TreeOfLife-Edges.tsv format ==
+
+Each line has 2 columns (tab-separated):
+	
+	parentTaxonIdentifier	childTaxonIdentifier
+
+Both are integers.
+
+
+
+== Taxon-Names.tsv ==
+
+Each line has 3 columns (tab-separated):
+
+	taxonIdentifier	taxonName	taxonomicRank
+
+
+taxonIdentifier is an integer
+taxonName is a string
+taxonomicRank is a string
+
+
