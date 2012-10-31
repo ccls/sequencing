@@ -9,8 +9,8 @@ BOWTIE2 = bowtie2-2.0.0-beta7
 TRINITY = trinityrnaseq_r2012-10-05
 BWA = bwa-0.6.2
 PRICE = PriceSource120527
-RAY = ray
-VELVET = velvet
+RAY = Ray-20121031
+VELVET = Velvet-20121031
 
 #	mkdir will raise error if dir exists
 #	mkdir -p will not and would create full path

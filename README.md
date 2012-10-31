@@ -319,6 +319,7 @@ Price
 
 
 Velvet
+	http://www.ebi.ac.uk/~zerbino/velvet/
 	https://github.com/dzerbino/velvet
 
 

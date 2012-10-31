@@ -45,6 +45,7 @@ bowtie2-2.0.0-beta7/bowtie2-inspect.dSYM/
 ncbi-blast-2.2.27+-src/c++/Makefile
 ncbi-blast-2.2.27+-src/c++/*-Debug*/
 ncbi-blast-2.2.27+-src/c++/config.log
+ncbi-blast-2.2.27+-src/c++/config.cache
 ncbi-blast-2.2.27+-src/c++/include/objects/access/
 ncbi-blast-2.2.27+-src/c++/include/objects/biblio/
 ncbi-blast-2.2.27+-src/c++/include/objects/cn3d/
