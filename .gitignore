@@ -3864,7 +3864,9 @@ trinityrnaseq_r2012-10-05/trinity-plugins/collectl/bin/
 trinityrnaseq_r2012-10-05/trinity-plugins/collectl/man/
 trinityrnaseq_r2012-10-05/trinity-plugins/coreutils/bin/
 trinityrnaseq_r2012-10-05/trinity-plugins/fstrozzi-Fastool-16065e7/fastool
+trinityrnaseq_r2012-10-05/trinity-plugins/jellyfish-1.1.6/Makefile.in
 trinityrnaseq_r2012-10-05/trinity-plugins/jellyfish-1.1.6/.libs/
+trinityrnaseq_r2012-10-05/trinity-plugins/jellyfish-1.1.6/autom4te.cache/traces.0t
 trinityrnaseq_r2012-10-05/trinity-plugins/jellyfish-1.1.6/bin/jellyfish
 trinityrnaseq_r2012-10-05/trinity-plugins/jellyfish-1.1.6/jellyfish/.libs/
 trinityrnaseq_r2012-10-05/trinity-plugins/jellyfish-1.1.6/jellyfish/allocators_mmap.o
@@ -3946,6 +3948,7 @@ trinityrnaseq_r2012-10-05/trinity-plugins/slclust/src/graph.o
 trinityrnaseq_r2012-10-05/trinity-plugins/slclust/src/graphnode.o
 trinityrnaseq_r2012-10-05/trinity-plugins/slclust/src/slclust
 trinityrnaseq_r2012-10-05/trinity-plugins/slclust/src/slcluster.o
+
 
 
 bwa-0.6.2/*.o
