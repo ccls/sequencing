@@ -81,6 +81,11 @@ o.update( config )
 
 class Darkness < CclsSequencer
 
+#
+#	This was designed to work with singles and pairs.
+#	Now it really kinda requires pairs.
+#
+
 	def bowtie_non_human
 		outbase = ''	#	outside to save last value for pull_reads_fasta
 
@@ -120,8 +125,8 @@ class Darkness < CclsSequencer
 #	link last files as 
 #	files.keys.sort.collect{|k| "#{k}lane_bowtie_non_human.fasta" })
 
-		files.keys.sort.each_with_index{|k,i| 
-			FileUtils.ln_s("#{outbase}.#{i+1}.#{file_format}","#{k}lane_bowtie_non_human.#{file_format}") }
+#		files.keys.sort.each_with_index{|k,i| 
+#			FileUtils.ln_s("#{outbase}.#{i+1}.#{file_format}","#{k}lane_bowtie_non_human.#{file_format}") }
 
 		puts "de novo assembly using Trinity"
 #		command = "Trinity.pl --seqType fa " <<
@@ -131,11 +136,14 @@ class Darkness < CclsSequencer
 			"--output trinity_output " <<
 			"--CPU #{trinity_threads} " <<
 			"--bfly_opts \"--stderr\" --JM 1G "
-		files.each_pair { |k,v| command << "--#{k} #{k}lane_bowtie_non_human.#{file_format} " }
+		files.keys.sort.each_with_index{|k,i| 
+			command << "--#{k} #{outbase}.#{i+1}.#{file_format} " }
+
+#		files.each_pair { |k,v| command << "--#{k} #{k}lane_bowtie_non_human.#{file_format} " }
 
 
 #
-#	will fastq in produce fastq out????
+#	will fastq in produce fastq out with trinity????
 #
 
 		command.execute
