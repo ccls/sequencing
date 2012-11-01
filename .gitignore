@@ -70,7 +70,8 @@ ncbi-blast-2.2.27+-src/c++/include/objects/seqtest/
 ncbi-blast-2.2.27+-src/c++/include/objects/tinyseq/
 #
 #	MANY, MANY files are copies and/or created during the make process!
-#	Which to ignore?
+#	Which to ignore? I am trying to ignore all of the files that will
+#	either be created or changed when calling "make"
 #
 ncbi-blast-2.2.27+-src/c++/include/objects/biotree/.cvsignore
 ncbi-blast-2.2.27+-src/c++/include/objects/biotree/BioTreeContainer_.hpp
@@ -3964,3 +3965,12 @@ Velvet-20121031/Manual.pdf
 Velvet-20121031/obj/
 Velvet-20121031/velvetg
 Velvet-20121031/velveth
+
+
+Ray-20121031/*/*/*.o
+Ray-20121031/PREFIX
+Ray-20121031/Ray
+Ray-20121031/RayPlatform/libRayPlatform.a
+Ray-20121031/TARGETS
+Ray-20121031/code/TheRayGenomeAssembler.a
+Ray-20121031/showOptions
