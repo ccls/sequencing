@@ -275,6 +275,28 @@ Bowtie2 won't run on my MacPro
 
 Bowtie2 will run on Steve's MacPro, but the --un file is always empty?
 
+
+
+## SUPER NOTE
+
+Some scripts have the expectation of a trailing lane identifier (either /1 or /2)
+Our data is not like this.  It will have something like "\_1:Y:0:CGTACG"
+To replace our special lane identifier with the "standard" try something like ...
+
+  cat leftlane.fa | sed 's/_\([12]\).*$/\/\1/' > raw_1.fa 
+
+In addition, some scripts, samtools in particular, REQUIRE that the sequence
+names DO NOT begin with an @ symbol.
+
+  cat raw_2.fa | sed s/^>@/>/ > raw_2b.fa
+
+These @ symbols are being left behind by RINS' fastq2fasta.pl script
+
+The problem with both of these problems is that they happen quietly in the night.
+
+
+
+
 ### TODO
 
 Can't make trinity r2012-10-05 on my MacPro or Steve's
