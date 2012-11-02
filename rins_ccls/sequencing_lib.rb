@@ -9,6 +9,21 @@ class String
 		puts ( "\n#{self} failed with #{$?}\n" ) unless ( status );
 	end
 
+	#
+	#	A leading @ would be from a FASTQ file.
+	#	RINS' fastq2fasta.pl script DOES NOT remove the leading @
+	#	This is NOT part of the sequence name and when data makes
+	#		it into a SAM file, it will fail.
+	#	I modified our version to remove them, but also do so here
+	#		just in case.
+	#
+	#	A leading > would be from a FASTA file.
+	#
+	#	Trailing /1 or /2 is from Illumina
+	#
+	#	Suffixes like _2:N:0:CGTAGG are Casava 1.8 (modified)
+	#	the fastq2fasta.pl script replaces a SPACE with the _
+	#
 	def delane_sequence_name
 		name = self.chomp
 		# >@HWI-ST281_0133:3:1:1222:2139#0/1
@@ -16,12 +31,16 @@ class String
 		# @HWI-ST281_0133:3:1:1222:2139#0/1
 		# 
 		# @HWI-ST281_0133:3:1:1222:2139#0/1
-		name.gsub!(/\/\d+$/,'')
-		# @HWI-ST281_0133:3:1:1222:2139#0
+		name.gsub!(/^@/,'')
+		# HWI-ST281_0133:3:1:1222:2139#0/1
 		# 
-		# @HWI-ST977:132:C09W8ACXX:7:2307:10304:95858_2:N:0:CGTAGG
+		# HWI-ST281_0133:3:1:1222:2139#0/1
+		name.gsub!(/\/\d+$/,'')
+		# HWI-ST281_0133:3:1:1222:2139#0
+		# 
+		# HWI-ST977:132:C09W8ACXX:7:2307:10304:95858_2:N:0:CGTAGG
 		name.gsub!(/_\d{1}:.*$/,'')
-		# @HWI-ST977:132:C09W8ACXX:7:2307:10304:95858
+		# HWI-ST977:132:C09W8ACXX:7:2307:10304:95858
 		# 
 		name
 	end

@@ -131,6 +131,8 @@ install-trinity:
 	@printf "\nINSTALLING TRINITY\n\n"
 #	this works, but copies too much
 #	cp -r $(TRINITY)/* $(BASE_BIN_DIR)
+#	These more explicit copies still copy too much, and the links
+#	considering using "cp -R" which will preserve the links
 	cp -r $(TRINITY)/Analysis $(BASE_BIN_DIR)
 	cp -r $(TRINITY)/Butterfly $(BASE_BIN_DIR)
 	cp -r $(TRINITY)/Chrysalis $(BASE_BIN_DIR)
