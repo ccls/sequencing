@@ -260,9 +260,12 @@ class Darkness < CclsSequencer
 
 #	all ...
 #		-a 4
-#			-num_threads 4
+#			-num_threads 4	#	This seems to always raise 
+#    "/Users/jakewendt/sequencing/ncbi-blast-2.2.27+-src/c++/src/corelib/ncbiobj.cpp", 
+#			line 689: 
+#			Critical: ncbi::CObject::ThrowNullPointerException() - Attempt to access NULL pointer.
 #		-D 2
-#			-outfmt ????
+#			-outfmt ???? kinda
 #		-e 0.0000001
 #			-evalue 0.0000001
 #		-W 16
@@ -277,8 +280,40 @@ class Darkness < CclsSequencer
 #			-dust no  ????			
 
 #		-m 7
-#			-outfmt 5	( xml output )
+#			-outfmt 5	( xml output )	#	causes ...
+#			Warning: The parameter -num_descriptions is ignored for output formats > 4 . Use -max_target_seqs to control output
+#			BLAST query/options error: No hits are being saved
+#			Using max_target_seqs causes ...
+#			Error: Argument "num_alignments". Incompatible with argument:  `max_target_seqs'
+#		Which defeats the purpose? num_alignments=0 doesn't just report the
+#		unaligned so I really don't get this at all. So confused.
 
+
+#	Really confused. This will produce a file that will require heavy parsing. 
+#	In addition, doesn't just include the misses.  Lots of hits to database that
+#	has already said that it didn't hit?  I'm guess that it is because it is not
+#	pair checking? Need to read the Parse???.cc file and see what PathSeq keeps.
+
+#	s = The blastn output (freaking huge)
+#	> blastn -db /Volumes/cube/working/indexes/Homo_sapiens.GRCh37.69.cdna.all -query trinity_output/both.fa -evalue 0.0000001 -word_size 16 -num_alignments 0 -outfmt 0 -num_descriptions 5 > mega_blast_both_fa.out &
+#
+#	s.scan(/Query= (.*)\n\nLength=\d+\n\n\n.*No hits/)
+#	=> [["HWI-ST977:132:C09W8ACXX:7:1102:6838:8469/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:17366:8499/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:19346:8490/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:2558:8566/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:14765:8297/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:1861:8665/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:18376:8345/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:4826:8709/1"]]
+
+#
+#	The problem with this is that we would read the entire file.
+#	Probably better to read line by line, save the sequence name from 
+#		"Query= HWI-ST977:132:C09W8ACXX:7:1102:6838:8469/1"
+#	And then use it if find 
+#		"*****  NO hits found *****"
+#	After that, delane and pull_reads_from() ...
+#
+
+#	OK, this blastn has taken at least 48 hours.  Too long to be useful.
+
+#	used legacy_blast.pl to convert to new command (using multiple threads causes crash)
+#	legacy_blast.pl megablast -i trinity_output/both.fa -d /Volumes/cube/working/indexes/Homo_sapiens.GRCh37.69.cdna.all -a 4 -D 2 -e 0.0000001 -W 16 -b 0 -v 5 -f -F F -o somefile --path /Users/jakewendt/RINS_BASE/bin --print_only
+#	blastn -db /Volumes/cube/working/indexes/Homo_sapiens.GRCh37.69.cdna.all -query trinity_output/both.fa -evalue 0.0000001 -word_size 16 -num_alignments 0 -outfmt 5 -max_target_seqs 5 > mega_blast_both_fa.xml
 
 
 		
