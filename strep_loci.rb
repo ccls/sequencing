@@ -65,7 +65,7 @@ system(command)
 
 #2Convert Sam to Bam file
 command = "samtools view -uS #{o[:out_dir]}/#{o[:in_file]}_N0.sam " << 
-	"| samtools sort - #{o[:out_dir]}/#{o[:in_file]}_N0.bam"
+	"| samtools sort - #{o[:out_dir]}/#{o[:in_file]}_N0"
 system(command)
 
 #3 create index from bam file
