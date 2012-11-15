@@ -1,0 +1,100 @@
+megablast 2.2.16   arguments:
+
+  -d  Database [String]
+    default = nr
+  -i  Query File [File In]
+  -e  Expectation value [Real]
+    default = 10.0
+  -m  alignment view options:
+0 = pairwise,
+1 = query-anchored showing identities,
+2 = query-anchored no identities,
+3 = flat query-anchored, show identities,
+4 = flat query-anchored, no identities,
+5 = query-anchored no identities and blunt ends,
+6 = flat query-anchored, no identities and blunt ends,
+7 = XML Blast output,
+8 = tabular,
+9 tabular with comment lines,
+10 ASN, text
+11 ASN, binary [Integer]
+    default = 0
+    range from 0 to 11
+  -o  BLAST report Output File [File Out]  Optional
+    default = stdout
+  -F  Filter query sequence [String]
+    default = T
+  -X  X dropoff value for gapped alignment (in bits) [Integer]
+    default = 20
+  -I  Show GI's in deflines [T/F]
+    default = F
+  -q  Penalty for a nucleotide mismatch [Integer]
+    default = -3
+  -r  Reward for a nucleotide match [Integer]
+    default = 1
+  -v  Number of database sequences to show one-line descriptions for (V) [Integer]
+    default = 500
+  -b  Number of database sequence to show alignments for (B) [Integer]
+    default = 250
+  -D  Type of output:
+0 - alignment endpoints and score,
+1 - all ungapped segments endpoints,
+2 - traditional BLAST output,
+3 - tab-delimited one line format,
+4 - incremental text ASN.1,
+5 - incremental binary ASN.1 [Integer]
+    default = 2
+  -a  Number of processors to use [Integer]
+    default = 1
+  -O  ASN.1 SeqAlign file; must be used in conjunction with -D2 option [File Out]  Optional
+  -J  Believe the query defline [T/F]  Optional
+    default = F
+  -M  Maximal total length of queries for a single search [Integer]
+    default = 5000000
+  -W  Word size (length of best perfect match) [Integer]
+    default = 28
+  -z  Effective length of the database (use zero for the real size) [Real]
+    default = 0
+  -Y  Effective length of the search space (use zero for the real size) [Real]
+    default = 0
+  -P  Maximal number of positions for a hash value (set to 0 to ignore) [Integer]
+    default = 0
+  -S  Query strands to search against database: 3 is both, 1 is top, 2 is bottom [Integer]
+    default = 3
+  -T  Produce HTML output [T/F]
+    default = F
+  -l  Restrict search of database to list of GI's [String]  Optional
+  -G  Cost to open a gap (-1 invokes default behavior) [Integer]
+    default = -1
+  -E  Cost to extend a gap (-1 invokes default behavior) [Integer]
+    default = -1
+  -s  Minimal hit score to report (0 for default behavior) [Integer]
+    default = 0
+  -Q  Masked query output, must be used in conjunction with -D 2 option [File Out]  Optional
+  -f  Show full IDs in the output (default - only GIs or accessions) [T/F]
+    default = F
+  -U  Use lower case filtering of FASTA sequence [T/F]  Optional
+    default = F
+  -R  Report the log information at the end of output [T/F]  Optional
+    default = F
+  -p  Identity percentage cut-off [Real]
+    default = 0
+  -L  Location on query sequence [String]  Optional
+  -A  Multiple Hits window size; default is 0 (i.e. single-hit extensions) or 40 for discontiguous template (negative number overrides this) [Integer]
+    default = 0
+  -y  X dropoff value for ungapped extension [Integer]
+    default = 10
+  -Z  X dropoff value for dynamic programming gapped extension [Integer]
+    default = 50
+  -t  Length of a discontiguous word template (contiguous word if 0) [Integer]
+    default = 0
+  -g  Make discontiguous megablast generate words for every base of the database (mandatory with the current BLAST engine) [T/F]  Optional
+    default = T
+  -n  Use non-greedy (dynamic programming) extension for affine gap scores [T/F]  Optional
+    default = F
+  -N  Type of a discontiguous word template (0 - coding, 1 - optimal, 2 - two simultaneous [Integer]
+    default = 0
+  -H  Maximal number of HSPs to save per database sequence (0 = unlimited) [Integer]
+    default = 0
+  -V  Force use of the legacy BLAST engine [T/F]  Optional
+    default = F
