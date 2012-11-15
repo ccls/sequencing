@@ -51,6 +51,7 @@ unless o[:in_file]
 	exit
 end
 
+FileUtils.mkdir(o[:out_dir]) unless Dir.exists?(o[:out_dir])
 
 
 
