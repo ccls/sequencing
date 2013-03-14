@@ -251,112 +251,21 @@ class Darkness < CclsSequencer
 	
 		end	#	%w( hg18 hg19 ).each do |hg|
 
-
-#	mapper_repeatmasker.py
-#		mega1="/root/blast-2.2.23/bin/megablast -i /mnt/mfiles/reads/" + fFASTA	
-#		mega1=mega1 + " -d \"/mnt/mfiles/ref/"
-#		mega1=mega1 + database_name
-#		mega1=mega1 + "\" -a 4 -D 2 -e 0.0000001 -W 16 -b 0 -v 5 -f -F F -o /mnt/mfiles/reads/"
-#		mega1=mega1 + fOUT
-
-
-#	mapper_postunmapped.py
-#	#Megablast on reads over Bacterial Genome#############RAM Tools####################### 
-#	mega1="/root/blast-2.2.23/bin/megablast -i /mnt/mfiles/reads/" + fFASTA	
-#	mega1=mega1 + " -d \"/mnt/mfiles/ref/bacterial.db\" -m 7 -a 4 -D 2 -e 0.0000001 -W 16 -b 0 -v 5 -f -F F -o /mnt/mfiles/reads/"
-#	mega1=mega1 + fOUT
-
-#	mapper_postvelvet.py	
-#	mega1="/root/blast-2.2.23/bin/megablast -i /mnt/mfiles/reads/" + fFASTA	
-#	mega1=mega1 + " -d \"/mnt/mfiles/ref/bacterial.db\" -m 7 -a 4 -D 2 -e 0.0000001 -W 16 -b 0 -v 5 -f -F F -o /mnt/mfiles/reads/"
-#	mega1=mega1 + fOUT
-
-#	all ...
-#		-a 4
-#			-num_threads 4	#	This seems to always raise 
-#    "/Users/jakewendt/sequencing/ncbi-blast-2.2.27+-src/c++/src/corelib/ncbiobj.cpp", 
-#			line 689: 
-#			Critical: ncbi::CObject::ThrowNullPointerException() - Attempt to access NULL pointer.
-#		-D 2
-#			-outfmt ???? kinda
-#		-e 0.0000001
-#			-evalue 0.0000001
-#		-W 16
-#			-word_size 16
-#		-b 0
-#			-num_alignments 0		( not with outfmt 6 ??? )
-#		-v 5
-#			-num_descriptions 5
-#		-f ( show full ids in the output )
-#			
-#		-F F ( Don't filter query sequence )
-#			-dust no  ????			
-
-#		-m 7
-#			-outfmt 5	( xml output )	#	causes ...
-#			Warning: The parameter -num_descriptions is ignored for output formats > 4 . Use -max_target_seqs to control output
-#			BLAST query/options error: No hits are being saved
-#			Using max_target_seqs causes ...
-#			Error: Argument "num_alignments". Incompatible with argument:  `max_target_seqs'
-#		Which defeats the purpose? num_alignments=0 doesn't just report the
-#		unaligned so I really don't get this at all. So confused.
-
-
-#	Really confused. This will produce a file that will require heavy parsing. 
-#	In addition, doesn't just include the misses.  Lots of hits to database that
-#	has already said that it didn't hit?  I'm guess that it is because it is not
-#	pair checking? Need to read the Parse???.cc file and see what PathSeq keeps.
-
-#	s = The blastn output (freaking huge)
-#	> blastn -db /Volumes/cube/working/indexes/Homo_sapiens.GRCh37.69.cdna.all -query trinity_output/both.fa -evalue 0.0000001 -word_size 16 -num_alignments 0 -outfmt 0 -num_descriptions 5 > mega_blast_both_fa.out &
-#
-#	s.scan(/Query= (.*)\n\nLength=\d+\n\n\n.*No hits/)
-#	=> [["HWI-ST977:132:C09W8ACXX:7:1102:6838:8469/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:17366:8499/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:19346:8490/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:2558:8566/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:14765:8297/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:1861:8665/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:18376:8345/1"], ["HWI-ST977:132:C09W8ACXX:7:1102:4826:8709/1"]]
-
-#
-#	The problem with this is that we would read the entire file.
-#	Probably better to read line by line, save the sequence name from 
-#		"Query= HWI-ST977:132:C09W8ACXX:7:1102:6838:8469/1"
-#	And then use it if find 
-#		"*****  NO hits found *****"
-#	After that, delane and pull_reads_from() ...
-#
-
-#	OK, this blastn has taken at least 48 hours.  Too long to be useful.
-
-#	used legacy_blast.pl to convert to new command (using multiple threads causes crash)
-#	legacy_blast.pl megablast -i trinity_output/both.fa -d /Volumes/cube/working/indexes/Homo_sapiens.GRCh37.69.cdna.all -a 4 -D 2 -e 0.0000001 -W 16 -b 0 -v 5 -f -F F -o somefile --path /Users/jakewendt/RINS_BASE/bin --print_only
-#	blastn -db /Volumes/cube/working/indexes/Homo_sapiens.GRCh37.69.cdna.all -query trinity_output/both.fa -evalue 0.0000001 -word_size 16 -num_alignments 0 -outfmt 5 -max_target_seqs 5 > mega_blast_both_fa.xml
-
-
-		
-#		pull_reads_from_fastas(
-#			files.keys.sort.collect{|k| "#{k}#{outbase}.names" },
-#			files.keys.sort.collect{|k| "#{k}lane.fa" },
-#			files.keys.sort.collect{|k| "#{k}lane_bowtie_non_human.fasta" })
-#
-#	link last files as 
-#	files.keys.sort.collect{|k| "#{k}lane_bowtie_non_human.fasta" })
-
-#		files.keys.sort.each_with_index{|k,i| 
-#			FileUtils.ln_s("#{outbase}.#{i+1}.#{file_format}","#{k}lane_bowtie_non_human.#{file_format}") }
-
 		puts "de novo assembly using Trinity"
 #		command = "Trinity.pl --seqType fa " <<
+#			"--group_pairs_distance #{paired_fragment_length} " <<
+#			"--min_contig_length #{min_contig_length} " <<
+#			"--CPU #{trinity_threads} " <<
+#			"--bfly_opts \"--stderr\" --JM 1G "
 		command = "Trinity.pl --seqType #{(file_format == 'fastq')? 'fq' : 'fa'} " <<
-			"--group_pairs_distance #{paired_fragment_length} " <<
-			"--min_contig_length #{min_contig_length} " <<
 			"--output trinity_output " <<
-			"--CPU #{trinity_threads} " <<
-			"--bfly_opts \"--stderr\" --JM 1G "
+			"--JM 2G "
 		files.keys.sort.each_with_index{|k,i| 
 			command << "--#{k} #{outbase}.#{i+1}.#{file_format} " }
 
-#		files.each_pair { |k,v| command << "--#{k} #{k}lane_bowtie_non_human.#{file_format} " }
-
 
 #
-#	will fastq in produce fastq out with trinity????
+#	will fastq in produce fastq out with trinity???? NO.  Trinity will convert to fasta
 #
 
 		command.execute
