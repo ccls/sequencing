@@ -71,6 +71,9 @@ class String
 
 end
 
+#
+#	Called from blatoutcandidate.rb and pull_reads_fasta.rb
+#
 def pull_reads( names, input_fasta, output_fasta)
 	File.open( input_fasta,'r') { |input|
 	File.open(output_fasta,'w') { |output|

@@ -57,6 +57,16 @@ EOB
 	opts.on( '--help', 'Display thorough help screen' ) do
 		puts opts
 puts <<EOB
+
+Usage: #{File.basename($0)} --output_suffix "darkdev.fastq.bowtie2.trinity20120608"
+
+Loops through all of the bowtie_human_indexes in the config.yml
+stripping out all of the matches using bowtie2's --un-conc option.
+
+Trinity attempts to assemble the resultant file.
+
+Those results are then blasted.
+
 EOB
 		exit
 	end
@@ -228,9 +238,12 @@ class Darkness < CclsSequencer
 				"-1 #{prevbase}.1.#{file_format} " <<
 				"-2 #{prevbase}.2.#{file_format} " <<
 				"-S #{outbase}.sam " <<
-				"--all " <<
 				"--un-conc #{outbase}.#{file_format}"
 			command.execute
+
+#				"--all " <<
+#	do I need the sam file?  I think if I don't set it all of the output goes to stdout.
+#	why am I using --all here?
 
 			"#{outbase}.sam".file_check(die_on_failed_file_check)
 			"#{outbase}.1.#{file_format}".file_check(die_on_failed_file_check)
