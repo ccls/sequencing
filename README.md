@@ -283,16 +283,23 @@ Some scripts have the expectation of a trailing lane identifier (either /1 or /2
 Our data is not like this.  It will have something like "\_1:Y:0:CGTACG"
 To replace our special lane identifier with the "standard" try something like ...
 
-  cat leftlane.fa | sed 's/_\([12]\).*$/\/\1/' > raw_1.fa 
+  cat leftlane.fa | sed 's/_\([12]\).*$/\/\1/' > relaned.fa 
 
 In addition, some scripts, samtools in particular, REQUIRE that the sequence
 names DO NOT begin with an @ symbol.
 
-  cat raw_2.fa | sed s/^>@/>/ > raw_2b.fa
+  cat raw.fa | sed 's/^>@/>/' > renamed.fa
 
 These @ symbols are being left behind by RINS' fastq2fasta.pl script
 
 The problem with both of these problems is that they happen quietly in the night.
+
+
+Trinity's Chrysalis complains about the lane names too.
+util/scaffold\_iworm\_contigs.pl 
+warning, ignoring read: HWI-ST977:132:C09W8ACXX:7:1101:10003:190695\_2:N:0:GTGGCC since cannot decipher if /1 or /2 of a pair.
+Use of uninitialized value $core\_acc in string ne at scaffold\_iworm\_contigs.pl line 64, <$fh> line 1.
+Use of uninitialized value $frag\_end in hash element at scaffold\_iworm\_contigs.pl line 71, <$fh> line 1.
 
 
 
@@ -361,6 +368,10 @@ Ray/RayPlatform
 
 	submodules suck.  They get "dirty" and would need cleaned before commit
 	just going to download the code locally.
+
+
+
+mira
 
 
 
