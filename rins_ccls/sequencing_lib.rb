@@ -95,7 +95,40 @@ class CclsSequencer
 	attr_accessor :original_stderr
 
 	def initialize(options={})
-		self.options = options
+		self.options = {
+#			:config_filename          => 'config.yml',	#	used in the app, not here
+			:output_filename          => 'results.txt',
+			:output_suffix            => 'dark',
+			:bowtie_version           => 1,				#	irrelevant now (dark uses 2, rins uses 1)
+			:link_sample_fa_files     => false,		#	used in file_format_check_and_conversion (rins only)
+			:pre_chopped              => false,		#	rins only
+			:chop_read_length         => 25,			#	rins only
+			:minIdentity              => 80,
+			:compress_ratio_thrd      => 0.5,
+			:iteration                => 2,				#	rins only
+			:bowtie_threads           => 4,	#6,
+			:bowtie_mismatch          => 3,				#	rins only (bowtie2 uses capital N which can only be 0 or 1)
+			:paired_fragment_length   => 300,
+			:min_contig_length        => 300,
+			:trinity_threads          => 6,
+			:blastn_evalue_thrd       => 0.05,
+			:blastn_outfmt            => 6,
+			:similarity_thrd          => 0.8,
+			:mailto                   => '',			#	no longer used
+			:die_on_failed_file_check => false,
+			:file_format              => 'fasta',
+			:blat_reference           => ['/Volumes/cube/working/indexes/all_bacterial.fna',
+			                              '/Volumes/cube/working/indexes/virus_all.fasta' ],
+			:bowtie_index_human       => '/Volumes/cube/working/indexes/hg18',
+			:bowtie_human_indexes     => ['/Volumes/cube/working/indexes/hg18',
+			                              '/Volumes/cube/working/indexes/hg19',
+			                              '/Volumes/cube/working/indexes/Blast1',
+			                              '/Volumes/cube/working/indexes/Blast2',
+			                              '/Volumes/cube/working/indexes/Homo_sapiens.GRCh37.69.cdna.all']
+			:blastn_index_human       => '/Volumes/cube/working/indexes/hg18',
+			:blastn_index_non_human   => '/Volumes/cube/working/indexes/nt',
+			:files                    => {}
+		}.merge(options)
 	end
 
 	def method_missing(symb,*args,&block)
@@ -163,8 +196,6 @@ class CclsSequencer
 		puts "(join and unique laneless sequence names from the names files"
 		puts " and select those from the inputs and place in the outputs.)"
 		command = "pull_reads_fasta.rb "
-		#	files is a hash and the keys are not guaranteed to be sorted
-		#	sort alphabetically and left is first, right is last (conveniently)
 		command << "#{names.join(' ')} "
 		command << "#{fastas.join(' ')} "
 		command << "#{outputs.join(' ')} "
@@ -179,8 +210,6 @@ class CclsSequencer
 		puts "(join and unique laneless sequence names from psl files"
 		puts " and select those from the inputs and place in the outputs.)"
 		command = "blatoutcandidate.rb "
-		#	files is a hash and the keys are not guaranteed to be sorted
-		#	sort alphabetically and left is first, right is last (conveniently)
 		command << "#{blatpsls.join(' ')} "
 		command << "#{fastas.join(' ')} "
 		command << "#{outputs.join(' ')} "
@@ -190,8 +219,10 @@ class CclsSequencer
 
 	def blastn_non_human(fasta)
 		rootname = fasta.gsub(/#{File.extname(fasta)}$/,'')
-		command = "blastn -query=#{fasta} -db=#{blastn_index_non_human} " <<
-			"-evalue #{blastn_evalue_thrd} -outfmt 6 > #{rootname}_blastn.txt"
+		command = "blastn -query=#{fasta} -db=#{blastn_index_non_human} "
+		command << "-evalue #{blastn_evalue_thrd} " #unless blastn_evalue_thrd.blank?
+		command << "-outfmt #{blastn_outfmt} " #unless blastn_outfmt.blank?
+		command << "> #{rootname}_blastn.txt"
 		command.execute
 		"#{rootname}_blastn.txt".file_check(die_on_failed_file_check)
 	end
