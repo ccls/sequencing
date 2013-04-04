@@ -309,6 +309,7 @@ The problem with both of these problems is that they happen quietly in the night
 
 
 Trinity's Chrysalis complains about the lane names too.
+
 	util/scaffold_iworm_contigs.pl 
 	warning, ignoring read: HWI-ST977:132:C09W8ACXX:7:1101:10003:190695_2:N:0:GTGGCC since cannot decipher if /1 or /2 of a pair.
 	Use of uninitialized value $core_acc in string ne at scaffold_iworm_contigs.pl line 64, <$fh> line 1.
