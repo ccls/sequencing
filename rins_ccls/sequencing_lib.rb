@@ -124,7 +124,7 @@ class CclsSequencer
 			                              '/Volumes/cube/working/indexes/hg19',
 			                              '/Volumes/cube/working/indexes/Blast1',
 			                              '/Volumes/cube/working/indexes/Blast2',
-			                              '/Volumes/cube/working/indexes/Homo_sapiens.GRCh37.69.cdna.all']
+			                              '/Volumes/cube/working/indexes/Homo_sapiens.GRCh37.69.cdna.all'],
 			:blastn_index_human       => '/Volumes/cube/working/indexes/hg18',
 			:blastn_index_non_human   => '/Volumes/cube/working/indexes/nt',
 			:files                    => {}
