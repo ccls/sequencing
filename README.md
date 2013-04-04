@@ -253,7 +253,7 @@ Merged PathSeq fasta files for all\_bacterial and virus\_all
 Blat can't use it as it is too big (>4GB).
 Using it to create a blastdb
 
-	makeblastdb -dbtype nucl -in all\_bacterial\_and\_viral.fa -out all\_bacterial\_and\_viral -title all\_bacterial\_and\_viral -parse\_seqids
+	makeblastdb -dbtype nucl -in all_bacterial_and_viral.fa -out all_bacterial_and_viral -title all_bacterial_and_viral -parse_seqids
 
 Having trouble. Generated db isn't searchable.  Think I need the parse seqids option...
 Yes.  -parse\_seqids is really needed when creating from a fasta file.
@@ -272,14 +272,14 @@ new ones are made up.
 Bowtie2 won't run on my MacPro
 
 	Executing ...
-	bowtie2 -p 6 -f /Volumes/cube/working/indexes/hg19 leftlane\_not\_hg18.fa -S leftlane\_not\_hg18\_hg19.sam --un leftlane\_not\_hg18\_hg19.fa
-	bowtie2-align(20745) malloc: \*\*\* mmap(size=965771264) failed (error code=12)
-	\*\*\* error: can't allocate region
-	\*\*\* set a breakpoint in malloc\_error\_break to debug
+	bowtie2 -p 6 -f /Volumes/cube/working/indexes/hg19 leftlane_not_hg18.fa -S leftlane_not_hg18_hg19.sam --un leftlane_not_hg18_hg19.fa
+	bowtie2-align(20745) malloc: *** mmap(size=965771264) failed (error code=12)
+	*** error: can't allocate region
+	*** set a breakpoint in malloc_error_break to debug
 	Out of memory allocating the ebwt[] array for the Bowtie index.  Please try
 	again on a computer with more memory.
 	Error: Encountered internal Bowtie 2 exception (#1)
-	Command: /Users/jakewendt/RINS\_BASE/bin/bowtie2-align --wrapper basic-0 -p 6 -f --passthrough /Volumes/cube/working/indexes/hg19 leftlane\_not\_hg18.fa 
+	Command: /Users/jakewendt/RINS_BASE/bin/bowtie2-align --wrapper basic-0 -p 6 -f --passthrough /Volumes/cube/working/indexes/hg19 leftlane_not_hg18.fa 
 
 I downloaded the mac binaries and they run fine.  
 
@@ -292,11 +292,11 @@ Some scripts have the expectation of a trailing lane identifier (either /1 or /2
 Our data is not like this.  It will have something like "\_1:Y:0:CGTACG"
 To replace our special lane identifier with the "standard" try something like ...
 
-	cat leftlane.fa | sed 's/_\([12]\).*$/\/\1/' > relaned.fa 
+	cat leftlane.fa | sed 's/_([12]).*$/\/\1/' > relaned.fa 
 
 The underscore is added by the fastq2fasta.pl script so if using fastq try ...
 
-	cat leftlane.fq | sed 's/ \([12]\).*$/\/\1/' > relaned.fq
+	cat leftlane.fq | sed 's/ ([12]).*$/\/\1/' > relaned.fq
 
 In addition, some scripts, samtools in particular, REQUIRE that the sequence
 names DO NOT begin with an @ symbol.
@@ -309,10 +309,10 @@ The problem with both of these problems is that they happen quietly in the night
 
 
 Trinity's Chrysalis complains about the lane names too.
-	util/scaffold\_iworm\_contigs.pl 
-	warning, ignoring read: HWI-ST977:132:C09W8ACXX:7:1101:10003:190695\_2:N:0:GTGGCC since cannot decipher if /1 or /2 of a pair.
-	Use of uninitialized value $core\_acc in string ne at scaffold\_iworm\_contigs.pl line 64, <$fh> line 1.
-	Use of uninitialized value $frag\_end in hash element at scaffold\_iworm\_contigs.pl line 71, <$fh> line 1.
+	util/scaffold_iworm_contigs.pl 
+	warning, ignoring read: HWI-ST977:132:C09W8ACXX:7:1101:10003:190695_2:N:0:GTGGCC since cannot decipher if /1 or /2 of a pair.
+	Use of uninitialized value $core_acc in string ne at scaffold_iworm_contigs.pl line 64, <$fh> line 1.
+	Use of uninitialized value $frag_end in hash element at scaffold_iworm_contigs.pl line 71, <$fh> line 1.
 
 
 
