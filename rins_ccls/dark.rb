@@ -381,10 +381,12 @@ darkness = Darkness.new(o)
 darkness.prepare_output_dir_and_log_file
 darkness.bowtie_non_human_unpaired
 #darkness.bowtie_non_human
-darkness.blastn_non_human("trinity_input_single.fasta")
-darkness.blastn_non_human("trinity_input_paired.fasta")
-darkness.blastn_non_human("trinity_non_human_single.fasta")
-darkness.blastn_non_human("trinity_non_human_paired.fasta")
+
+darkness.blastn_non_human("trinity_input_single.fasta")	#	last non human fastq to fasta
+darkness.blastn_non_human("trinity_non_human_single.fasta") #	trinity's output
+darkness.blastn_non_human("trinity_input_paired.fasta")	#	last non human fastq to fasta selected pairs, merged
+darkness.blastn_non_human("trinity_non_human_paired.fasta")	#	trinity's output
+
 darkness.wrap_things_up
 
 __END__
