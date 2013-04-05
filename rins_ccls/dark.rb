@@ -98,7 +98,7 @@ class Darkness < CclsSequencer
 #
 
 	def bowtie_non_human
-		outbase = ''	#	outside to save last value for pull_reads_fasta ( irrelevant now )
+#		outbase = ''	#	outside to save last value for pull_reads_fasta ( irrelevant now )
 
 		outbase = 'raw'
 		files.keys.sort.each_with_index{|k,i| 
@@ -233,7 +233,7 @@ class Darkness < CclsSequencer
 #	  --version          print version information and quit
 #	  -h/--help          print this usage message
 
-			command = "bowtie2 -N 1 " <<
+			command = "bowtie2 -N #{bowtie2_mismatch} " <<
 				"#{(file_format == 'fastq')? '-q' : '-f'} " <<
 				"-x #{bowtie_human_index} " <<
 				"-1 #{prevbase}.1.#{file_format} " <<
@@ -268,6 +268,52 @@ class Darkness < CclsSequencer
 
 	end
 
+
+	def bowtie_non_human_unpaired
+		outbase = 'raw'
+		files.keys.sort.each_with_index{|k,i| 
+			FileUtils.ln_s(files[k],"raw.#{i+1}.#{file_format}") }
+		"raw.1.#{file_format}".file_check(die_on_failed_file_check)
+		"raw.2.#{file_format}".file_check(die_on_failed_file_check)
+
+		[bowtie_human_indexes].flatten.each_with_index do |bowtie_human_index,i|
+			prevbase = String.new(outbase)	#	DO NOT JUST SET = AS WILL NOT CREATE NEW STRING!
+			name = File.basename(bowtie_human_index)
+			outbase << "_not" if i == 0
+			outbase << "_#{name}"
+
+			unpaired_files = if i == 0
+				"#{prevbase}.1.#{file_format},#{prevbase}.2.#{file_format}"
+			else
+				"#{prevbase}.#{file_format}"
+			end
+
+			command = "bowtie2 -N #{bowtie2_mismatch} " <<
+				"#{(file_format == 'fastq')? '-q' : '-f'} " <<
+				"-x #{bowtie_human_index} " <<
+				"-U #{unpaired_files} " <<
+				"-S /dev/null " <<
+				"--threads #{bowtie_threads} " <<
+				"--un #{outbase}.#{file_format}"
+			command.execute
+			"#{outbase}.#{file_format}".file_check(die_on_failed_file_check)
+		end	#	%w( hg18 hg19 ).each do |hg|
+
+#	can I do this?
+#		self.blastn_non_human("#{outbase}.#{file_format}")	#	blastn a FASTQ FILE????
+
+		puts "de novo assembly using Trinity"
+		command = "Trinity.pl --seqType #{(file_format == 'fastq')? 'fq' : 'fa'} " <<
+			"--output trinity_output " <<
+			"--single #{outbase}.#{file_format} " <<
+			"--JM 2G "
+
+		command.execute
+		"trinity_output/Trinity.fasta".file_check(die_on_failed_file_check)
+		FileUtils.cp("trinity_output/Trinity.fasta","trinity_non_human.fasta")
+
+	end
+
 end
 
 
@@ -276,7 +322,8 @@ end
 system "date";
 darkness = Darkness.new(o)
 darkness.prepare_output_dir_and_log_file
-darkness.bowtie_non_human
+darkness.bowtie_non_human_unpaired
+#darkness.bowtie_non_human
 darkness.blastn_non_human("trinity_non_human.fasta")
 darkness.wrap_things_up
 

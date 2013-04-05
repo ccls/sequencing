@@ -108,11 +108,12 @@ class CclsSequencer
 			:iteration                => 2,				#	rins only
 			:bowtie_threads           => 4,	#6,
 			:bowtie_mismatch          => 3,				#	rins only (bowtie2 uses capital N which can only be 0 or 1)
+			:bowtie2_mismatch         => 1,				#	dark only (bowtie2 uses capital N which can only be 0 or 1)
 			:paired_fragment_length   => 300,
 			:min_contig_length        => 300,
 			:trinity_threads          => 6,
 			:blastn_evalue_thrd       => 0.05,
-			:blastn_outfmt            => 6,
+			:blastn_outfmt            => 0,				#	6,
 			:similarity_thrd          => 0.8,
 			:mailto                   => '',			#	no longer used
 			:die_on_failed_file_check => false,
