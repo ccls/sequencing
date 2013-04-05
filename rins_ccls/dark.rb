@@ -300,7 +300,7 @@ class Darkness < CclsSequencer
 		end	#	%w( hg18 hg19 ).each do |hg|
 
 #	can I do this?
-#		self.blastn_non_human("#{outbase}.#{file_format}")	#	blastn a FASTQ FILE????
+#		self.blastn_non_human("#{outbase}.#{file_format}")	#	blastn a FASTQ FILE???? NOPE
 
 		puts "de novo assembly using Trinity"
 		command = "Trinity.pl --seqType #{(file_format == 'fastq')? 'fq' : 'fa'} " <<
@@ -310,6 +310,8 @@ class Darkness < CclsSequencer
 
 		command.execute
 		"trinity_output/Trinity.fasta".file_check(die_on_failed_file_check)
+
+		FileUtils.cp("trinity_output/both.fa","trinity_input.fasta")
 		FileUtils.cp("trinity_output/Trinity.fasta","trinity_non_human.fasta")
 
 	end
@@ -324,6 +326,7 @@ darkness = Darkness.new(o)
 darkness.prepare_output_dir_and_log_file
 darkness.bowtie_non_human_unpaired
 #darkness.bowtie_non_human
+darkness.blastn_non_human("trinity_input.fasta")
 darkness.blastn_non_human("trinity_non_human.fasta")
 darkness.wrap_things_up
 
