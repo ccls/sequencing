@@ -299,20 +299,75 @@ class Darkness < CclsSequencer
 			"#{outbase}.#{file_format}".file_check(die_on_failed_file_check)
 		end	#	%w( hg18 hg19 ).each do |hg|
 
-#	can I do this?
-#		self.blastn_non_human("#{outbase}.#{file_format}")	#	blastn a FASTQ FILE???? NOPE
+
+
 
 		puts "de novo assembly using Trinity"
 		command = "Trinity.pl --seqType #{(file_format == 'fastq')? 'fq' : 'fa'} " <<
-			"--output trinity_output " <<
+			"--output trinity_output_single " <<
 			"--single #{outbase}.#{file_format} " <<
 			"--JM 2G "
-
 		command.execute
-		"trinity_output/Trinity.fasta".file_check(die_on_failed_file_check)
+		"trinity_output_single/single.fa".file_check(die_on_failed_file_check)
+		FileUtils.cp("trinity_output_single/single.fa","trinity_input_single.fasta")
+		"trinity_output_single/Trinity.fasta".file_check(die_on_failed_file_check)
+		FileUtils.cp("trinity_output_single/Trinity.fasta","trinity_non_human_single.fasta")
 
-		FileUtils.cp("trinity_output/both.fa","trinity_input.fasta")
-		FileUtils.cp("trinity_output/Trinity.fasta","trinity_non_human.fasta")
+
+#	split fasta 
+
+		#	need to escape the escape
+		command = "cat trinity_input_single.fasta | grep '^>' | sed 's/\\\/[12]$//' | sort | uniq -d > trinity_input_single.fasta.delaned_names.sorted.paired"
+		command.execute
+		"trinity_input_single.fasta.delaned_names.sorted.paired".file_check(die_on_failed_file_check)
+
+		names={}
+		File.open( 'trinity_input_single.fasta.delaned_names.sorted.paired', 'r' ) do |f|
+			while line = f.gets
+				names[line.chomp] = true
+			end
+		end
+
+		input_fasta_line_count = File.open( 'trinity_input_single.fasta', 'r' ){|f| f.count }
+
+		File.open( 'trinity_input_paired_1.fasta', 'w' ) { |left|
+		File.open( 'trinity_input_paired_2.fasta', 'w' ) { |right|
+		File.open( 'trinity_input_single.fasta', 'r' ) { |input|
+			last_sequence_name = nil
+			while line = input.gets
+				print "\r#{input.lineno} / #{input_fasta_line_count}"
+				line.chomp!  #	last read is nil
+				if( line =~ /^>/ )
+					last_sequence_name = line
+				end
+		
+				#	delane removes the > prefix as well as the trailing /1 or /2
+		
+				if( names[">#{last_sequence_name.delane_sequence_name}"] )
+					if( last_sequence_name =~ /\/1$/ )
+						left.puts line
+					elsif( last_sequence_name =~ /\/2$/ )
+						right.puts line
+					else
+						raise "#{last_sequence_name} didn't match an expected lane 1"
+					end
+				end
+		
+			end
+		} } }
+		puts	#	add a line feed after all those prints
+
+		puts "de novo assembly using Trinity"
+		command = "Trinity.pl --seqType fa "
+			"--output trinity_output_paired " <<
+			"--left  trinity_input_paired_1.fasta " <<
+			"--right trinity_input_paired_2.fasta " <<
+			"--JM 2G "
+		command.execute
+		"trinity_output_paired/both.fa".file_check(die_on_failed_file_check)
+		FileUtils.cp("trinity_output_paired/both.fa","trinity_input_paired.fasta")
+		"trinity_output_paired/Trinity.fasta".file_check(die_on_failed_file_check)
+		FileUtils.cp("trinity_output_paired/Trinity.fasta","trinity_non_human_paired.fasta")
 
 	end
 
@@ -326,8 +381,24 @@ darkness = Darkness.new(o)
 darkness.prepare_output_dir_and_log_file
 darkness.bowtie_non_human_unpaired
 #darkness.bowtie_non_human
-darkness.blastn_non_human("trinity_input.fasta")
-darkness.blastn_non_human("trinity_non_human.fasta")
+darkness.blastn_non_human("trinity_input_single.fasta")
+darkness.blastn_non_human("trinity_input_paired.fasta")
+darkness.blastn_non_human("trinity_non_human_single.fasta")
+darkness.blastn_non_human("trinity_non_human_paired.fasta")
 darkness.wrap_things_up
 
 __END__
+
+Could find the paired and unpaired reads that made it this far with ...
+
+cat trinity_input.fasta | grep "^>" | sed 's/^>//' | sed 's/\/[12]$//' | sort > trinity_input.fasta.delaned_names.sorted
+cat trinity_input.fasta.delaned_names.sorted | uniq -u > trinity_input.fasta.delaned_names.sorted.unpaired &
+cat trinity_input.fasta.delaned_names.sorted | uniq -d > trinity_input.fasta.delaned_names.sorted.paired &
+
+fallon_715723/20130404200300.outdir.dark.fastq.bowtie2.unpaired.trinity20120608
+
+ > wc -l trinity_input.fasta.delaned_names.sorted.*
+   43830 trinity_input.fasta.delaned_names.sorted.paired
+  285866 trinity_input.fasta.delaned_names.sorted.unpaired
+  329696 total
+
