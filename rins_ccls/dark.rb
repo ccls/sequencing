@@ -238,12 +238,13 @@ class Darkness < CclsSequencer
 				"-x #{bowtie_human_index} " <<
 				"-1 #{prevbase}.1.#{file_format} " <<
 				"-2 #{prevbase}.2.#{file_format} " <<
-				"-S #{outbase}.sam " <<
+				"-S /dev/null " <<
 				"--threads #{bowtie_threads} " <<
 				"--un-conc #{outbase}.#{file_format}"
 			command.execute
+#				"-S #{outbase}.sam " <<
 
-			"#{outbase}.sam".file_check(die_on_failed_file_check)
+#			"#{outbase}.sam".file_check(die_on_failed_file_check)
 			"#{outbase}.1.#{file_format}".file_check(die_on_failed_file_check)
 			"#{outbase}.2.#{file_format}".file_check(die_on_failed_file_check)
 	
