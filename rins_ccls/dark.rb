@@ -358,7 +358,7 @@ class Darkness < CclsSequencer
 		puts	#	add a line feed after all those prints
 
 		puts "de novo assembly using Trinity"
-		command = "Trinity.pl --seqType fa "
+		command = "Trinity.pl --seqType fa " <<
 			"--output trinity_output_paired " <<
 			"--left  trinity_input_paired_1.fasta " <<
 			"--right trinity_input_paired_2.fasta " <<
