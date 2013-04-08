@@ -1,4 +1,20 @@
+#	blank? code from activesupport-3.2.13/lib/active_support/core_ext/object/blank.rb
+class Object
+	def blank?
+		respond_to?(:empty?) ? empty? : !self
+	end
+end
+class NilClass
+	def blank?
+		true
+	end
+end
 class String
+	# 0x3000: fullwidth whitespace
+	NON_WHITESPACE_REGEXP = %r![^\s#{[0x3000].pack("U")}]!
+	def blank?
+		self !~ NON_WHITESPACE_REGEXP
+	end
 
 	def execute
 		puts "Executing ..."
@@ -221,8 +237,8 @@ class CclsSequencer
 	def blastn_non_human(fasta)
 		rootname = fasta.gsub(/#{File.extname(fasta)}$/,'')
 		command = "blastn -query=#{fasta} -db=#{blastn_index_non_human} "
-		command << "-evalue #{blastn_evalue_thrd} " #unless blastn_evalue_thrd.blank?
-		command << "-outfmt #{blastn_outfmt} " #unless blastn_outfmt.blank?
+		command << "-evalue #{blastn_evalue_thrd} " unless blastn_evalue_thrd.blank?
+		command << "-outfmt #{blastn_outfmt} " unless blastn_outfmt.blank?
 		command << "> #{rootname}_blastn.txt"
 		command.execute
 		"#{rootname}_blastn.txt".file_check(die_on_failed_file_check)
