@@ -1,12 +1,26 @@
 
 BASE_DIR     = ${HOME}/RINS_BASE
 BASE_BIN_DIR = ${BASE_DIR}/bin
+
+#	There is a difference between 34 and 35.  I don't know exactly what it is
+#	but 35 finds nothing and 34 finds a bunch.  Perhaps a change in parameters?
+#	34 also requires a few tweeks just to get it to compile? (34 is 5 years older than 35)
 BLAT    = blatSrc34
+
+#	for some reason 2.2.25+ seems to be installed?
 BLAST   = ncbi-blast-2.2.27+-src/c++
+
 BOWTIE  = bowtie-0.12.8
+
+#	There are newer versions of bowtie2 out, but seg faults at runtime
+#	I just installed that latest binaries which do not.
+#	bowtie2-2.1.0
 BOWTIE2 = bowtie2-2.0.0-beta7
-#TRINITY = trinityrnaseq_r2012-06-08
-TRINITY = trinityrnaseq_r2012-10-05
+
+#	There is an even newer version of trinity
+TRINITY = trinityrnaseq_r2012-06-08
+#TRINITY = trinityrnaseq_r2012-10-05
+
 BWA = bwa-0.6.2
 PRICE = PriceSource120527
 RAY = Ray-20121031
@@ -18,6 +32,9 @@ MKDIR        = mkdir -p
 
 
 #	In the preferred compilation order ...
+#
+#	could eventually add Vicuna and Mira
+#
 TARGETS = blat bowtie bowtie2 blast bwa trinity price velvet ray
 
 
@@ -25,6 +42,7 @@ TARGETS = blat bowtie bowtie2 blast bwa trinity price velvet ray
 
 
 #	Do I need the &&s?  Why not just multiple lines?
+#	The &&s are a condition so if the first part fails, the next will NOT run.
 #	Each line is its own thing so if a cd is used, needs to be same line.
 
 

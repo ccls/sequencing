@@ -83,8 +83,6 @@ So used update\_blastdb.pl to get them
 	update_blastdb.pl --decompress nt
 	update_blastdb.pl --decompress nr
 
-  ( --decompress seems to no longer be a valid option. )
-
 This will download them to whereever you are so make sure you have ~50GB of space!
 
 

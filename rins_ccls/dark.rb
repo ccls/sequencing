@@ -13,25 +13,7 @@ require 'sequencing_lib'
 puts "Running #{$0}"
 o = {
 	:config_filename          => 'config.yml',
-#	:output_filename          => 'results.txt',
-	:output_suffix            => 'dark',
-#	:bowtie_version           => 1,
-#	:link_sample_fa_files     => false,
-#	:pre_chopped              => false,
-#	:chop_read_length         => 25,
-#	:minIdentity              => 80,
-#	:compress_ratio_thrd      => 0.5,
-#	:iteration                => 2,
-#	:bowtie_threads           => 6,
-#	:bowtie_mismatch          => 3,
-#	:paired_fragment_length   => 300,
-#	:min_contig_length        => 300,
-#	:trinity_threads          => 6,
-#	:blastn_evalue_thrd       => 0.05,
-#	:similarity_thrd          => 0.8,
-#	:mailto                   => '',
-#	:die_on_failed_file_check => false,
-#	:files                    => {}
+	:output_suffix            => 'dark'
 }
 
 optparse = OptionParser.new do |opts|
