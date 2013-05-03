@@ -14,9 +14,9 @@ c << %w( iteration fasta_file evalue num_threads strand num_descriptions num_ali
 #		blast_input_1_read_201b.fasta
 #		blast_input_1_read_201c.fasta
 
-%w( blast_input_1_read_201a.fasta
-		blast_input_3_reads_201.fasta 
-		blast_input_1_read_854.fasta
+#%w( blast_input_1_read_201a.fasta
+#		blast_input_3_reads_201.fasta 
+%w(	blast_input_1_read_854.fasta
 		blast_input_1_read_895.fasta
 		blast_input_1_read_957.fasta
 		blast_input_1_read_1754.fasta
@@ -25,12 +25,13 @@ c << %w( iteration fasta_file evalue num_threads strand num_descriptions num_ali
 #%w( blast_input_1_read_201a.fasta
 #			).each do |fasta|
 
-(1..4).each do |num_threads|
+#(1..4).each do |num_threads|
+(1..2).each do |num_threads|
 %w( both plus minus ).each do |strand|
 [10].each do |num_descriptions| #[10,100,0,1].each do |num_descriptions|
 [10].each do |num_alignments| #[10,100,0,1].each do |num_alignments|
 [10].each do |max_target_seqs| #[10,100,1].each do |max_target_seqs|
-[8..12].each do |word_size| #[4,8,12].each do |word_size|
+(8..12).each do |word_size| #[4,8,12].each do |word_size|
 [false,true].each do |ungapped|
 [0].each do |outfmt| #[0,5].each do |outfmt|
 %w( 1e-10 1e-50 ).each do |evalue| #%w( 1e-1 1e-10 1e-50 1e-100 ).each do |evalue|

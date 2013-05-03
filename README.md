@@ -386,6 +386,22 @@ Ray/RayPlatform
 mira
 
 
+### Notable Links for Reference
+
+I was researching filtering and repeat masking ...
+
+	http://www.animalgenome.org/bioinfo/resources/manuals/blast2.2.24/
+	http://www.girinst.org/server/RepBase/index.php
+	http://www.repeatmasker.org/
+	http://www.clarkfrancis.com/blast/Blast_Nmer_Masking.html
+	http://www.compbio.ox.ac.uk/analysis_tools/BLAST/BLAST_filtering.shtml
+
+Even looked into creating a megablast index
+
+	http://bioinformatics.oxfordjournals.org/content/early/2008/06/23/bioinformatics.btn322.full.pdf
+
+
+
 
 ----------
 Copyright (c) 2012 [Jake Wendt], released under the MIT license
