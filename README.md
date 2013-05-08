@@ -65,6 +65,7 @@ Not including the ~50MB of sample data
 
 [MIRA](http://www.chevreux.org/projects_mira.html)
 
+[Cufflinks](http://cufflinks.cbcb.umd.edu)
 
 [BioRuby](http://bioruby.org/) - not yet used for anything
 
@@ -384,6 +385,38 @@ Ray/RayPlatform
 
 
 mira
+
+
+
+Cufflinks
+	Downloaded and untarred source code
+
+		./configure --prefix=/Users/jakewendt/RINS_BASE 
+
+		failed as needed bamlib
+
+		sudo port install samtools 
+
+		configure ran but don't think that it is the latest bamlib
+
+		make
+
+		failed as no Eigen
+
+		Downloaded Eigen.  Unbzipped.  Untarred.  Copied Eigen to include
+
+		cp -r Eigen ~/RINS_BASE/include/
+
+		had to reconfigure with 
+
+		./configure --prefix=/Users/jakewendt/RINS_BASE --with-eigen=/Users/jakewendt/RINS_BASE
+
+		working ....
+
+		make
+		make install
+		rehash
+		cufflinks ./test_data.sam
 
 
 ### Notable Links for Reference
