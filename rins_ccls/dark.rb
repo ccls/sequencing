@@ -282,8 +282,6 @@ class Darkness < CclsSequencer
 		end	#	%w( hg18 hg19 ).each do |hg|
 
 
-
-
 		puts "de novo assembly using Trinity"
 		command = "Trinity.pl --seqType #{(file_format == 'fastq')? 'fq' : 'fa'} " <<
 			"--output trinity_output_single " <<
@@ -296,54 +294,18 @@ class Darkness < CclsSequencer
 		FileUtils.cp("trinity_output_single/Trinity.fasta","trinity_non_human_single.fasta")
 
 
-#	split fasta 
-
-		#	need to escape the escape
-		command = "cat trinity_input_single.fasta | grep '^>' | sed 's/\\\/[12]$//' | sort | uniq -d > trinity_input_single.fasta.delaned_names.sorted.paired"
+		puts "Laning composite fasta file."
+		command = "bioruby_lane_fasta.rb trinity_input_single.fasta"
 		command.execute
-		"trinity_input_single.fasta.delaned_names.sorted.paired".file_check(die_on_failed_file_check)
+		"trinity_input_single_1.fasta".file_check(die_on_failed_file_check)
+		"trinity_input_single_2.fasta".file_check(die_on_failed_file_check)
 
-		names={}
-		File.open( 'trinity_input_single.fasta.delaned_names.sorted.paired', 'r' ) do |f|
-			while line = f.gets
-				names[line.chomp] = true
-			end
-		end
-
-		input_fasta_line_count = File.open( 'trinity_input_single.fasta', 'r' ){|f| f.count }
-
-		File.open( 'trinity_input_paired_1.fasta', 'w' ) { |left|
-		File.open( 'trinity_input_paired_2.fasta', 'w' ) { |right|
-		File.open( 'trinity_input_single.fasta', 'r' ) { |input|
-			last_sequence_name = nil
-			while line = input.gets
-				print "\r#{input.lineno} / #{input_fasta_line_count}"
-				line.chomp!  #	last read is nil
-				if( line =~ /^>/ )
-					last_sequence_name = line
-				end
-		
-				#	delane removes the > prefix as well as the trailing /1 or /2
-		
-				if( names[">#{last_sequence_name.delane_sequence_name}"] )
-					if( last_sequence_name =~ /\/1$/ )
-						left.puts line
-					elsif( last_sequence_name =~ /\/2$/ )
-						right.puts line
-					else
-						raise "#{last_sequence_name} didn't match an expected lane 1"
-					end
-				end
-		
-			end
-		} } }
-		puts	#	add a line feed after all those prints
 
 		puts "de novo assembly using Trinity"
 		command = "Trinity.pl --seqType fa " <<
 			"--output trinity_output_paired " <<
-			"--left  trinity_input_paired_1.fasta " <<
-			"--right trinity_input_paired_2.fasta " <<
+			"--left  trinity_input_single_1.fasta " <<
+			"--right trinity_input_single_2.fasta " <<
 			"--JM 2G "
 		command.execute
 		"trinity_output_paired/both.fa".file_check(die_on_failed_file_check)

@@ -55,12 +55,19 @@ class String
 		# HWI-ST281_0133:3:1:1222:2139#0
 		# 
 		# HWI-ST977:132:C09W8ACXX:7:2307:10304:95858_2:N:0:CGTAGG
-		name.gsub!(/_\d{1}:.*$/,'')
+		# HWI-ST977:132:C09W8ACXX:7:2307:10304:95858 2:N:0:CGTAGG
+		name.gsub!(/[\s_]\d{1}:.*$/,'')
 		# HWI-ST977:132:C09W8ACXX:7:2307:10304:95858
 		# 
 		name
 	end
 
+	def lane
+		self.match(/^[^\s]+[\s_\/]{1}([12]).*$/)[1]
+	end
+	def delane
+		self.sub(/^[>@]{0,2}([^\s]+)[\s_\/]{1}[12].*$/,'\1')
+	end
 
 	def file_check( die_on_failed_file_check = false, empty_size = 0 )
 		msg = '';
@@ -86,6 +93,22 @@ class String
 	end
 
 end
+
+#
+#	Would this be cleaner? Perhaps, but seems excessive
+#class String
+#	def to_sequence
+#		SequenceName.new(self)
+#	en
+#end
+#class SequenceName < String
+#	def lane
+#		self.match(/^[^\s]+[\s_\/]{1}([12]).*$/)[1]
+#	end
+#	def delane
+#		self.sub(/^([^\s]+)[\s_\/]{1}[12].*$/,'\1')
+#	end
+#end
 
 #
 #	Called from blatoutcandidate.rb and pull_reads_fasta.rb
