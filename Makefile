@@ -71,6 +71,7 @@ install-scripts:
 #	Oops.  Had to modify compress.pl
 	cp rins_ccls/*pl $(BASE_BIN_DIR)
 	cp rins_ccls/*rb $(BASE_BIN_DIR)
+	cp rins_ccls/*sh $(BASE_BIN_DIR)
 #	using latest trinity which may not need this
 #	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/util/
 
