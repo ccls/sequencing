@@ -10,6 +10,7 @@ o = OpenStruct.new({
 })
 
 #	nt.fa (2012 version)
+#	45032248369 Sep 14  2012 /Volumes/cube/working/indexes/nt.fa
 o.total_sequences = 16502268
 
 optparse = OptionParser.new do |opts|
