@@ -61,6 +61,8 @@ bioruby_lane_fasta.rb trinity_input_single.fasta
 #		"trinity_input_single_1.fasta".file_check(die_on_failed_file_check)
 #		"trinity_input_single_2.fasta".file_check(die_on_failed_file_check)
 
+mv trinity_input_single_1.fasta trinity_input_paired_1.fasta
+mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
 
 echo "de novo assembly of re-paired non-human using Trinity"
 Trinity.pl --seqType fa \
@@ -74,14 +76,30 @@ cp trinity_output_paired/both.fa trinity_input_paired.fasta
 cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 
 
+#
+#	Hmm.  Where will the output got when a command redirects its output inside a redirected block?
+#
+#	Did this in a script and the echo output went to the 'echo' file
+#{
+#	echo "Echo output" > block_output_test_echo.out 2>&1
+#} 1>>block_output_test_block.out 2>&1
+#
 
-#blastn -query=trinity_input_single.fasta -db=/Volumes/cube/working/indexes/nt -evalue 0.05 -outfmt 0 > trinity_input_single_blastn.txt
+#blastn -query=trinity_input_single.fasta \
+#	-db=/Volumes/cube/working/indexes/nt \
+#	-evalue 0.05 -outfmt 0 > trinity_input_single_blastn.txt
 #
-#blastn -query=trinity_non_human_single.fasta -db=/Volumes/cube/working/indexes/nt -evalue 0.05 -outfmt 0 > trinity_non_human_single_blastn.txt
+#blastn -query=trinity_non_human_single.fasta \
+#	-db=/Volumes/cube/working/indexes/nt \
+#	-evalue 0.05 -outfmt 0 > trinity_non_human_single_blastn.txt
 #
-#blastn -query=trinity_input_paired.fasta -db=/Volumes/cube/working/indexes/nt -evalue 0.05 -outfmt 0 > trinity_input_paired_blastn.txt
+#blastn -query=trinity_input_paired.fasta \
+#	-db=/Volumes/cube/working/indexes/nt \
+#	-evalue 0.05 -outfmt 0 > trinity_input_paired_blastn.txt
 #
-#blastn -query=trinity_non_human_paired.fasta -db=/Volumes/cube/working/indexes/nt -evalue 0.05 -outfmt 0 > trinity_non_human_paired_blastn.txt
+blastn -query=trinity_non_human_paired.fasta \
+#	-db=/Volumes/cube/working/indexes/nt \
+#	-evalue 0.05 -outfmt 0 > trinity_non_human_paired_blastn.txt
 
 echo "Finished at ..."
 date
