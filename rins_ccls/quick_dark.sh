@@ -97,7 +97,7 @@ cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 #	-db=/Volumes/cube/working/indexes/nt \
 #	-evalue 0.05 -outfmt 0 > trinity_input_paired_blastn.txt
 #
-blastn -query=trinity_non_human_paired.fasta \
+#blastn -query=trinity_non_human_paired.fasta \
 #	-db=/Volumes/cube/working/indexes/nt \
 #	-evalue 0.05 -outfmt 0 > trinity_non_human_paired_blastn.txt
 
