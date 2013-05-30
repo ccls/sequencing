@@ -6,7 +6,7 @@ if [ `uname -n` = "fxdgroup-169-229-196-225.sph.berkeley.edu" ] ; then
 	cmdbase=''
 else
 	db='/my/home/jwendt/blast/nt'
-	cmdbase='srun --exclusive -n 1'
+	cmdbase='srun'	#	pointless when only running one ... --exclusive -n 1'
 fi
 
 while [ $# -ne 0 ] ; do
