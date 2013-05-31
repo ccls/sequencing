@@ -20,11 +20,25 @@ while [ $# -ne 0 ] ; do
 #		split -a 4 -p '>' $1 $subdir/${1}_
 
 		#	This seems to do the trick
-		awk 'BEGIN{c=0}{if(/^>/){f=sprintf("'$subdir/$1'_%09d",++c)}print>>f}' $1
+#		awk 'BEGIN{c=0}{if(/^>/){f=sprintf("'$subdir/$1'_%09d",++c)}print>>f}' $1
 
-#
-#	some code suggests that we may need to close a file in awk????
-#
+		awk '
+			BEGIN{
+				file_number=0
+				read_count=0
+				f=sprintf("'$subdir/$1'_%09d",++file_number)
+			}
+			{
+				if(/^>/){
+					if( read_count >= 2 ){
+						close(f)
+						f=sprintf("'$subdir/$1'_%09d",++file_number)
+						read_count=0
+					}
+					read_count++
+				}
+				print>>f
+			}' $1
 
 		for file in `ls $subdir/${1}_*` ; do
 			cmd="$cmdbase blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"

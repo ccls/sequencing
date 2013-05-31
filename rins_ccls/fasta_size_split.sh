@@ -26,6 +26,7 @@ while [ $# -ne 0 ] ; do
 	{
 		char_count+=length
 		if(/^>/ && char_count >= '$size'){
+			close(f)
 			f=sprintf("'$1'_%04d",++file_number)
 			char_count=0
 		}

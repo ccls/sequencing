@@ -26,6 +26,7 @@ while [ $# -ne 0 ] ; do
 	{
 		if(/^>/){
 			if( read_count >= '$max_reads' ){
+				close(f)
 				f=sprintf("'$1'_%04d",++file_number)
 				read_count=0
 			}
