@@ -9,42 +9,56 @@
 #	so, wrap everything in curly braces and direct both
 #	to files.
 
-bowtie2 -N 1 -q -x /Volumes/cube/working/indexes/hg18 \
+indexes=/Volumes/cube/working/indexes
+
+bowtie2 -N 1 -q -x $indexes/hg18 \
 	-U raw.1.fastq,raw.2.fastq \
 	-S /dev/null --threads 4 \
 	--un raw_not_hg18.fastq
 
-bowtie2 -N 1 -q -x /Volumes/cube/working/indexes/hg19 \
+bowtie2 -N 1 -q -x $indexes/hg19 \
 	-U raw_not_hg18.fastq \
 	-S /dev/null --threads 4 \
 	--un raw_not_hg18_hg19.fastq
 
-bowtie2 -N 1 -q -x /Volumes/cube/working/indexes/Blast1 \
+bowtie2 -N 1 -q -x $indexes/Blast1 \
 	-U raw_not_hg18_hg19.fastq \
 	-S /dev/null --threads 4 \
 	--un raw_not_hg18_hg19_Blast1.fastq
 
-bowtie2 -N 1 -q -x /Volumes/cube/working/indexes/Blast2 \
+bowtie2 -N 1 -q -x $indexes/Blast2 \
 	-U raw_not_hg18_hg19_Blast1.fastq \
 	-S /dev/null --threads 4 \
 	--un raw_not_hg18_hg19_Blast1_Blast2.fastq
 
-bowtie2 -N 1 -q -x /Volumes/cube/working/indexes/Homo_sapiens.GRCh37.69.cdna.all \
+bowtie2 -N 1 -q -x $indexes/Homo_sapiens.GRCh37.69.cdna.all \
 	-U raw_not_hg18_hg19_Blast1_Blast2.fastq \
 	-S /dev/null --threads 4 \
-	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_sapiens.GRCh37.69.cdna.all.fastq
+	--un raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq
 
-bowtie2 -N 1 -q -x /Volumes/cube/working/indexes/nt_human_1 \
-	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_sapiens.GRCh37.69.cdna.all.fastq \
+bowtie2 -N 1 -q -x $indexes/nt_human_1 \
+	-U raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq \
 	-S /dev/null --threads 4 \
-	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_sapiens.GRCh37.69.cdna.all_nt_human_1.fastq 
+	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq 
 
-bowtie2 -N 1 -q -x /Volumes/cube/working/indexes/nt_human_2 \
-	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_sapiens.GRCh37.69.cdna.all_nt_human_1.fastq \
+bowtie2 -N 1 -q -x $indexes/nt_human_2 \
+	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq \
 	-S /dev/null --threads 4 \
-	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_sapiens.GRCh37.69.cdna.all_nt_human_1_nt_human_2.fastq
+	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq
 
-ln -s raw_not_hg18_hg19_Blast1_Blast2_Homo_sapiens.GRCh37.69.cdna.all_nt_human_1_nt_human_2.fastq raw_non_human.fastq
+ifile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2
+ofile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_human_genomic
+for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 ; do
+	ofile=${ofile}_$n
+	bowtie2 -N 1 -q -x $indexes/human_genomic_$n \
+		-U $ifile.fastq -S /dev/null --threads 4 \
+		--un $ofile.fastq
+	ifile=$ofile
+done
+
+ln -s $ofile.fastq raw_non_human.fastq
+
+#ln -s raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq raw_non_human.fastq
 
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
 Trinity.pl --seqType fq \
@@ -86,19 +100,19 @@ cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 #
 
 #blastn -query=trinity_input_single.fasta \
-#	-db=/Volumes/cube/working/indexes/nt \
+#	-db=$indexes/nt \
 #	-evalue 0.05 -outfmt 0 > trinity_input_single_blastn.txt
 #
 #blastn -query=trinity_non_human_single.fasta \
-#	-db=/Volumes/cube/working/indexes/nt \
+#	-db=$indexes/nt \
 #	-evalue 0.05 -outfmt 0 > trinity_non_human_single_blastn.txt
 #
 #blastn -query=trinity_input_paired.fasta \
-#	-db=/Volumes/cube/working/indexes/nt \
+#	-db=$indexes/nt \
 #	-evalue 0.05 -outfmt 0 > trinity_input_paired_blastn.txt
 #
 #blastn -query=trinity_non_human_paired.fasta \
-#	-db=/Volumes/cube/working/indexes/nt \
+#	-db=$indexes/nt \
 #	-evalue 0.05 -outfmt 0 > trinity_non_human_paired_blastn.txt
 
 echo "Finished at ..."
