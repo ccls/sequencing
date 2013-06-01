@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/sh -x
+#
+# with the -x the commands are sent to STDERR before execution
+#
 {
 #	quick script to test the removal by human_genomic indexes
 
