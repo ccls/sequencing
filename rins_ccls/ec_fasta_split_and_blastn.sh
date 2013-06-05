@@ -9,18 +9,30 @@ else
 	cmdbase='srun'	#	pointless when only running one ... --exclusive -n 1'
 fi
 
+
+tmp=`echo $1 | tr -cd '[:digit:]'`
+#	need the x's in case is blank
+if [ "x${tmp}" == "x${1}" ] ; then
+	max_reads=$1
+	shift
+else
+	max_reads=1000
+fi
+
 #	each filename on the command line
 while [ $# -ne 0 ] ; do
 	if [ -f $1 ] ; then
 		now=`date "+%Y%m%d%H%M%S"`
-		subdir=$1.${now}.pieces
+
+
+#
+#	if given path to file, put output there or where command was executed???
+#	I say where command is executed.
+#
+		fasta_file=basename $1
+		fasta_dir=dirname $1
+		subdir=$fasta_file.${now}.pieces
 		mkdir $subdir
-
-#	different version of split on ec !!!!
-#		split -a 4 -p '>' $1 $subdir/${1}_
-
-		#	This seems to do the trick
-#		awk 'BEGIN{c=0}{if(/^>/){f=sprintf("'$subdir/$1'_%09d",++c)}print>>f}' $1
 
 		awk '
 			BEGIN{
@@ -30,7 +42,7 @@ while [ $# -ne 0 ] ; do
 			}
 			{
 				if(/^>/){
-					if( read_count >= 2 ){
+					if( read_count >= '$max_reads' ){
 						close(f)
 						f=sprintf("'$subdir/$1'_%09d",++file_number)
 						read_count=0
@@ -44,7 +56,13 @@ while [ $# -ne 0 ] ; do
 			cmd="$cmdbase blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
 			echo $cmd
 			#	need to eval to use the &
+
+
+#	commented out for development
 		#	eval $cmd
+
+
+
 		done
 
 	else
