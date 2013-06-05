@@ -43,11 +43,20 @@ ARGV.each do |filename|
 	streams = [File.open("#{root_filename}_1#{root_extname}",'w'),
 		File.open("#{root_filename}_2#{root_extname}",'w')]
 
+#	if 0/1 become actual possiblities, open 3 streams?
+#	should end up with 1 empty file at the end
+#	streams = [File.open("#{root_filename}_0#{root_extname}",'w'),
+#		File.open("#{root_filename}_1#{root_extname}",'w'),
+#		File.open("#{root_filename}_2#{root_extname}",'w')]
+
 	inputfile.rewind	#	already read the file, so need to rewind
 	inputfile.each do |entry|
 		if sequence_names.include?(entry.definition.delane)
 			#	if matches, write to the correct file
 			streams[entry.definition.lane.to_i - 1].puts entry
+#	if 0/1 become actual possiblities, open 3 streams?
+#	should end up with 1 empty file at the end
+#			streams[entry.definition.lane.to_i].puts entry
 		end
 	end
 	streams.each{|f|f.close}
