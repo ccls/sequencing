@@ -1,10 +1,11 @@
 #!/bin/sh
 
-if [ `uname -n` = "fxdgroup-169-229-196-225.sph.berkeley.edu" ] ; then
+#if [ `uname -n` = "fxdgroup-169-229-196-225.sph.berkeley.edu" ] ; then
 	#	echo "on dev"
 	db='/Volumes/cube/working/indexes/nt'
 	cmdbase=''
-else
+#else
+if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
 	db='/my/home/jwendt/blast/nt'
 	cmdbase='srun'	#	pointless when only running one ... --exclusive -n 1'
 fi
@@ -12,7 +13,7 @@ fi
 
 tmp=`echo $1 | tr -cd '[:digit:]'`
 #	need the x's in case is blank
-if [ "x${tmp}" == "x${1}" ] ; then
+if [ "x${tmp}" = "x${1}" ] ; then
 	max_reads=$1
 	shift
 else
@@ -29,8 +30,9 @@ while [ $# -ne 0 ] ; do
 #	if given path to file, put output there or where command was executed???
 #	I say where command is executed.
 #
-		fasta_file=basename $1
-		fasta_dir=dirname $1
+		fasta_file=`basename $1`
+#	not used so why bother
+#		fasta_dir=`dirname $1`
 		subdir=$fasta_file.${now}.pieces
 		mkdir $subdir
 
@@ -38,13 +40,13 @@ while [ $# -ne 0 ] ; do
 			BEGIN{
 				file_number=0
 				read_count=0
-				f=sprintf("'$subdir/$1'_%09d",++file_number)
+				f=sprintf("'$subdir/$fasta_file'_%09d",++file_number)
 			}
 			{
 				if(/^>/){
 					if( read_count >= '$max_reads' ){
 						close(f)
-						f=sprintf("'$subdir/$1'_%09d",++file_number)
+						f=sprintf("'$subdir/$fasta_file'_%09d",++file_number)
 						read_count=0
 					}
 					read_count++
@@ -52,16 +54,14 @@ while [ $# -ne 0 ] ; do
 				print>>f
 			}' $1
 
-		for file in `ls $subdir/${1}_*` ; do
+		for file in `ls $subdir/${fasta_file}_*` ; do
 			cmd="$cmdbase blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
 			echo $cmd
-			#	need to eval to use the &
 
-
-#	commented out for development
-		#	eval $cmd
-
-
+			if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
+				#	need to eval to use the &
+				eval $cmd
+			fi
 
 		done
 
