@@ -27,15 +27,9 @@ if [ $# -eq 2 ] ; then
 	ln -s $1 raw.1.fastq
 	ln -s $2 raw.2.fastq
 fi
-
-
-#	TODO
-#	Out of simplicity, I expect the existance of raw.1.fastq and raw.2.fastq
-#	most likely as a link.  If this script will be used more ofter,
-#	we may want to accept parameters and create the links.
+#	else ...
+#	I expect the existance of raw.1.fastq and raw.2.fastq
 #
-
-
 
 indexes=/Volumes/cube/working/indexes
 
@@ -69,16 +63,6 @@ $bowtie2 -x $indexes/nt_human_2 \
 	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq
 
-#	for just 2 files, this loop creates more lines than without it
-#ifile=raw_not_hg18_hg19_Blast1_Blast2_Homo
-#ofile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_
-#for n in 1 2 ; do
-#	ofile=${ofile}_$n
-#	$bowtie2 -x $indexes/nt_human_$n -U $ifile.fastq --un $ofile.fastq
-#	ifile=$ofile
-#done
-
-
 ifile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2
 ofile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_human_genomic
 for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 ; do
@@ -87,54 +71,9 @@ for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 ; do
 	ifile=$ofile
 done
 
-#bowtie2 -N 1 -q -x $indexes/hg18 \
-#	-U raw.1.fastq,raw.2.fastq \
-#	-S /dev/null --threads 4 \
-#	--un raw_not_hg18.fastq
-#
-#bowtie2 -N 1 -q -x $indexes/hg19 \
-#	-U raw_not_hg18.fastq \
-#	-S /dev/null --threads 4 \
-#	--un raw_not_hg18_hg19.fastq
-#
-#bowtie2 -N 1 -q -x $indexes/Blast1 \
-#	-U raw_not_hg18_hg19.fastq \
-#	-S /dev/null --threads 4 \
-#	--un raw_not_hg18_hg19_Blast1.fastq
-#
-#bowtie2 -N 1 -q -x $indexes/Blast2 \
-#	-U raw_not_hg18_hg19_Blast1.fastq \
-#	-S /dev/null --threads 4 \
-#	--un raw_not_hg18_hg19_Blast1_Blast2.fastq
-#
-#bowtie2 -N 1 -q -x $indexes/Homo_sapiens.GRCh37.69.cdna.all \
-#	-U raw_not_hg18_hg19_Blast1_Blast2.fastq \
-#	-S /dev/null --threads 4 \
-#	--un raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq
-#
-#bowtie2 -N 1 -q -x $indexes/nt_human_1 \
-#	-U raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq \
-#	-S /dev/null --threads 4 \
-#	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq 
-#
-#bowtie2 -N 1 -q -x $indexes/nt_human_2 \
-#	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq \
-#	-S /dev/null --threads 4 \
-#	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq
-#
-#ifile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2
-#ofile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_human_genomic
-#for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 ; do
-#	ofile=${ofile}_$n
-#	bowtie2 -N 1 -q -x $indexes/human_genomic_$n \
-#		-U $ifile.fastq -S /dev/null --threads 4 \
-#		--un $ofile.fastq
-#	ifile=$ofile
-#done
 
 ln -s $ofile.fastq raw_non_human.fastq
 
-#ln -s raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq raw_non_human.fastq
 
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
 Trinity.pl --seqType fq --JM 2G \
@@ -147,8 +86,6 @@ cp trinity_output_single/Trinity.fasta trinity_non_human_single.fasta
 
 echo "Laning composite fasta file."
 bioruby_lane_fasta.rb trinity_input_single.fasta
-#		"trinity_input_single_1.fasta".file_check(die_on_failed_file_check)
-#		"trinity_input_single_2.fasta".file_check(die_on_failed_file_check)
 
 mv trinity_input_single_1.fasta trinity_input_paired_1.fasta
 mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
@@ -166,8 +103,9 @@ cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 
 #
 #	This is where I would like to scp a couple fasta files to the cluster
-#		and then ssh -f genepi ssh -f ec0000 blastn ....
-#	BUT
+#		and then blast 'em with ...
+#	ssh -f genepi ssh -f ec0000 blastn ....
+#	... BUT ...
 #
 
 

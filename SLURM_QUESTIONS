@@ -1,0 +1,98 @@
+
+
+calling "srun blastn ..... input file 1" works fine, however,
+
+The number of times that we call it will cause us to run out of processes.
+
+... so we are looking into using sbatch
+
+
+
+Also, as when all of a given group of blastn runs are done, we want
+to gather up all of the output.
+
+srun doesn't seem to provide us with a way to know when they are all done.
+
+... so we are looking into using sbatch
+
+
+
+However, calling sbatch doesn't seem to allow us to srun commands on the entire cluster
+like we would if we just called srun.
+
+I added 
+
+#SBATCH -N8
+
+to the sbatch script and then called srun with these many options
+
+srun -l --nodes=1 --ntasks=1 --ntasks-per-node=1 --cpus-per-task=1 --ntasks-per-core=1 
+
+The first 8 calls seem to get scattered as the prefix on the output shows
+different hostname output, 
+
+0: n0000
+0: n0001
+0: n0002
+0: n0003
+0: n0004
+0: n0005
+0: n0006
+0: n0007
+0: n0000
+0: n0000
+
+but after that they are always n0000???
+
+In addition, using the JOBID as a dependency doesn't seem to slow it down.
+This is the last srun call, but it is the first to output. (the sleep scripts sleep first)
+
+srun --nodes=1 --dependency=afterok:${SLURM_JOB_ID} echo "after all srun before wait" &
+
+
+
+I was thinking that maybe we couldn't use the sbatch JOBID in the sbatch script so
+I did a couple srun calls by hand on the command line and they seem to ignore it too
+
+
+
+dependency is ignored when calling srun on command line and within sbatch file
+
+--dependency=afterok:JOBID
+
+second srun call starts immediately and runs for 20 seconds (the sleep time)
+
+[jwendt@ec0000 ~]$ srun ./sleep_hostname.sh &
+[1] 7991
+[jwendt@ec0000 ~]$ sq
+  JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+  46147   primary sleep_ho   jwendt  R       0:01      1 n0000
+000 ~]$ srun ./sleep_hostname.sh --dependency=afterok:46147 &
+[2] 8001
+[jwendt@ec0000 ~]$ sq
+  JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+  46148   primary sleep_ho   jwendt  R       0:00      1 n0000
+  46147   primary sleep_ho   jwendt  R       0:11      1 n0000
+
+
+
+
+==================================================
+
+SOLUTIONS
+
+the dependency options MUST BE BEFORE THE COMMAND when calling srun!
+
+it also appears that the sbatch script cannot use its own SLURM_JOB_ID
+as dependencies for other submitted jobs
+
+I am writing a script that calls one sbatch and captures its job id,
+and then calls another sbatch with the previous as a dependency.
+
+	command="sbatch -J FIRST sbatch_sleep_script.sh"
+	latest_id=$( $command 2>&1 >/dev/null | awk ' { print $5 }' )
+	command="sbatch -J SECOND --dependency=afterok:$latest_id sbatch_sleep_script.sh"
+	echo $command
+	latest_id=$( $command 2>&1 >/dev/null | awk ' { print $5 }' )	#	don't really need this latest_id
+
+
