@@ -18,6 +18,70 @@ ARGV.each do |filename|
 	inputfile     = Bio::FlatFile.auto(filename)
 	root_extname  = File.extname(filename)
 	root_filename = File.basename(filename,root_extname)
+	sequences = {}
+	lanes = []
+
+	puts "Counting sequences"
+#	total_sequences = inputfile.count
+	total_sequences = `grep '>' #{filename} | wc -l`.to_i
+#	will return string with leading spaces and trailing carriage return.  
+#=> " 8899236\n"
+#	to_i strips it all off and returns just the integer
+#=> 8899236
+
+	puts "Found #{total_sequences} sequences"
+
+#	this is probably faster
+#grep '>' ~/github_repo/ccls/sequencing/trinity_input_single.fasta  | wc -l
+# 8899236
+#	yep.  about 10-15x faster
+
+	#	using +1 as log of 2-10 is 1, 11-100 is 2
+	max_digits = Math.log10( total_sequences + 1 ).ceil
+
+	inputfile.each_with_index {|e,i|
+		printf "\rReading sequence %#{max_digits}d of %#{max_digits}d", i+1, total_sequences
+		lane = e.definition.lane.to_i
+		lanes.push(lane) unless lanes.include?(lane)
+		sequences[e.definition.delane] ||= {}
+		sequences[e.definition.delane][lane] = e
+	}
+	puts	#	mostly for newline after status
+
+	unpaired_sequences = sequences.select{|k,v| v.length == 1 }
+	paired_sequences   = sequences.select{|k,v| v.length == 2 }
+	confused_sequences = sequences.select{|k,v| v.length > 2 || v.length < 1 }
+
+	puts "Found #{unpaired_sequences.length} unpaired sequences"
+	puts "Found #{paired_sequences.length} paired sequences"
+
+	streams = {}
+	lanes.each do |lane|
+		streams[lane] = File.open("#{root_filename}_#{lane}#{root_extname}",'w')
+	end
+
+	total_paired_sequences = paired_sequences.length
+	max_digits = Math.log10( total_paired_sequences + 1 ).ceil
+	paired_sequences.each_with_index do |kv,i|
+		printf "\rWriting sequence %#{max_digits}d of %#{max_digits}d", i+1, total_paired_sequences
+		kv[1].each do |lane,sequence|
+			streams[lane].puts sequence
+		end
+	end
+	puts	#	for newline after status line
+
+	streams.each{|k,v|v.close}
+end
+
+__END__
+
+
+This version is RIDICULOUSLY slow for big files.
+
+ARGV.each do |filename|
+	inputfile     = Bio::FlatFile.auto(filename)
+	root_extname  = File.extname(filename)
+	root_filename = File.basename(filename,root_extname)
 
 	sequence_names = Hash.new(0)
 	inputfile.each do |entry|
