@@ -19,6 +19,8 @@ _yardoc
 
 versions/
 
+/Makefile
+
 working_*/*.outdir
 working_*/*log
 
