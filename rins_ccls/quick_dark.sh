@@ -90,8 +90,21 @@ done
 ln -s $ofile.fastq raw_non_human.fastq
 
 
+#
+#	On genepi/n0, had some failure
+#
+#CMD: /my/home/jwendt/dna/trinityrnaseq_r2013-02-25/trinity-plugins/parafly/bin/ParaFly -c /my/home/jwendt/dna/output/fallon_715723_filtered/trinity_output_single/chrysalis/butterfly_commands.adj -shuffle -CPU 2 -failed_cmds failed_butterfly_commands.20633.txt -v 
+#Number of  Commands: 3057
+#Error occurred during initialization of VM
+#Could not reserve enough space for object heap
+#Error: Could not create the Java Virtual Machine.
+#Error: A fatal exception has occurred. Program will exit.
+#
+#	Adding --bflyHeapSpaceMax 5G to Trinity.pl call seems to fix
+#
+
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
-Trinity.pl --seqType fq --JM 2G \
+Trinity.pl --seqType fq --bflyHeapSpaceMax 5G --JM 2G \
 	--single raw_non_human.fastq \
 	--output trinity_output_single
 
@@ -106,7 +119,7 @@ mv trinity_input_single_1.fasta trinity_input_paired_1.fasta
 mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
 
 echo "de novo assembly of re-paired non-human using Trinity"
-Trinity.pl --seqType fa --JM 2G \
+Trinity.pl --seqType fa --bflyHeapSpaceMax 5G --JM 2G \
 	--left  trinity_input_paired_1.fasta \
 	--right trinity_input_paired_2.fasta \
 	--output trinity_output_paired
