@@ -31,35 +31,47 @@ fi
 #	I expect the existance of raw.1.fastq and raw.2.fastq
 #
 
-indexes=/Volumes/cube/working/indexes
+#indexes=/Volumes/cube/working/indexes
+#	leading with the ": " stops execution
+#	just ${BOWTIE2_INDEXES:"/Volumes/cube/working/indexes"}
+#	would try to execute the result.  I just want the OR/EQUALS feature
+: ${BOWTIE2_INDEXES:"/Volumes/cube/working/indexes"}
+: ${BLASTDB:"/Volumes/cube/working/indexes"}
+
+
+#bowtie2
+#-x <bt2-idx> The basename of the index for the reference genome. The basename is the name of any of the index files up to but not including the final .1.bt2 / .rev.1.bt2 / etc. bowtie2 looks for the specified index first in the current directory, then in the directory specified in the BOWTIE2_INDEXES environment variable.
+
+#	blastn
+#$BLASTDB - This is the variable which points to the Blast Database. This directory should contain the databases that you would want to search. BLAST by default checks this location and the current working directory for the presence of the databases. This variable is set during login by system login scripts , and may be changed by the user to point to her preferred location in her startup scripts. 
 
 bowtie2="bowtie2 -N 1 -q -S /dev/null --threads 4 "
 
-$bowtie2 -x $indexes/hg18 \
+$bowtie2 -x hg18 \
 	-U raw.1.fastq,raw.2.fastq \
 	--un raw_not_hg18.fastq
 
-$bowtie2 -x $indexes/hg19 \
+$bowtie2 -x hg19 \
 	-U raw_not_hg18.fastq \
 	--un raw_not_hg18_hg19.fastq
 
-$bowtie2 -x $indexes/Blast1 \
+$bowtie2 -x Blast1 \
 	-U raw_not_hg18_hg19.fastq \
 	--un raw_not_hg18_hg19_Blast1.fastq
 
-$bowtie2 -x $indexes/Blast2 \
+$bowtie2 -x Blast2 \
 	-U raw_not_hg18_hg19_Blast1.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2.fastq
 
-$bowtie2 -x $indexes/Homo_sapiens.GRCh37.69.cdna.all \
+$bowtie2 -x Homo_sapiens.GRCh37.69.cdna.all \
 	-U raw_not_hg18_hg19_Blast1_Blast2.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq
 
-$bowtie2 -x $indexes/nt_human_1 \
+$bowtie2 -x nt_human_1 \
 	-U raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq 
 
-$bowtie2 -x $indexes/nt_human_2 \
+$bowtie2 -x nt_human_2 \
 	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq
 
@@ -67,7 +79,7 @@ ifile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2
 ofile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_human_genomic
 for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 ; do
 	ofile=${ofile}_$n
-	$bowtie2 -x $indexes/human_genomic_$n -U $ifile.fastq --un $ofile.fastq
+	$bowtie2 -x human_genomic_$n -U $ifile.fastq --un $ofile.fastq
 	ifile=$ofile
 done
 
@@ -120,19 +132,19 @@ cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 #
 
 #blastn -query=trinity_input_single.fasta \
-#	-db=$indexes/nt \
+#	-db=nt \
 #	-evalue 0.05 -outfmt 0 > trinity_input_single_blastn.txt
 #
 #blastn -query=trinity_non_human_single.fasta \
-#	-db=$indexes/nt \
+#	-db=nt \
 #	-evalue 0.05 -outfmt 0 > trinity_non_human_single_blastn.txt
 #
 #blastn -query=trinity_input_paired.fasta \
-#	-db=$indexes/nt \
+#	-db=nt \
 #	-evalue 0.05 -outfmt 0 > trinity_input_paired_blastn.txt
 #
 #blastn -query=trinity_non_human_paired.fasta \
-#	-db=$indexes/nt \
+#	-db=nt \
 #	-evalue 0.05 -outfmt 0 > trinity_non_human_paired_blastn.txt
 
 echo "Finished at ..."
