@@ -35,9 +35,12 @@ fi
 #	leading with the ": " stops execution
 #	just ${BOWTIE2_INDEXES:"/Volumes/cube/working/indexes"}
 #	would try to execute the result.  I just want the OR/EQUALS feature
-: ${BOWTIE2_INDEXES:"/Volumes/cube/working/indexes"}
-: ${BLASTDB:"/Volumes/cube/working/indexes"}
+: ${BOWTIE2_INDEXES:="/Volumes/cube/working/indexes"}
+: ${BLASTDB:="/Volumes/cube/working/indexes"}
 
+#	they MUST be exported, apparently, to be picked up by bowtie2
+export BOWTIE2_INDEXES
+export BLASTDB
 
 #bowtie2
 #-x <bt2-idx> The basename of the index for the reference genome. The basename is the name of any of the index files up to but not including the final .1.bt2 / .rev.1.bt2 / etc. bowtie2 looks for the specified index first in the current directory, then in the directory specified in the BOWTIE2_INDEXES environment variable.
