@@ -239,6 +239,7 @@ class Darkness < CclsSequencer
 #			"--CPU #{trinity_threads} " <<
 #			"--bfly_opts \"--stderr\" --JM 1G "
 		command = "Trinity.pl --seqType #{(file_format == 'fastq')? 'fq' : 'fa'} " <<
+			"--min_contig_length 100 " <<
 			"--output trinity_output " <<
 			"--JM 2G "
 		files.keys.sort.each_with_index{|k,i| 
@@ -284,6 +285,7 @@ class Darkness < CclsSequencer
 
 		puts "de novo assembly using Trinity"
 		command = "Trinity.pl --seqType #{(file_format == 'fastq')? 'fq' : 'fa'} " <<
+			"--min_contig_length 100 " <<
 			"--output trinity_output_single " <<
 			"--single #{outbase}.#{file_format} " <<
 			"--JM 2G "
@@ -304,6 +306,7 @@ class Darkness < CclsSequencer
 		puts "de novo assembly using Trinity"
 		command = "Trinity.pl --seqType fa " <<
 			"--output trinity_output_paired " <<
+			"--min_contig_length 100 " <<
 			"--left  trinity_input_single_1.fasta " <<
 			"--right trinity_input_single_2.fasta " <<
 			"--JM 2G "

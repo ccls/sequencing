@@ -102,9 +102,12 @@ ln -s $ofile.fastq raw_non_human.fastq
 #
 #	Adding --bflyHeapSpaceMax 5G to Trinity.pl call seems to fix
 #
+#	adding --min_contig_length 100 in attempt to get ALL input reads in the output
+#
 
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
 Trinity.pl --seqType fq --bflyHeapSpaceMax 5G --JM 2G \
+	--min_contig_length 100 \
 	--single raw_non_human.fastq \
 	--output trinity_output_single
 
@@ -120,6 +123,7 @@ mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
 
 echo "de novo assembly of re-paired non-human using Trinity"
 Trinity.pl --seqType fa --bflyHeapSpaceMax 5G --JM 2G \
+	--min_contig_length 100 \
 	--left  trinity_input_paired_1.fasta \
 	--right trinity_input_paired_2.fasta \
 	--output trinity_output_paired
