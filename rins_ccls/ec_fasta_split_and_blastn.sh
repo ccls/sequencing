@@ -5,9 +5,10 @@
 	db='/Volumes/cube/working/indexes/nt'
 	cmdbase=''
 #else
-if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
-	db='/my/home/jwendt/blast/nt'
-	cmdbase='srun'	#	pointless when only running one ... --exclusive -n 1'
+#if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
+if [ `uname -n` = "ec0000" ] ; then
+	db='/my/home/jwendt/dna/blast/nt'
+	cmdbase='srun --share'	#	pointless when only running one ... --exclusive -n 1'
 fi
 
 
@@ -24,7 +25,6 @@ fi
 while [ $# -ne 0 ] ; do
 	if [ -f $1 ] ; then
 		now=`date "+%Y%m%d%H%M%S"`
-
 
 #
 #	if given path to file, put output there or where command was executed???
@@ -58,7 +58,8 @@ while [ $# -ne 0 ] ; do
 			cmd="$cmdbase blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
 			echo $cmd
 
-			if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
+#			if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
+			if [ `uname -n` = "ec0000" ] ; then
 				#	need to eval to use the &
 				eval $cmd
 			fi
