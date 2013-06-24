@@ -4,7 +4,9 @@
 #	For some reason, it filters out the \n which puts all the output on a 
 #	single line which defeats the purpose of the -line parameter.
 #
-database_file_name='~/simple_queue.db'
+#	Using ~ doesn't work. Use "$HOME" instead.	
+#
+database_file_name="$HOME/simple_queue.db"
 
 pop(){
 	r=`sqlite3 -line $database_file_name "select * from queue order by id asc limit 1"`
