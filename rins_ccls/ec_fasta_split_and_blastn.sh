@@ -8,7 +8,7 @@
 #if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
 if [ `uname -n` = "ec0000" ] ; then
 	db='/my/home/jwendt/dna/blast/nt'
-	cmdbase='srun --share'	#	pointless when only running one ... --exclusive -n 1'
+	cmdbase='simple_queue.sh push srun --share'	#	pointless when only running one ... --exclusive -n 1'
 fi
 
 
