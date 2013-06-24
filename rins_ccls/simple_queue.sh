@@ -15,9 +15,11 @@ pop(){
 	#	"$r" WILL have the newlines
 	#     id = 1
 	#command = srun
-	id=`echo "$r" | grep "^\s*id =" | awk -F= '{print $NF}'`
+#	id=`echo "$r" | grep "^\s*id =" | awk -F= '{print $NF}'`
+#	the "^\s*" doesn't work on ec0000?? different grep probably
+	id=`echo "$r" | grep " id = " | awk -F= '{print $NF}'`
 	if [ "x$id" != "x"  ] ; then
-		command=`echo "$r" | grep "^\s*command =" | awk -F= '{print $NF}'`
+		command=`echo "$r" | grep "^\s*command = " | awk -F= '{print $NF}'`
 		echo $command
 		sqlite3 $database_file_name "delete from queue where id = $id"
 	fi

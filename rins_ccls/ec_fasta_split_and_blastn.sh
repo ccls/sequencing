@@ -8,7 +8,8 @@
 #if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
 if [ `uname -n` = "ec0000" ] ; then
 	db='/my/home/jwendt/dna/blast/nt'
-	cmdbase='simple_queue.sh push srun --share'	#	pointless when only running one ... --exclusive -n 1'
+#	cmdbase='simple_queue.sh push srun --share'	#	pointless when only running one ... --exclusive -n 1'
+	cmdbase='srun --share'	#	pointless when only running one ... --exclusive -n 1'
 fi
 
 
@@ -61,7 +62,9 @@ while [ $# -ne 0 ] ; do
 #			if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
 			if [ `uname -n` = "ec0000" ] ; then
 				#	need to eval to use the &
-				eval $cmd
+#	want the & in the queue'd command, not here.
+#	if were here, will cause database error by trying to write to it at same time
+				eval "simple_queue.sh push '$cmd'"
 			fi
 
 		done
