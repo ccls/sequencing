@@ -55,7 +55,7 @@ while [ $# -ne 0 ] ; do
 				print>>f
 			}' $1
 
-		for file in `ls $subdir/${fasta_file}_*` ; do
+		for file in `ls $PWD/$subdir/${fasta_file}_*` ; do
 			cmd="$cmdbase blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
 			echo $cmd
 
