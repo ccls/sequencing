@@ -9,7 +9,8 @@ uname=`uname -n`
 	cmdbase=''
 #else
 #if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
-if [ $uname = "ec0000" ] ; then
+#if [ $uname = "ec0000" ] ; then
+if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
 	db='/my/home/jwendt/dna/blast/nt'
 #	cmdbase='simple_queue.sh push srun --share'	#	pointless when only running one ... --exclusive -n 1'
 	cmdbase='srun --share'	#	pointless when only running one ... --exclusive -n 1'
