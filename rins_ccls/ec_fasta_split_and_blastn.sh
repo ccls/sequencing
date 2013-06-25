@@ -1,12 +1,15 @@
 #!/bin/sh
 
+
+uname=`uname -n`
+
 #if [ `uname -n` = "fxdgroup-169-229-196-225.sph.berkeley.edu" ] ; then
 	#	echo "on dev"
 	db='/Volumes/cube/working/indexes/nt'
 	cmdbase=''
 #else
 #if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
-if [ `uname -n` = "ec0000" ] ; then
+if [ $uname = "ec0000" ] ; then
 	db='/my/home/jwendt/dna/blast/nt'
 #	cmdbase='simple_queue.sh push srun --share'	#	pointless when only running one ... --exclusive -n 1'
 	cmdbase='srun --share'	#	pointless when only running one ... --exclusive -n 1'
@@ -59,8 +62,8 @@ while [ $# -ne 0 ] ; do
 			cmd="$cmdbase blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
 			echo $cmd
 
-#			if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
-			if [ `uname -n` = "ec0000" ] ; then
+#			if [ $uname = "genepi1.berkeley.edu" ] ; then
+			if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
 				#	need to eval to use the &
 #	want the & in the queue'd command, not here.
 #	if were here, will cause database error by trying to write to it at same time
