@@ -44,9 +44,23 @@ ARGV.each do |filename|
 		lane = e.definition.lane.to_i
 		lanes.push(lane) unless lanes.include?(lane)
 		sequences[e.definition.delane] ||= {}
+		#
+		#	This is saving the entire entry (name and sequence) which consumes 
+		#	more memory.  May have to only remember name as did before,
+		#	then rewind and reread file searching only for paired sequences.
+		#	
+		#		sequences[e.definition.delane] += 1
+		#
 		sequences[e.definition.delane][lane] = e
 	}
 	puts	#	mostly for newline after status
+
+#	unpaired_sequences.sequence.select{|name,count| count == 1}
+#	paired_sequences.sequence.select{  |name,count| count == 2}
+#	confused_sequences.sequence.select{|name,count| count > 2 || count < 1 }
+#
+#	after this, most of this would have to change
+#
 
 	unpaired_sequences = sequences.select{|k,v| v.length == 1 }
 	paired_sequences   = sequences.select{|k,v| v.length == 2 }
@@ -55,13 +69,25 @@ ARGV.each do |filename|
 	puts "Found #{unpaired_sequences.length} unpaired sequences"
 	puts "Found #{paired_sequences.length} paired sequences"
 
+	#	Not using them, so drop them to possibly free up so memory
+	unpaired_sequences = nil
+	confused_sequences = nil
+
+	puts "Opening output files."
 	streams = {}
 	lanes.each do |lane|
 		streams[lane] = File.open("#{root_filename}_#{lane}#{root_extname}",'w')
 	end
 
+	puts "Writing to output files."
 	total_paired_sequences = paired_sequences.length
 	max_digits = Math.log10( total_paired_sequences + 1 ).ceil
+
+
+#	May want to do normal for loop and pop values off to free up memory
+#	if this is where there is a memory problem.
+
+
 	paired_sequences.each_with_index do |kv,i|
 		printf "\rWriting sequence %#{max_digits}d of %#{max_digits}d", i+1, total_paired_sequences
 		kv[1].each do |lane,sequence|
@@ -70,6 +96,7 @@ ARGV.each do |filename|
 	end
 	puts	#	for newline after status line
 
+	puts "Closing output files."
 	streams.each{|k,v|v.close}
 end
 
