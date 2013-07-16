@@ -18,28 +18,28 @@ ARGV.each do |filename|
 	inputfile     = Bio::FlatFile.auto(filename)
 	root_extname  = File.extname(filename)
 	root_filename = File.basename(filename,root_extname)
-#	lanes = [0,1,2]	#[]
 	lanes = [1,2]	#[]
-#	sequences = {}
-#
-#	puts "Counting sequences"
-##	total_sequences = inputfile.count
-#	total_sequences = `grep '>' #{filename} | wc -l`.to_i
-##	will return string with leading spaces and trailing carriage return.  
-##=> " 8899236\n"
-##	to_i strips it all off and returns just the integer
+
+	command = "grep '>' #{filename} | wc -l"
+	puts "Counting sequences with ..."
+	puts command
+#	total_sequences = inputfile.count
+	total_sequences = `#{command}`.to_i
+#	will return string with leading spaces and trailing carriage return.  
+#=> " 8899236\n"
+#	to_i strips it all off and returns just the integer. Awesome.
 ##=> 8899236
-#
-#	puts "Found #{total_sequences} sequences"
-#
-##	this is probably faster
-##grep '>' ~/github_repo/ccls/sequencing/trinity_input_single.fasta  | wc -l
-## 8899236
-##	yep.  about 10-15x faster
-#
-#	#	using +1 as log of 2-10 is 1, 11-100 is 2
-#	max_digits = Math.log10( total_sequences + 1 ).ceil
-#
+
+	puts "Found #{total_sequences} sequences"
+
+#	this is probably faster
+#grep '>' ~/github_repo/ccls/sequencing/trinity_input_single.fasta  | wc -l
+# 8899236
+#	yep.  about 10-15x faster
+
+	#	using +1 as log of 2-10 is 1, 11-100 is 2
+	max_digits = Math.log10( total_sequences + 1 ).ceil
+
 #	inputfile.each_with_index {|e,i|
 #		printf "\rReading sequence %#{max_digits}d of %#{max_digits}d", i+1, total_sequences
 #		lane = e.definition.lane.to_i
@@ -155,10 +155,13 @@ ARGV.each do |filename|
 	#	It would be nice to make this more verbose.
 	#	It is substantially easier on memory though as it doesn't load
 	#	the entire file into memory.
-	puts "Scanning #{filename} for paired sequences (this can take a while)"
+	puts "Scanning #{filename} for paired sequences (this can take a while) with ..."
 	command = "cat #{filename} | grep '>' | awk -F/ '{print $1}' | sort | uniq -d | sed 's/^>//'"
 	puts command
-	paired_sequences = `#{command}`.chomp.split
+	paired_sequences_a = `#{command}`.chomp.split
+	paired_sequences = {}
+	paired_sequences_a.each{|i| paired_sequences[i] = 1 }
+	paired_sequences_a = nil
 
 
 
@@ -174,6 +177,7 @@ ARGV.each do |filename|
 #	confused_sequences = sequences.select{|k,v| v.length > 2 || v.length < 1 }
 #
 #	puts "Found #{unpaired_sequences.length} unpaired sequences"
+
 	puts "Found #{paired_sequences.length} paired sequences"
 
 #	#	Not using them, so drop them to possibly free up so memory
@@ -188,7 +192,7 @@ ARGV.each do |filename|
 
 	puts "Writing to output files."
 	total_paired_sequences = paired_sequences.length
-	max_digits = Math.log10( total_paired_sequences + 1 ).ceil
+#	max_digits = Math.log10( total_paired_sequences + 1 ).ceil
 
 
 #	May want to do normal for loop and pop values off to free up memory
@@ -203,13 +207,23 @@ ARGV.each do |filename|
 #	end
 #	puts	#	for newline after status line
 
-	inputfile.each do |entry|
+	inputfile.each_with_index do |entry,index|
 #
 #	This comparison is probably going to be SLOW for big files with many pairs.
 #	Found 6693002 paired sequences
-#	That's a big arra to check over and over and over and over and ....
+#	That's a big array to check over and over and over and over and ....
 #
-		if paired_sequences.include?(entry.definition.delane)
+#
+		printf "\rReading sequence %#{max_digits}d of %#{max_digits}d", index+1, total_sequences
+#	WAY WAY WAY TOO SLOW.  OMG
+#		if paired_sequences.include?(entry.definition.delane)
+#	Hash#has_key? IS WAY SUPER FASTER COMPARED TO Array#includes?
+#	I would've thunk it the opposite.
+		if paired_sequences.has_key?(entry.definition.delane)
+#
+#	Add some verbosity here?
+#
+
 			#	if matches, write to the correct file
 			streams[entry.definition.lane.to_i].puts entry
 #	if 0/1 become actual possiblities, open 3 streams?
@@ -217,7 +231,7 @@ ARGV.each do |filename|
 #			streams[entry.definition.lane.to_i].puts entry
 		end
 	end
-
+	puts
 	puts "Closing output files."
 	streams.each{|k,v|v.close}
 end
