@@ -158,7 +158,7 @@ ARGV.each do |filename|
 	puts "Scanning #{filename} for paired sequences (this can take a while)"
 	command = "cat #{filename} | grep '>' | awk -F/ '{print $1}' | sort | uniq -d | sed 's/^>//'"
 	puts command
-	paired_sequences = command.chomp.split
+	paired_sequences = `#{command}`.chomp.split
 
 
 
