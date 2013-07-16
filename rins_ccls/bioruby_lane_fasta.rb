@@ -204,6 +204,11 @@ ARGV.each do |filename|
 #	puts	#	for newline after status line
 
 	inputfile.each do |entry|
+#
+#	This comparison is probably going to be SLOW for big files with many pairs.
+#	Found 6693002 paired sequences
+#	That's a big arra to check over and over and over and over and ....
+#
 		if paired_sequences.include?(entry.definition.delane)
 			#	if matches, write to the correct file
 			streams[entry.definition.lane.to_i].puts entry
