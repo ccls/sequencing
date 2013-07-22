@@ -68,7 +68,8 @@ while [ $# -ne 0 ] ; do
 				#	need to eval to use the &
 #	want the & in the queue'd command, not here.
 #	if were here, will cause database error by trying to write to it at same time
-				eval "simple_queue.sh push '$cmd'"
+#				eval "simple_queue.sh push '$cmd'"
+				eval $cmd
 			fi
 
 		done
