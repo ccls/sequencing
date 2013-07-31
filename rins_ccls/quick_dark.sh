@@ -70,6 +70,8 @@ $bowtie2 -x Homo_sapiens.GRCh37.69.cdna.all \
 	-U raw_not_hg18_hg19_Blast1_Blast2.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq
 
+
+
 $bowtie2 -x nt_human_1 \
 	-U raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq 
@@ -78,8 +80,14 @@ $bowtie2 -x nt_human_2 \
 	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq
 
-ifile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2
-ofile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_human_genomic
+$bowtie2 -x nt_human_3 \
+	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq \
+	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3.fastq
+
+
+
+ifile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3
+ofile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3_human_genomic
 for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 ; do
 	ofile=${ofile}_$n
 	$bowtie2 -x human_genomic_$n -U $ifile.fastq --un $ofile.fastq
