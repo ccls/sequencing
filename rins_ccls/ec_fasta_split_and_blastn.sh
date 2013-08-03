@@ -35,23 +35,23 @@ while [ $# -ne 0 ] ; do
 #	if given path to file, put output there or where command was executed???
 #	I say where command is executed.
 #
-		fasta_file=`basename $1`
+		fasta_base=`basename $1`
 #	not used so why bother
 #		fasta_dir=`dirname $1`
-		subdir=$fasta_file.${now}.pieces
+		subdir=$fasta_base.${now}.pieces
 		mkdir $subdir
 
 		awk '
 			BEGIN{
 				file_number=0
 				read_count=0
-				f=sprintf("'$subdir/$fasta_file'_%09d",++file_number)
+				f=sprintf("'$subdir/$fasta_base'_%09d.fasta",++file_number)
 			}
 			{
 				if(/^>/){
 					if( read_count >= '$max_reads' ){
 						close(f)
-						f=sprintf("'$subdir/$fasta_file'_%09d",++file_number)
+						f=sprintf("'$subdir/$fasta_base'_%09d.fasta",++file_number)
 						read_count=0
 					}
 					read_count++
@@ -59,7 +59,7 @@ while [ $# -ne 0 ] ; do
 				print>>f
 			}' $1
 
-		for file in `ls $PWD/$subdir/${fasta_file}_*` ; do
+		for file in `ls $PWD/$subdir/${fasta_base}_*.fasta` ; do
 			cmd="$cmdbase blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
 			echo $cmd
 
