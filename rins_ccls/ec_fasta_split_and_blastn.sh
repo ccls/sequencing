@@ -59,7 +59,9 @@ while [ $# -ne 0 ] ; do
 				print>>f
 			}' $1
 
-		for file in `ls $PWD/$subdir/${fasta_base}_*.fasta` ; do
+#	on some occassions, this list is too long for ls so changing to find
+#		for file in `ls $PWD/$subdir/${fasta_base}_*.fasta` ; do
+		for file in `find $PWD/$subdir/ -type f -name ${fasta_base}_*.fasta` ; do
 			cmd="$cmdbase blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
 			echo $cmd
 
