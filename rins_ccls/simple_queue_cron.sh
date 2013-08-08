@@ -16,6 +16,8 @@ echo $me
 
 available=`simple_queue.sh size`
 queued=`squeue --noheader --user=$me | wc -l`
+
+#	SLURM_MAX_QUEUE_SIZE MUST BE EXPORTED FROM ENVIRONMENT TO ACTUALLY BE USED
 max=${SLURM_MAX_QUEUE_SIZE:-200}
 
 echo "Before..."
