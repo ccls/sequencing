@@ -16,7 +16,7 @@ echo $me
 
 available=`simple_queue.sh size`
 queued=`squeue --noheader --user=$me | wc -l`
-max=200
+max=${SLURM_MAX_QUEUE_SIZE:-200}
 
 echo "Before..."
 echo "available ... $available"
