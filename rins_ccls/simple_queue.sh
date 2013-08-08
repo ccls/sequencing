@@ -44,7 +44,7 @@ database_file_name="$HOME/simple_queue.db"
 #	I tried a number of different quoting, but still won't work?
 #
 
-
+max_delete_retries=3
 
 pop(){
 	r=`sqlite3 -cmd '.timeout 5000' -line $database_file_name "select * from queue order by id asc limit 1"`
@@ -60,7 +60,24 @@ pop(){
 	if [ "x$id" != "x"  ] ; then
 		command=`echo "$r" | grep "^\s*command = " | awk -F= '{print $NF}'`
 		echo $command
+
+		#/my/home/jwendt/dna/bin/simple_queue.sh: line 49: 12947 Killed                  sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
+		#	Occassionally, the delete gets killed?  And then is popped and run again.
+		#	Not catastrophic, but should be avoided. I would prefer this to not happen, but ...
+#		sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
+#		sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
+#		sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
+
 		sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
+		delete_retries=0
+		while [ $delete_retries -lt $max_delete_retries -a \
+			`sqlite3 -cmd '.timeout 5000' $database_file_name "select * from queue where id = $id" | wc -l` -gt 0 ]
+		do
+			echo "Delete failed. Retrying ... $delete_retries"
+			sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
+			delete_retries=`expr $delete_retries + 1`
+		done
+
 #		$sqlite "delete from queue where id = $id"
 	fi
 }
