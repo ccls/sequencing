@@ -16,7 +16,7 @@ echo $me
 
 available=`simple_queue.sh size`
 queued=`squeue --noheader --user=$me | wc -l`
-max=500
+max=200
 
 echo "Before..."
 echo "available ... $available"
