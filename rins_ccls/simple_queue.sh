@@ -90,7 +90,7 @@ pop(){
 
 push(){
 	echo "Pushing ... `date`" >> $log_file_name
-	sqlite3 -cmd '.timeout 5000' $database_file_name "insert into queue(command) values('$*')";;
+	sqlite3 -cmd '.timeout 5000' $database_file_name "insert into queue(command) values('$*')"
 	echo "Pushed $*" >> $log_file_name
 }
 
