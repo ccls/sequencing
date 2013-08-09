@@ -7,6 +7,7 @@
 #	Using ~ doesn't work. Use "$HOME" instead.	
 #
 database_file_name="$HOME/simple_queue.db"
+log_file_name="$HOME/simple_queue.log"
 
 #
 #	It seems that attempting to read and write to a table when another script is 
@@ -44,9 +45,10 @@ database_file_name="$HOME/simple_queue.db"
 #	I tried a number of different quoting, but still won't work?
 #
 
-max_delete_retries=3
+max_delete_retries=5
 
 pop(){
+	echo "Popping ... `date`" >> $log_file_name
 	r=`sqlite3 -cmd '.timeout 5000' -line $database_file_name "select * from queue order by id asc limit 1"`
 #	r=`$sqlite -line "select * from queue order by id asc limit 1"`
 	#	$r will NOT have the newlines
@@ -60,6 +62,7 @@ pop(){
 	if [ "x$id" != "x"  ] ; then
 		command=`echo "$r" | grep "^\s*command = " | awk -F= '{print $NF}'`
 		echo $command
+		echo $command >> $log_file_name
 
 		#/my/home/jwendt/dna/bin/simple_queue.sh: line 49: 12947 Killed                  sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
 		#	Occassionally, the delete gets killed?  And then is popped and run again.
@@ -68,20 +71,28 @@ pop(){
 #		sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
 #		sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
 
+		echo "Deleting ..." >> $log_file_name
 		sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
 		delete_retries=0
 		while [ $delete_retries -lt $max_delete_retries -a \
 			`sqlite3 -cmd '.timeout 5000' $database_file_name "select * from queue where id = $id" | wc -l` -gt 0 ]
 		do
-			echo "Delete failed. Retrying ... $delete_retries"
+
+			#	simple_queue_cron.sh evals the returned value of pop which is
+			#	anything that is echoed so don't do this.... unless its to the log file
+			echo "Delete failed. Retrying ... $delete_retries" >> $log_file_name
+
 			sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
 			delete_retries=`expr $delete_retries + 1`
 		done
-
-#		$sqlite "delete from queue where id = $id"
 	fi
 }
 
+push(){
+	echo "Pushing ... `date`" >> $log_file_name
+	sqlite3 -cmd '.timeout 5000' $database_file_name "insert into queue(command) values('$*')";;
+	echo "Pushed $*" >> $log_file_name
+}
 
 if [ ! -f $database_file_name ] ; then
 	sqlite3 -cmd '.timeout 5000' $database_file_name 'create table queue(id integer primary key autoincrement, command text)'
@@ -99,13 +110,11 @@ case "$1" in
 	pop )
 		shift; pop;;
 	push )
-#		shift; $sqlite "insert into queue(command) values('$*')";;
-		shift; sqlite3 -cmd '.timeout 5000' $database_file_name "insert into queue(command) values('$*')";;
+#		shift; sqlite3 -cmd '.timeout 5000' $database_file_name "insert into queue(command) values('$*')";;
+		shift; push;;
 	size | count | length )
-#		$sqlite "select count(*) from queue" ;;
 		sqlite3 -cmd '.timeout 5000' $database_file_name "select count(*) from queue" ;;
 	* )
-#		$sqlite "select * from queue"
 		sqlite3 -cmd '.timeout 5000' $database_file_name "select * from queue"
 esac
 
