@@ -12,13 +12,16 @@ if [ `uname -n` != 'ec0000' ] ; then
 fi
 
 me=`whoami`
+[ ! -z $me ] || me='jwendt'
 echo $me
 
 available=`simple_queue.sh size`
+[ ! -z $available ] || available=0
 queued=`squeue --noheader --user=$me | wc -l`
 
 #	SLURM_MAX_QUEUE_SIZE MUST BE EXPORTED FROM ENVIRONMENT TO ACTUALLY BE USED
 max=${SLURM_MAX_QUEUE_SIZE:-200}
+[ ! -z $queued ] || queued=$max
 
 echo "Before..."
 echo "available ... $available"
@@ -26,6 +29,7 @@ echo "in queue .... $queued"
 echo
 
 wanted=`expr $max - $queued`
+[ ! -z $wanted ] || wanted=0
 
 if [ $wanted -gt $available ]; then
 	echo "More wanted than available."
@@ -33,6 +37,7 @@ if [ $wanted -gt $available ]; then
 fi
 
 echo "$wanted wanted"
+[ ! -z $wanted ] || wanted=0
 
 #
 #	Tried with the original while loop,
