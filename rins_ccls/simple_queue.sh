@@ -89,6 +89,8 @@ pop(){
 }
 
 push(){
+	#	The $* in a function MUST BE PASSED.  IT IS NOT THE $* from the command line.
+	#	Unless, of course, that's what you pass it.
 	echo "Pushing ... `date`" >> $log_file_name
 	sqlite3 -cmd '.timeout 5000' $database_file_name "insert into queue(command) values('$*')"
 	echo "Pushed $*" >> $log_file_name
@@ -111,7 +113,7 @@ case "$1" in
 		shift; pop;;
 	push )
 #		shift; sqlite3 -cmd '.timeout 5000' $database_file_name "insert into queue(command) values('$*')";;
-		shift; push;;
+		shift; push $*;;
 	size | count | length )
 		sqlite3 -cmd '.timeout 5000' $database_file_name "select count(*) from queue" ;;
 	* )
