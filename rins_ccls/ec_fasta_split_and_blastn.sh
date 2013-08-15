@@ -62,7 +62,19 @@ while [ $# -ne 0 ] ; do
 #	on some occassions, this list is too long for ls so changing to find
 #		for file in `ls $PWD/$subdir/${fasta_base}_*.fasta` ; do
 		for file in `find $PWD/$subdir/ -type f -name ${fasta_base}_*.fasta` ; do
-			cmd="$cmdbase blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
+#
+#	I think that it would be beneficial to include a job name
+#
+			cmd=$cmdbase 
+			if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
+#
+#	--job-name='sad;lfkjasdf;lkj'
+#
+				cmd=$cmd
+			fi
+			cmd="$cmd blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
+
+#			cmd="$cmdbase blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
 			echo $cmd
 
 #			if [ $uname = "genepi1.berkeley.edu" ] ; then
