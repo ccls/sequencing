@@ -67,7 +67,7 @@ Not including the ~50MB of sample data
 
 [Cufflinks](http://cufflinks.cbcb.umd.edu)
 
-[BioRuby](http://bioruby.org/) - not yet used for anything
+[BioRuby](http://bioruby.org/)
 
 
 
