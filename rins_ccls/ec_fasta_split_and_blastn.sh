@@ -3,19 +3,11 @@
 
 uname=`uname -n`
 
-#if [ `uname -n` = "fxdgroup-169-229-196-225.sph.berkeley.edu" ] ; then
-	#	echo "on dev"
-	db='/Volumes/cube/working/indexes/nt'
-	cmdbase=''
-#else
-#if [ `uname -n` = "genepi1.berkeley.edu" ] ; then
-#if [ $uname = "ec0000" ] ; then
+db='/Volumes/cube/working/indexes/nt'
+
 if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
 	db='/my/home/jwendt/dna/blast/nt'
-#	cmdbase='simple_queue.sh push srun --share'	#	pointless when only running one ... --exclusive -n 1'
-	cmdbase='srun --share'	#	pointless when only running one ... --exclusive -n 1'
 fi
-
 
 tmp=`echo $1 | tr -cd '[:digit:]'`
 #	need the x's in case is blank
@@ -59,31 +51,24 @@ while [ $# -ne 0 ] ; do
 				print>>f
 			}' $1
 
-#	on some occassions, this list is too long for ls so changing to find
-#		for file in `ls $PWD/$subdir/${fasta_base}_*.fasta` ; do
+		#	on some occassions, this list is too long for ls so changing to find
+		#	for file in `ls $PWD/$subdir/${fasta_base}_*.fasta` ; do
 		for file in `find $PWD/$subdir/ -type f -name ${fasta_base}_*.fasta` ; do
-#
-#	I think that it would be beneficial to include a job name
-#
-			cmd=$cmdbase 
+			cmd=''	#	gotta reset it
 			if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
-#
-#	--job-name='sad;lfkjasdf;lkj'
-#
-				cmd=$cmd
+				num=`basename $file | awk -F. '{print $2}' | awk -F_ '{print $NF}'`
+				cmd="srun --share --job-name=$num"
 			fi
 			cmd="$cmd blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
 
-#			cmd="$cmdbase blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
 			echo $cmd
 
-#			if [ $uname = "genepi1.berkeley.edu" ] ; then
 			if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
 				#	need to eval to use the &
-#	want the & in the queue'd command, not here.
-#	if were here, will cause database error by trying to write to it at same time
+				#	want the & in the queue'd command, not here.
+				#	if were here, will cause database error by trying to write to it at same time
 				eval "simple_queue.sh push '$cmd'"
-#				eval $cmd
+				#eval $cmd
 			fi
 
 		done
