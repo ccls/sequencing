@@ -32,6 +32,21 @@
 #	Gap Penalties: Existence: 0, Extension: 2.5
 #
 
+
+tmp=`echo $1 | tr -cd '[:digit:]'`
+# need the x's in case is blank
+if [ "x${tmp}" == "x${1}" ] ; then
+	skip=$1
+	shift
+else
+	skip=0
+fi
+
+
+#
+#	It is unlikely that more than one will actually be called,
+#	however, the while loop provides a nice wrapper.
+#
 while [ $# -ne 0 ] ; do
 	path=$1
 
@@ -50,7 +65,17 @@ while [ $# -ne 0 ] ; do
 	echo "Found $blast_count blast files"
 
 #	for blast in `ls $path/*fasta_?????????.blastn.txt` ; do
+	#
+	#	If there aren't any, this loop will crash
+	#	ls: fake.fasta.20130802170906.pieces/*fasta_*.blastn.txt: No such file or directory
+	#
+	i=0
 	for blast in `ls $path/*fasta_*.blastn.txt` ; do
+		i=`expr $i + 1`
+		if [ $i -le $skip ] ; then
+			echo "skipping $blast"
+			continue
+		fi
 		echo "Checking $blast"
 #
 #	I think that double square brackets are only needed for regexps [[ ]]
@@ -76,5 +101,3 @@ while [ $# -ne 0 ] ; do
 
 	shift
 done
-
-
