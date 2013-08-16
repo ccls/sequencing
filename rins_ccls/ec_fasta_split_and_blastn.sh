@@ -56,7 +56,10 @@ while [ $# -ne 0 ] ; do
 		for file in `find $PWD/$subdir/ -type f -name ${fasta_base}_*.fasta` ; do
 			cmd=''	#	gotta reset it
 			if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
-				num=`basename $file | awk -F. '{print $2}' | awk -F_ '{print $NF}'`
+#	trinity_input_single.uniq.fasta_000000416.fasta
+#	=> 'uniq' for num.  oops
+#				num=`basename $file | awk -F. '{print $2}' | awk -F_ '{print $NF}'`
+				num=`basename $file | awk -F. '{print $(NF-1)}' | awk -F_ '{print $NF}'`
 				cmd="srun --share --job-name=$num"
 			fi
 			cmd="$cmd blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
