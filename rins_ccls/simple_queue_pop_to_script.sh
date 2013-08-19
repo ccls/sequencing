@@ -47,7 +47,8 @@ echo "$wanted wanted"
 if [ $wanted -gt 0 ]; then
 	now=`date "+%Y%m%d%H%M%S"`
 	script_name="queue_script.${now}.sh"
-	echo "#!/bin/sh\n\n" > $script_name
+	echo "#!/bin/sh" > $script_name
+	echo >> $script_name
 	chmod 755 $script_name
 
 	#
