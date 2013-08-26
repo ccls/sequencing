@@ -37,13 +37,13 @@ while [ $# -ne 0 ] ; do
 			BEGIN{
 				file_number=0
 				read_count=0
-				f=sprintf("'$subdir/$fasta_base'_%09d.fasta",++file_number)
+				f=sprintf("'$subdir/$fasta_base'_%08d.fasta",++file_number)
 			}
 			{
 				if(/^>/){
 					if( read_count >= '$max_reads' ){
 						close(f)
-						f=sprintf("'$subdir/$fasta_base'_%09d.fasta",++file_number)
+						f=sprintf("'$subdir/$fasta_base'_%08d.fasta",++file_number)
 						read_count=0
 					}
 					read_count++
@@ -56,7 +56,7 @@ while [ $# -ne 0 ] ; do
 		for file in `find $PWD/$subdir/ -type f -name ${fasta_base}_*.fasta` ; do
 			cmd=''	#	gotta reset it
 			if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
-#	trinity_input_single.uniq.fasta_000000416.fasta
+#	trinity_input_single.uniq.fasta_00000416.fasta
 #	=> 'uniq' for num.  oops
 #				num=`basename $file | awk -F. '{print $2}' | awk -F_ '{print $NF}'`
 				num=`basename $file | awk -F. '{print $(NF-1)}' | awk -F_ '{print $NF}'`
