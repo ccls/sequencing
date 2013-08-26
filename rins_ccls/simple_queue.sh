@@ -60,7 +60,11 @@ pop(){
 #	the "^\s*" doesn't work on ec0000?? different grep probably
 	id=`echo "$r" | grep " id = " | awk -F= '{print $NF}'`
 	if [ "x$id" != "x"  ] ; then
-		command=`echo "$r" | grep "^\s*command = " | awk -F= '{print $NF}'`
+
+#		command=`echo "$r" | grep "^\s*command = " | awk -F= '{print $NF}'`
+#		That don't work if the command has an = in it!!!!!
+
+		command=`echo "$r" | grep "^\s*command = " | sed 's/^command = //'`
 		echo $command
 		echo $command >> $log_file_name
 
