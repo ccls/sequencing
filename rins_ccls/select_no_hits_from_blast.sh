@@ -25,12 +25,6 @@ if [ $# -eq 0 ]; then
 fi
 while [ $# -ne 0 ] ; do
 	if [ -f $1 ] ; then
-		awk '
-		BEGIN{
-			seq_name=""
-			seq_line=""
-		}
-		{
 #
 #	Query= comp102_c0_seq1 len=104 path=[1:0-82 84:83-103]
 #
@@ -44,14 +38,21 @@ while [ $# -ne 0 ] ; do
 #	that does not seem to work either, but this does 
 #	( as awk breaks line into columns on whitespace )
 #
+#	moved comments outside of awk program so don't show in 'ps -ef'
+		awk '
+		BEGIN{
+			seq_name=""
+			seq_line=""
+		}
+		{
 			if( $1 == "Query=" ){
 				seq_name=$2
 				seq_line=$0
 			} else if(/No hits found/){
 				print seq_name
-#				print seq_line
 			}
 		}' $1
+#				print seq_line
 	else
 		echo "File '$1' not found?"
 	fi
