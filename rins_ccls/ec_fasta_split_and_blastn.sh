@@ -26,6 +26,11 @@ while [ $# -ne 0 ] ; do
 #		fasta_base=`basename $1`
 		fasta_base=`basename $1 | sed 's/\(.*\)\..*/\1/'`
 
+		#	extension=${filename##*.}
+		#	the longest matching  pattern  (the  ``##'' case)  deleted
+		#	It deletes the longest *. match leaving only the extension behind (starts at the beginning (left))
+		#	% and %% start from the trailing or right side (could be similar to using basename)
+
 		#	not used so why bother
 		#		fasta_dir=`dirname $1`
 
@@ -87,6 +92,9 @@ while [ $# -ne 0 ] ; do
 				cmd="srun --share --job-name=$num"
 			fi
 			cmd="$cmd blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
+
+
+#			cmd="$cmd blastn_wrapper.sh $file $db &"
 
 			echo $cmd
 
