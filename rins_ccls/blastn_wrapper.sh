@@ -6,6 +6,7 @@ log=$file.log
 {
 echo "Begin $file"
 date
+hostname
 echo
 
 time blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt
