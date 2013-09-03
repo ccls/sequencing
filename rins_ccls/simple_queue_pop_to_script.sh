@@ -1,5 +1,20 @@
 #!/bin/sh
 
+if [ $# -eq 0 ]; then
+	echo
+	echo "This command will pop a number of commands from the simple queue database"
+	echo "and create an executable script containing them."
+	echo "(This was created when I was having problems with the sqlite db on ec.)"
+	echo
+	echo "Usage:"
+	echo
+	echo "`basename $0`"
+	echo
+	echo "Example:"
+	echo
+	exit
+fi
+
 echo $0
 date
 

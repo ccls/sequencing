@@ -10,7 +10,6 @@
 #
 #grep --before-context=6 'No hits found' trinity_non_human_paired.blastn.txt | head
 
-
 if [ $# -eq 0 ]; then
 	echo
 	echo "No files given"
@@ -22,7 +21,9 @@ if [ $# -eq 0 ]; then
 	echo "Example:"
 	echo "select_no_hits_from_blast.sh trinity_input_paired.blastn.txt > trinity_input_paired.blastn.no_hits_found.names &"
 	echo
+	exit
 fi
+
 while [ $# -ne 0 ] ; do
 	if [ -f $1 ] ; then
 #

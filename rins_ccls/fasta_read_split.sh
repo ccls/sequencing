@@ -7,6 +7,20 @@
 #	if first argument is a number, it will be used for the max_reads
 #
 
+
+if [ $# -eq 0 ]; then
+	echo 
+	echo "split fasta files into smaller fasta files with no more than 200 reads"
+	echo
+	echo "Usage:"
+	echo
+	echo "`basename $0` [optional max_read_size]"
+	echo
+	echo "Example:"
+	echo
+	exit
+fi
+
 tmp=`echo $1 | tr -cd '[:digit:]'`
 #	need the x's in case is blank
 if [ "x${tmp}" == "x${1}" ] ; then

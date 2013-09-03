@@ -33,6 +33,21 @@
 #
 
 
+
+if [ $# -eq 0 ]; then
+	echo
+	echo "checks the contents of the given 'pieces' directory(ies)"
+	echo
+	echo "Usage:"
+	echo
+	echo "`basename $0` directory(ies)"
+	echo
+	echo "Example:"
+	echo "pieces_check.sh  dna/output/fallon_SFPB001A_filtered_20130722/trinity_input_single.fasta.20130725154032.pieces"
+	echo
+	exit
+fi
+
 tmp=`echo $1 | tr -cd '[:digit:]'`
 # need the x's in case is blank
 if [ "x${tmp}" == "x${1}" ] ; then

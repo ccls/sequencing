@@ -1,4 +1,22 @@
 #!/bin/sh
+
+if [ $# -eq 0 ]; then
+	echo
+	echo "maintain FIFO-like sqlite database"
+	echo
+	echo "Usage:"
+	echo "simple_queue.sh pop -> displays and deletes first record in db"
+	echo "simple_queue.sh push COMMAND -> adds COMMAND to bottom of db"
+	echo "simple_queue.sh size -> display number of records (also count and length)"
+	echo "simple_queue.sh -> no args will display all records"
+	echo
+	echo "`basename $0`"
+	echo
+	echo "Example:"
+	echo
+	exit
+fi
+
 #
 #	Using -line with sqlite3 doesn't seem to work well within ``.
 #	For some reason, it filters out the \n which puts all the output on a 

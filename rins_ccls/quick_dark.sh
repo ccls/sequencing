@@ -9,6 +9,19 @@
 #
 #	Explicit redirection within the block will override this
 #
+
+
+if [ $# -eq 0 ]; then
+	echo
+	echo "Usage:"
+	echo
+	echo "`basename $0` raw.1.fastq and raw.2.fastq"
+	echo
+	echo "Example:"
+	echo
+	exit
+fi
+
 {
 echo "Starting at ..."
 date
