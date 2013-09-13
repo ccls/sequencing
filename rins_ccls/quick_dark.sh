@@ -26,16 +26,6 @@ fi
 echo "Starting at ..."
 date
 
-#if [ $# -eq 1 ] ; then
-#	echo "1 arg."
-#elif [ $# -eq 2 ] ; then
-#	echo "2 args."
-#elif [ $# -gt 2 ] ; then
-#	echo "More than 2 args."
-#else
-#	echo "Zero args."
-#fi
-
 if [ $# -eq 2 ] ; then
 	ln -s $1 raw.1.fastq
 	ln -s $2 raw.2.fastq
@@ -107,7 +97,6 @@ for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 ; do
 	ifile=$ofile
 done
 
-
 ln -s $ofile.fastq raw_non_human.fastq
 
 
@@ -138,6 +127,7 @@ cp trinity_output_single/Trinity.fasta trinity_non_human_single.fasta
 
 echo "Laning composite fasta file."
 bioruby_lane_fasta.rb trinity_input_single.fasta
+#	=> trinity_input_single_1.fasta, trinity_input_single_2.fasta
 
 mv trinity_input_single_1.fasta trinity_input_paired_1.fasta
 mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
@@ -154,39 +144,26 @@ cp trinity_output_paired/both.fa trinity_input_paired.fasta
 cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 
 
-#
-#	This is where I would like to scp a couple fasta files to the cluster
-#		and then blast 'em with ...
-#	ssh -f genepi ssh -f ec0000 blastn ....
-#	... BUT ...
-#
+echo "Removing duplicate reads from fasta files to speed up blasting."
+
+bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_single.fasta
+#	=> trinity_input_single.uniq.fasta
+
+bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_paired.fasta
+#	=> trinity_input_paired.uniq.fasta
 
 
 
-#
-#	Hmm.  Where will the output got when a command redirects its output inside a redirected block?
-#
-#	Did this in a script and the echo output went to the 'echo' file
-#{
-#	echo "Echo output" > block_output_test_echo.out 2>&1
-#} 1>>block_output_test_block.out 2>&1
-#
+echo "Spliting fasta files into 1000 read fasta files and queueing"
 
-#blastn -query=trinity_input_single.fasta \
-#	-db=nt \
-#	-evalue 0.05 -outfmt 0 > trinity_input_single_blastn.txt
-#
-#blastn -query=trinity_non_human_single.fasta \
-#	-db=nt \
-#	-evalue 0.05 -outfmt 0 > trinity_non_human_single_blastn.txt
-#
-#blastn -query=trinity_input_paired.fasta \
-#	-db=nt \
-#	-evalue 0.05 -outfmt 0 > trinity_input_paired_blastn.txt
-#
-#blastn -query=trinity_non_human_paired.fasta \
-#	-db=nt \
-#	-evalue 0.05 -outfmt 0 > trinity_non_human_paired_blastn.txt
+ec_fasta_split_and_blastn.sh trinity_non_human_single.fasta
+
+ec_fasta_split_and_blastn.sh trinity_non_human_paired.fasta
+
+ec_fasta_split_and_blastn.sh trinity_input_single.uniq.fasta
+
+ec_fasta_split_and_blastn.sh trinity_input_paired.uniq.fasta
+
 
 echo "Finished at ..."
 date
