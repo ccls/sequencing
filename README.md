@@ -67,6 +67,12 @@ Not including the ~50MB of sample data
 
 [Cufflinks](http://cufflinks.cbcb.umd.edu)
 
+[Tophat](http://tophat.cbcb.umd.edu/)
+
+[BOOST](http://www.boost.org/)
+
+[SAMtools](http://samtools.sourceforge.net/)
+
 [BioRuby](http://bioruby.org/)
 
 
@@ -265,6 +271,13 @@ Always use -parse\_seqids option when making a blastdb from a fasta file.
 Otherwise the sequence names in the fasta file are not used and
 new ones are made up.
 
+	makeblastdb -dbtype nucl -in fallon_unknown_non_human.fasta -out fallon_unknown_non_human -title fallon_unknown_non_human -parse_seqids
+
+### NOTE
+
+How to dump a blast database into a fasta file...
+
+	blastdbcmd -db SOMEBLASTDB -entry all > MYNEWFASTAFILE
 
 ### TODO
 
