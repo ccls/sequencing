@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ $# -eq 0 ]; then
+function usage(){
 	echo
 	echo "Creates a directory of the name of each of the given fasta files and appends"
 	echo "the date and .pieces.  The fasta file is then split into fasta files each"
@@ -9,38 +9,63 @@ if [ $# -eq 0 ]; then
 	echo
 	echo "Usage:"
 	echo
-	echo "`basename $0` [optional max reads] fasta_filelist"
+	echo "`basename $0` [--max_reads INTEGER] [--dbs COMMA_SEP_STRING] fasta_filelist"
 	echo
 	echo "The default max reads per piece is 1000."
-	echo 
-	echo "Example: `basename $0` 500 /my/path/*fasta"
 	echo
-	exit
-fi
+	echo "The default dbs are just nt."
+	echo 
+	echo "Example: `basename $0` -m 500 --dbs nt,viral,hg /my/path/*fasta"
+	echo
+	exit 1
+}
+#	Basically, this is TRUE AND DO ...
+[[ $# -eq 0 ]] && usage
 
 uname=`uname -n`
 
-db='/Volumes/cube/working/indexes/nt'
+dbs='nt'
 
-if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
-	db='/my/home/jwendt/dna/blast/nt'
-fi
+#       leading with the ": " stops execution
+#       just ${BLASTDB:"/Volumes/cube/working/indexes"}
+#       would try to execute the result.  I just want the OR/EQUALS feature
+: ${BLASTDB:="/Volumes/cube/working/indexes"}
 
-tmp=`echo $1 | tr -cd '[:digit:]'`
-#	need the x's in case is blank
-if [ "x${tmp}" = "x${1}" ] ; then
-	max_reads=$1
-	shift
-else
-	max_reads=1000
-fi
+#       they MUST be exported, apparently, to be picked up by calls
+export BLASTDB
+
+#if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
+#	BLASTDB='/my/home/jwendt/dna/blast/nt'
+#fi
+
+max_reads=1000
+while [ $# -ne 0 ] ; do
+	case $1 in
+		-d|--d*)
+			shift; dbs=$1; shift ;;
+		-m|--m*)
+			shift; 
+			tmp=`echo $1 | tr -cd '[:digit:]'`
+			if [ "x${tmp}" = "x${1}" ] ; then
+				max_reads=$1
+				shift
+			else
+				#	if max reads isn't an integer, awk works oddly
+				echo ; echo "max reads value not an integer"
+				usage
+			fi ;;
+		-*)
+			echo ; echo "Unexpected args from: ${*}"; usage ;;
+		*) 
+			break;;
+	esac
+done
 
 #	each filename on the command line
 while [ $# -ne 0 ] ; do
 	if [ -f $1 ] ; then
 		now=`date "+%Y%m%d%H%M%S"`
 
-#		fasta_base=`basename $1`
 		fasta_base=`basename $1 | sed 's/\(.*\)\..*/\1/'`
 
 		#	extension=${filename##*.}
@@ -51,7 +76,6 @@ while [ $# -ne 0 ] ; do
 		#	not used so why bother
 		#		fasta_dir=`dirname $1`
 
-#		subdir=$fasta_base.${now}.pieces
 		subdir=`basename $1`.${now}.pieces
 
 		#
@@ -63,6 +87,8 @@ while [ $# -ne 0 ] ; do
 		#
 		#	I would like to drop the original fasta file's extension,
 		#	but that would require changes below.  Be careful.
+		#	Keeping the .fasta in the blast name does help clarify which have run
+		#	and which have not, so I say keep if for the moment.
 		#
 
 		#
@@ -98,30 +124,33 @@ while [ $# -ne 0 ] ; do
 		#	on some occassions, this list is too long for ls so changing to find
 		#	for file in `ls $PWD/$subdir/${fasta_base}_*.fasta` ; do
 		#	interesting _*. is ok, but .*. is not.  must escape the * here so .\*.
-		for file in `find $PWD/$subdir/ -type f -name ${fasta_base}.\*.fasta` ; do
-			cmd=''	#	gotta reset it
-			if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
-#	trinity_input_single.uniq.fasta_00000416.fasta
-#	=> 'uniq' for num.  oops
-#				num=`basename $file | awk -F. '{print $2}' | awk -F_ '{print $NF}'`
-#				num=`basename $file | awk -F. '{print $(NF-1)}' | awk -F_ '{print $NF}'`
-				num=`basename $file | awk -F. '{print $(NF-1)}'`
-				cmd="srun --share --job-name=$num"
-			fi
-			cmd="$cmd blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn.txt &"
+		for file in `find $PWD/$subdir -type f -name ${fasta_base}.\*.fasta` ; do
 
+			#	allowing for multiple db blasting
+			for db in `echo $dbs | sed 's/,/ /g'` ; do
+				cmd=''	#	gotta reset it
+				if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
+					#	trinity_input_single.uniq.fasta_00000416.fasta
+					#	=> 'uniq' for num.  oops
+					#	num=`basename $file | awk -F. '{print $2}' | awk -F_ '{print $NF}'`
+					#	num=`basename $file | awk -F. '{print $(NF-1)}' | awk -F_ '{print $NF}'`
+					num=`basename $file | awk -F. '{print $(NF-1)}'`
+					cmd="srun --share --job-name=$num${db}"
+				fi
+				#echo db $db
+				cmd="$cmd blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt &"
+				#cmd="$cmd blastn_wrapper.sh $file $db &"
 
-#			cmd="$cmd blastn_wrapper.sh $file $db &"
+				echo $cmd
 
-			echo $cmd
-
-			if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
-				#	need to eval to use the &
-				#	want the & in the queue'd command, not here.
-				#	if were here, will cause database error by trying to write to it at same time
-				eval "simple_queue.sh push '$cmd'"
-				#eval $cmd
-			fi
+				if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
+					#	need to eval to use the &
+					#	want the & in the queue'd command, not here.
+					#	if were here, will cause database error by trying to write to it at same time
+					eval "simple_queue.sh push '$cmd'"
+					#eval $cmd
+				fi
+			done
 
 		done
 
