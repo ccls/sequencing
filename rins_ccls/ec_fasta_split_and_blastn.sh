@@ -135,7 +135,7 @@ while [ $# -ne 0 ] ; do
 					#	num=`basename $file | awk -F. '{print $2}' | awk -F_ '{print $NF}'`
 					#	num=`basename $file | awk -F. '{print $(NF-1)}' | awk -F_ '{print $NF}'`
 					num=`basename $file | awk -F. '{print $(NF-1)}'`
-					cmd="srun --share --job-name=$num_$db"
+					cmd="srun --share --job-name=${num}_$db"
 				fi
 				#echo db $db
 				cmd="$cmd blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt &"
