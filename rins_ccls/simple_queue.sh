@@ -8,7 +8,7 @@ if [ $# -eq 0 ]; then
 	echo "simple_queue.sh pop -> displays and deletes first record in db"
 	echo "simple_queue.sh push COMMAND -> adds COMMAND to bottom of db"
 	echo "simple_queue.sh size -> display number of records (also count and length)"
-	echo "simple_queue.sh -> no args will display all records"
+	echo "simple_queue.sh list -> display all records"
 	echo
 	echo "`basename $0`"
 	echo
@@ -138,8 +138,8 @@ case "$1" in
 		shift; push $*;;
 	size | count | length )
 		sqlite3 -cmd '.timeout 5000' $database_file_name "select count(*) from queue" ;;
-	* )
-		sqlite3 -cmd '.timeout 5000' $database_file_name "select * from queue"
+	list )
+		sqlite3 -cmd '.timeout 5000' $database_file_name "select * from queue";;
 esac
 
 
