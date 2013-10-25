@@ -1,3 +1,4 @@
+.DS_Store
 *.gem
 *.rbc
 .bundle
@@ -21,8 +22,9 @@ versions/
 
 /Makefile
 
-working_*/*.outdir
-working_*/*log
+working_dir_examples/working_*/*.outdir
+working_dir_examples/working_*/log
+working_dir_examples/working_fake_sample/
 
 blatSrc*/*/*.o
 blatSrc*/*/*/*.o
