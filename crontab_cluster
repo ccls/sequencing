@@ -2,22 +2,9 @@
 #	This will NOT SOURCE .bashrc or .bash_profile or .profile
 #	as it is non-interactive
 #
-#30 * * * * echo "testing cron" > cron_test
-#* * * * * which simple_queue_cron.sh >> cron_test
-#0,15,30,45 * * * * ( . .bash_profile && date ) >> cron_test
-#* * * * * ( . .bash_profile && date && sleep 100 ) >> cron_test
-#* * * * * ( . .bash_profile && /my/home/jwendt/cron_script.sh ) >> cron_test
-#* * * * * ( . .bash_profile && /my/home/jwendt/cron_script.sh ) >> cron_test
-#* * * * * ( . .bash_profile ; /my/home/jwendt/cron_script.sh ) >> cron_test
-#* * * * * ( . .bash_profile && which simple_queue_cron.sh ) >> cron_test
-#* * * * * ( . .bash_profile && echo $PATH ) >> cron_test
-#* * * * * echo $SHELL >> cron_test
-
-
 #
 #	I still don't get it.  I just doesn't always run.
 #	Despite being set to run every 15 minutes, it only runs every 1:15??????  WTF?
-#	The cron_test runs every time.
 #
 #	I have noticed that multiple instances of fcron continue to exist?
 #	Kinda like something is causing it to hang.  Commenting these out
@@ -33,21 +20,25 @@
 #	In theory, this is nice if you don't want multiple instances running.
 #	However, if you don't care, what can you do?
 #
-#*/15 * * * * ( . .bash_profile && simple_queue_cron.sh ) >> simple_queue_cron.log
-#0,5,10,15,20,25,30,35,40,45,50,55 * * * * ( . .bash_profile && simple_queue_cron.sh ) >> simple_queue_cron.log
-#* * * * * ( . .bash_profile && simple_queue_cron.sh ) >> simple_queue_cron.log
-#0 * * * * /my/home/jwendt/dna/bin/simple_queue_cron.sh
-
-
 #
 #	It appears that having 2 entries in the crontab works.
 #	80/hr.  500 in queue. ~6 hours. Run every 3 hours.
 #	*/6 = 0,6,12,...
-#
+#	
 #0 */2 * * * ( . .bash_profile && simple_queue_cron.sh ) >> simple_queue_cron.log
 #0 1-23/2 * * * ( . .bash_profile && simple_queue_cron.sh ) >> simple_queue_cron.log
 #0 0,6,12,18 * * * ( . .bash_profile && simple_queue_cron.sh ) >> simple_queue_cron.log
 #0 3,9,15,21 * * * ( . .bash_profile && simple_queue_cron.sh ) >> simple_queue_cron.log
+
+
+
+#
+#	My prefered setup assuming that each job takes about an hour and 500 in the queue
+#		( some of these hg19 blasts are taking over 3 hours. it'd be better 
+#			to have a few more of these, but I'm just gonna let it go. )
+#
 0 0,6,12,18 * * * ( . .bash_profile && simple_queue_cron.sh ) >> simple_queue_cron.log
 0 2,8,14,20 * * * ( . .bash_profile && simple_queue_cron.sh ) >> simple_queue_cron.log
 0 4,10,16,22 * * * ( . .bash_profile && simple_queue_cron.sh ) >> simple_queue_cron.log
+
+
