@@ -71,10 +71,10 @@ while [ $# -ne 0 ] ; do
 #
 #	fasta_count=`ls $path/*fasta_????????? | wc -l`
 #	fake.fasta_000000006.fasta
-	fasta_count=`ls $path/*fasta_*.fasta | wc -l`
+	fasta_count=`ls $path/*fasta.fasta | wc -l`
 #	blast_count=`ls $path/*fasta_?????????.blastn.txt | wc -l`
 #	fake.fasta_000000006.fasta.blastn.txt
-	blast_count=`ls $path/*fasta_*.blastn.txt | wc -l`
+	blast_count=`ls $path/*fasta.blastn*.txt | wc -l`
 
 	echo "Found $fasta_count fasta files"
 	echo "Found $blast_count blast files"
@@ -85,7 +85,7 @@ while [ $# -ne 0 ] ; do
 	#	ls: fake.fasta.20130802170906.pieces/*fasta_*.blastn.txt: No such file or directory
 	#
 	i=0
-	for blast in `ls $path/*fasta_*.blastn.txt` ; do
+	for blast in `ls $path/*fasta.blastn.txt` ; do
 		i=`expr $i + 1`
 		if [ $i -le $skip ] ; then
 			echo "skipping $blast"
