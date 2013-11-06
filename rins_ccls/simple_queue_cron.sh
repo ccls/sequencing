@@ -1,21 +1,21 @@
 #!/bin/sh
 
-if [ $# -eq 0 ]; then
-	echo 
-	echo "Will pop and eval commands from simple_queue database"
-	echo "The number will depend on the current content of the slurm queue"
-	echo "as well as the number desired. The default is 200 but this can"
-	echo "be overriden with the SLURM_MAX_QUEUE_SIZE environment variable."
-	echo "This command was designed to be called from a cron job."
-	echo
-	echo "Usage:"
-	echo
-	echo "`basename $0`"
-	echo
-	echo "Example:"
-	echo
-	exit
-fi
+#if [ $# -eq 0 ]; then
+#	echo 
+#	echo "Will pop and eval commands from simple_queue database"
+#	echo "The number will depend on the current content of the slurm queue"
+#	echo "as well as the number desired. The default is 200 but this can"
+#	echo "be overriden with the SLURM_MAX_QUEUE_SIZE environment variable."
+#	echo "This command was designed to be called from a cron job."
+#	echo
+#	echo "Usage:"
+#	echo
+#	echo "`basename $0`"
+#	echo
+#	echo "Example:"
+#	echo
+#	exit
+#fi
 
 echo $0
 date

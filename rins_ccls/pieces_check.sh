@@ -85,7 +85,7 @@ while [ $# -ne 0 ] ; do
 	#	ls: fake.fasta.20130802170906.pieces/*fasta_*.blastn.txt: No such file or directory
 	#
 	i=0
-	for blast in `ls $path/*fasta.blastn.txt` ; do
+	for blast in `ls $path/*fasta.blastn*.txt` ; do
 		i=`expr $i + 1`
 		if [ $i -le $skip ] ; then
 			echo "skipping $blast"
