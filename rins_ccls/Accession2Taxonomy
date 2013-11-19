@@ -1,0 +1,71 @@
+
+ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
+
+Taxonomy names file (names.dmp):
+	tax_id					-- the id of node associated with this name
+	name_txt				-- name itself
+	unique name				-- the unique variant of this name if name not unique
+	name class				-- (synonym, common name, ...)
+
+
+
+> blastdbcmd -db /Volumes/cube/working/indexes/nt -entry AC012346 -outfmt '%a, %g'
+AC012346.9, 14333952
+
+> gi2taxid -gi 14333952
+14333952 9606
+
+> grep "^9606\t" names.dmp
+9606	|	Homo sapiens	|		|	scientific name	|
+9606	|	Homo sapiens Linnaeus, 1758	|		|	authority	|
+9606	|	human	|		|	genbank common name	|
+9606	|	man	|		|	common name	|
+
+
+
+blastdbcmd should also provide this info, but using %T or others simply causes it
+to respond with many, many "Error: Taxonomic database was not found." and I have
+no idea how to provide it.  I think that these fields are simply not included in the
+nt database. Actually, it was the %L and %S causing the error.
+
+
+> blastdbcmd -db /Volumes/cube/working/indexes/nt -entry all -outfmt '%a,%g,%T'
+
+would yield a very long list of what I'm looking for and will no longer need
+the gi2taxid tool
+
+
+...from the manual ...
+
+5.4 Extract all human sequences from the nr database
+
+Although one cannot select GIs by taxonomy from a database, a combination of unix command line tools will accomplish this:
+
+$ blastdbcmd -db nr -entry all -outfmt "%g %T" | \ awk ' { if ($2 == 9606) { print $1 } } ' | \ blastdbcmd -db nr -entry_batch - -out human_sequences.txt
+
+The first blastdbcmd invocation produces 2 entries per sequence (GI and taxonomy ID), the awk command selects from the output of that command those sequences which have a taxonomy ID of 9606 (human) and prints its GIs, and finally the second blastdbcmd invocation uses those GIs to print the sequence data for the human sequences in the nr database.
+
+...
+
+
+
+
+
+http://www.ncbi.nlm.nih.gov/nuccore/X17276.1
+
+
+
+
+
+
+
+
+
+TaxonomyName
+	id, tax_id, name_txt, name_unique, name_class
+
+gi2TaxonomyName (join table) seems unnecessary.  could just put tax_id in Accession table
+	gi, tax_id
+
+Accession
+	id, accession_number, gi, tax_id

@@ -16,10 +16,10 @@ if [ $# -eq 0 ]; then
 	echo
 	echo "Usage:"
 	echo
-	echo "select_no_hits_from_blast.sh BLASTN_OUTPUT.txt > LIST_OF_NO_HITS_FOUND.names &"
+	echo "$0 BLASTN_OUTPUT.txt > LIST_OF_NO_HITS_FOUND.names &"
 	echo
 	echo "Example:"
-	echo "select_no_hits_from_blast.sh trinity_input_paired.blastn.txt > trinity_input_paired.blastn.no_hits_found.names &"
+	echo "$0 trinity_input_paired.blastn.txt > trinity_input_paired.blastn.no_hits_found.names &"
 	echo
 	exit
 fi
