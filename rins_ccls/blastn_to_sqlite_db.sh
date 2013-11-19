@@ -88,6 +88,9 @@ while [ $# -ne 0 ] ; do
 
 		#	double up a double quote
 
+
+		#	and the last result doesn't get triggered to be shown
+
 		awk '
 		BEGIN { reset() }
 		function reset(){
@@ -153,6 +156,9 @@ while [ $# -ne 0 ] ; do
 				gsub(/\(|%|\)/,"",gaps_percent)
 			} else if( /Strand=/ ){
 				strand=substr($1,8)
+			} else if( /Effective/ ){
+				if( result != "" ){ show() }
+				reset()
 			}
 		}' $1
 	else
