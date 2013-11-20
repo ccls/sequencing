@@ -139,7 +139,10 @@ Trinity.pl --seqType fa --bflyHeapSpaceMax 5G --JM 2G \
 	--right trinity_input_paired_2.fasta \
 	--output trinity_output_paired
 
-cp trinity_output_paired/both.fa trinity_input_paired.fasta
+#
+#	We are no longer keeping trinity_input_paired related files
+#
+#	cp trinity_output_paired/both.fa trinity_input_paired.fasta
 
 cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 
@@ -149,7 +152,10 @@ echo "Removing duplicate reads from fasta files to speed up blasting."
 bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_single.fasta
 #	=> trinity_input_single.uniq.fasta
 
-bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_paired.fasta
+#
+#	We are no longer keeping trinity_input_paired related files
+#
+#bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_paired.fasta
 #	=> trinity_input_paired.uniq.fasta
 
 
@@ -162,7 +168,10 @@ ec_fasta_split_and_blastn.sh trinity_non_human_paired.fasta
 
 ec_fasta_split_and_blastn.sh trinity_input_single.uniq.fasta
 
-ec_fasta_split_and_blastn.sh trinity_input_paired.uniq.fasta
+#
+#	We are no longer keeping trinity_input_paired related files
+#
+#ec_fasta_split_and_blastn.sh trinity_input_paired.uniq.fasta
 
 
 echo "Finished at ..."
