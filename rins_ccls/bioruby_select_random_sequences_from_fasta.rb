@@ -70,7 +70,7 @@ filename  = ARGV[0]
 
 
 inputfile     = Bio::FlatFile.auto(filename)
-root_extname  = File.extname(filename)
+root_extname  = File.extname(filename)		#	will include the '.'
 root_filename = File.basename(filename,root_extname)
 
 command = "grep '^>' #{filename} | wc -l"
@@ -100,7 +100,7 @@ end
 random_read_indexes=(0..total_sequences-1).to_a.sample(number_of_random_reads)
 
 puts "Opening output file."
-outputfile = File.open("#{root_filename}.select.#{root_extname}",'w')
+outputfile = File.open("#{root_filename}.select#{root_extname}",'w')
 
 inputfile.each_with_index do |entry,index|
 	printf "\rReading sequence %#{max_digits}d of %#{max_digits}d", index+1, total_sequences
