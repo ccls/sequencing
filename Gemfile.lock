@@ -4,8 +4,8 @@ GEM
   remote: http://gemcutter.org/
   remote: http://gems.github.com/
   specs:
-    bio (1.4.3)
-    test-unit (2.5.4)
+    bio (1.4.3.0001)
+    test-unit (2.5.5)
 
 PLATFORMS
   ruby
