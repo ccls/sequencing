@@ -149,8 +149,18 @@ cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 
 echo "Removing duplicate reads from fasta files to speed up blasting."
 
+
+
+
+#	TODO add counters to the sequence names???
+
 bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_single.fasta
 #	=> trinity_input_single.uniq.fasta
+
+
+
+
+
 
 #
 #	We are no longer keeping trinity_input_paired related files
@@ -160,13 +170,21 @@ bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_single.fasta
 
 
 
-echo "Spliting fasta files into 1000 read fasta files and queueing"
+echo "Spliting fasta files into 1000 read fasta files and queueing for blasting"
 
 ec_fasta_split_and_blastn.sh trinity_non_human_single.fasta
 
 ec_fasta_split_and_blastn.sh trinity_non_human_paired.fasta
 
 ec_fasta_split_and_blastn.sh trinity_input_single.uniq.fasta
+
+ec_fasta_split_and_blastn.sh --dbs viral_genomic --options "-task blastn" trinity_non_human_single.fasta
+
+ec_fasta_split_and_blastn.sh --dbs viral_genomic --options "-task blastn" trinity_non_human_paired.fasta
+
+ec_fasta_split_and_blastn.sh --dbs viral_genomic --options "-task blastn" trinity_input_single.uniq.fasta
+
+
 
 #
 #	We are no longer keeping trinity_input_paired related files

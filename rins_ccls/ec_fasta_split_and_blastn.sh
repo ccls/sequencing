@@ -54,6 +54,8 @@ while [ $# -ne 0 ] ; do
 				echo ; echo "max reads value not an integer"
 				usage
 			fi ;;
+		-o|--o*)
+			shift; options=$1; shift ;;
 		-*)
 			echo ; echo "Unexpected args from: ${*}"; usage ;;
 		*) 
@@ -138,7 +140,7 @@ while [ $# -ne 0 ] ; do
 					cmd="srun --share --job-name=${num}_$db"
 				fi
 				#echo db $db
-				cmd="$cmd blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt &"
+				cmd="$cmd blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt $options &"
 				#cmd="$cmd blastn_wrapper.sh $file $db &"
 
 				echo $cmd
