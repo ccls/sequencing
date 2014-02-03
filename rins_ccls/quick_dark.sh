@@ -57,21 +57,31 @@ $bowtie2 -x hg18 \
 	-U raw.1.fastq,raw.2.fastq \
 	--un raw_not_hg18.fastq
 
+date
+
 $bowtie2 -x hg19 \
 	-U raw_not_hg18.fastq \
 	--un raw_not_hg18_hg19.fastq
+
+date
 
 $bowtie2 -x Blast1 \
 	-U raw_not_hg18_hg19.fastq \
 	--un raw_not_hg18_hg19_Blast1.fastq
 
+date
+
 $bowtie2 -x Blast2 \
 	-U raw_not_hg18_hg19_Blast1.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2.fastq
 
+date
+
 $bowtie2 -x Homo_sapiens.GRCh37.69.cdna.all \
 	-U raw_not_hg18_hg19_Blast1_Blast2.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq
+
+date
 
 
 
@@ -79,14 +89,20 @@ $bowtie2 -x nt_human_1 \
 	-U raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq 
 
+date
+
 $bowtie2 -x nt_human_2 \
 	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq
+
+date
 
 $bowtie2 -x nt_human_3 \
 	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq \
 	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3.fastq
 
+
+date
 
 
 ifile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3
@@ -94,6 +110,7 @@ ofile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3_human_genomic
 for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 ; do
 	ofile=${ofile}_$n
 	$bowtie2 -x human_genomic_$n -U $ifile.fastq --un $ofile.fastq
+	date
 	ifile=$ofile
 done
 
@@ -120,6 +137,7 @@ Trinity.pl --seqType fq --bflyHeapSpaceMax 5G --JM 2G \
 	--min_contig_length 100 \
 	--single raw_non_human.fastq \
 	--output trinity_output_single
+date
 
 cp trinity_output_single/single.fa trinity_input_single.fasta
 
@@ -138,6 +156,7 @@ Trinity.pl --seqType fa --bflyHeapSpaceMax 5G --JM 2G \
 	--left  trinity_input_paired_1.fasta \
 	--right trinity_input_paired_2.fasta \
 	--output trinity_output_paired
+date
 
 #
 #	We are no longer keeping trinity_input_paired related files
@@ -171,17 +190,17 @@ bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_single.fasta
 
 
 echo "Spliting fasta files into 1000 read fasta files and queueing for blasting"
-
+date
 ec_fasta_split_and_blastn.sh --dbs viral_genomic --options "-task blastn" trinity_non_human_single.fasta
-
+date
 ec_fasta_split_and_blastn.sh --dbs viral_genomic --options "-task blastn" trinity_non_human_paired.fasta
-
+date
 ec_fasta_split_and_blastn.sh --dbs viral_genomic --options "-task blastn" trinity_input_single.uniq.fasta
-
+date
 ec_fasta_split_and_blastn.sh trinity_non_human_single.fasta
-
+date
 ec_fasta_split_and_blastn.sh trinity_non_human_paired.fasta
-
+date
 ec_fasta_split_and_blastn.sh trinity_input_single.uniq.fasta
 
 
