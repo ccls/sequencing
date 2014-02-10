@@ -20,7 +20,7 @@ ARGV.each do |filename|
 	root_filename = File.basename(filename,root_extname)
 	lanes = [1,2]	#[]
 
-	command = "grep '>' #{filename} | wc -l"
+	command = "grep '^>' #{filename} | wc -l"
 	puts "Counting sequences with ..."
 	puts command
 #	total_sequences = inputfile.count
@@ -156,7 +156,7 @@ ARGV.each do |filename|
 	#	It is substantially easier on memory though as it doesn't load
 	#	the entire file into memory.
 	puts "Scanning #{filename} for paired sequences (this can take a while) with ..."
-	command = "grep '>' #{filename} | awk -F/ '{print $1}' | sort | uniq -d | sed 's/^>//'"
+	command = "grep '^>' #{filename} | awk -F/ '{print $1}' | sort | uniq -d | sed 's/^>//'"
 	puts command
 	paired_sequences_a = `#{command}`.chomp.split
 	paired_sequences = {}
