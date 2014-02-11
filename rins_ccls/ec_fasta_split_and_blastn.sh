@@ -140,7 +140,7 @@ while [ $# -ne 0 ] ; do
 					cmd="srun --share --job-name=${num}_$db"
 				fi
 				#echo db $db
-				cmd="$cmd blastn -query $file -db $db -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt $options &"
+				cmd="$cmd blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt $options &"
 				#cmd="$cmd blastn_wrapper.sh $file $db &"
 
 				echo $cmd
