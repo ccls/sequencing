@@ -171,10 +171,14 @@ echo "Removing duplicate reads from fasta files to speed up blasting."
 
 
 
-#	TODO add counters to the sequence names???
 
-bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_single.fasta
+#bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_single.fasta
 #	=> trinity_input_single.uniq.fasta
+#	using fastx_collapser instead.  Better on memory and faster.
+#	Also adds read count
+#	http://hannonlab.cshl.edu/fastx_toolkit/
+#	This will completely rename the reads so will lose lane info etc.
+fastx_collapser -i trinity_input_single.fasta -o trinity_input_single.uniq.fasta
 
 
 
