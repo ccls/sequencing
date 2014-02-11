@@ -5,13 +5,16 @@ require 'bio'	#	bioruby gem
 if ARGV.empty?
 	puts "\nUsage:"
 	puts "\n#{$0} fasta_file\n\n"
+	puts "\nBe Aware that this is just uniquing the read, with no concern for the lane.\n\n"
 	exit
 end
+
+#	Runs out of memory on n0 with 68GB fasta file
 
 filename  = ARGV[0]
 
 
-#	while
+#	while loop for multiple fasta files?
 
 
 
@@ -32,25 +35,16 @@ puts "Found #{total_sequences} sequences"
 #	using +1 as log of 2-10 is 1, 11-100 is 2
 max_digits = Math.log10( total_sequences + 1 ).ceil
 
-#names = {}
-#File.open(name_file,'r').each{|name|
-#	names[name.chomp] = 1
-#}
-#
-#puts "Found #{names.length} sequence names."
-#
 puts "Opening output file."
-#outputfile = File.open("#{name_file}.fasta",'w')
 outputfile = File.open("#{root_filename}.uniq.fasta",'w')
 
 sequences={}
 duplicate_counter = 0
-inputfile.each_with_index do |entry,index|
-	printf "\rReading sequence %#{max_digits}d of %#{max_digits}d", index+1, total_sequences
 
-#	if names.has_key?(entry.entry_id)
-#		outputfile.puts entry
-#	end
+index=0
+inputfile.each do |entry|
+#inputfile.each_with_index do |entry,index|
+	printf "\rReading sequence %#{max_digits}d of %#{max_digits}d", index+1, total_sequences
 
 	if !sequences.has_key?(entry.seq)
 		outputfile.puts entry
@@ -59,6 +53,9 @@ inputfile.each_with_index do |entry,index|
 		duplicate_counter += 1
 	end
 
+
+	index+=1
+	nil	#
 end
 puts
 puts "Removed #{duplicate_counter} duplicated sequences."
@@ -68,6 +65,6 @@ outputfile.close
 
 
 
-#	end while
+#	end while loop for multiple fasta files?
 
 __END__
