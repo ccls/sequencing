@@ -9,6 +9,12 @@ if ARGV.empty?
 	exit
 end
 
+
+
+#	20140211 - replaced this tool with fastx_collapser
+
+
+
 #	Runs out of memory on n0 with 68GB fasta file
 
 filename  = ARGV[0]
