@@ -192,14 +192,16 @@ fastx_collapser -i trinity_input_single.fasta -o trinity_input_single.uniq.fasta
 #	=> trinity_input_paired.uniq.fasta
 
 
+#	even 10000 processes quite fast
+echo "Spliting fasta files into 10000 read fasta files and queueing for blasting to viral genomic"
+date
+ec_fasta_split_and_blastn.sh -m 10000 --dbs viral_genomic --options "-task blastn" trinity_non_human_single.fasta
+date
+ec_fasta_split_and_blastn.sh -m 10000 --dbs viral_genomic --options "-task blastn" trinity_non_human_paired.fasta
+date
+ec_fasta_split_and_blastn.sh -m 10000 --dbs viral_genomic --options "-task blastn" trinity_input_single.uniq.fasta
 
-echo "Spliting fasta files into 1000 read fasta files and queueing for blasting"
-date
-ec_fasta_split_and_blastn.sh --dbs viral_genomic --options "-task blastn" trinity_non_human_single.fasta
-date
-ec_fasta_split_and_blastn.sh --dbs viral_genomic --options "-task blastn" trinity_non_human_paired.fasta
-date
-ec_fasta_split_and_blastn.sh --dbs viral_genomic --options "-task blastn" trinity_input_single.uniq.fasta
+echo "Spliting fasta files into 1000 read fasta files and queueing for blasting to nt"
 date
 ec_fasta_split_and_blastn.sh trinity_non_human_single.fasta
 date
