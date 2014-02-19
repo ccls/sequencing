@@ -86,7 +86,13 @@ echo "$wanted wanted"
 
 for i in `seq $wanted` ; do
 	echo "simple_queue.sh popping $i"
-	eval `simple_queue.sh pop`
+
+#	eval `simple_queue.sh pop`
+
+	cmd=`simple_queue.sh pop`
+	echo $cmd | sed 's/^srun/srun --partition=ccls/'
+	`$cmd`
+
 #	cmd=`simple_queue.sh pop | sed 's/ &//'`
 #	echo $cmd
 #	$cmd &
