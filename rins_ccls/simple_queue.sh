@@ -65,6 +65,13 @@ log_file_name="$HOME/simple_queue.log"
 
 max_delete_retries=5
 
+peak(){
+	echo "Peaking ... `date`" >> $log_file_name
+	r=`sqlite3 -cmd '.timeout 5000' -line $database_file_name "select * from queue order by id asc limit 1"`
+	command=`echo "$r" | grep "^\s*command = " | sed 's/^command = //'`
+	echo $command
+}
+
 pop(){
 	echo "Popping ... `date`" >> $log_file_name
 	r=`sqlite3 -cmd '.timeout 5000' -line $database_file_name "select * from queue order by id asc limit 1"`
@@ -131,6 +138,8 @@ if [ ! -f $database_file_name ] ; then
 fi
 
 case "$1" in
+	peak )
+		shift; peak;;
 	pop )
 		shift; pop;;
 	push )
