@@ -90,7 +90,7 @@ for i in `seq $wanted` ; do
 #	eval `simple_queue.sh pop`
 
 	cmd=`simple_queue.sh pop`
-	echo $cmd | sed 's/^srun/srun --partition=ccls/'
+	cmd=`echo $cmd | sed 's/^srun/srun --partition=ccls/'`
 	`$cmd`
 
 #	cmd=`simple_queue.sh pop | sed 's/ &//'`
