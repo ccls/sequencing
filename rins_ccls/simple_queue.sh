@@ -142,7 +142,10 @@ fi
 
 #	ln is one of the few commands that are atomic.  Using it here to lock the queue
 #	to avoid multiple rapid popping to return the same records.
-while ! ln -s ${database_file_name} ${database_file_name}.lock 2>/dev/null ; do :; done
+#while ! ln -s ${database_file_name} ${database_file_name}.lock 2>/dev/null ; do :; done
+#	add a bit of sleeping to avoid excessive attempts at linking.
+while ! ln -s ${database_file_name} ${database_file_name}.lock 2>/dev/null
+	do sleep `echo | awk '{srand();print rand()}'` ; done
 
 case "$1" in
 	peek )
