@@ -145,7 +145,7 @@ fi
 #while ! ln -s ${database_file_name} ${database_file_name}.lock 2>/dev/null ; do :; done
 #	add a bit of sleeping to avoid excessive attempts at linking.
 while ! ln -s ${database_file_name} ${database_file_name}.lock 2>/dev/null
-	do sleep `echo | awk '{srand();print rand()}'` ; done
+	do sleep `echo | gawk '{srand(systime()+PROCINFO["pid"]);print 2*rand()}'` ; done
 
 case "$1" in
 	peek )
