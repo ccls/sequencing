@@ -65,11 +65,10 @@ me=`whoami`
 
 } 1>>~/ec/logs/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID.log 2>&1
 
-#	srun -p ccls slurm_env.sh &
-
 exit;
 
-
+#	Run this 4 times.  14 seems to be the max callable and 4*14=56.  Conveniently.
+#	srun --share --partition=ccls --ntasks=14 simple_queue_eval.sh &
 
 #	There are actually 56 run units available on ccls (not 52)
 #	n0003 - 16

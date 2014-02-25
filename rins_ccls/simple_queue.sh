@@ -65,13 +65,16 @@ log_file_name="$HOME/simple_queue.log"
 
 max_delete_retries=5
 
-peak(){
-	echo "Peaking ... `date`" >> $log_file_name
+peek(){
+	echo "Peeking ... `date`" >> $log_file_name
 	r=`sqlite3 -cmd '.timeout 5000' -line $database_file_name "select * from queue order by id asc limit 1"`
 	command=`echo "$r" | grep "^\s*command = " | sed 's/^command = //'`
 	echo $command
 }
 
+#
+#	Sadly, rapid pop calls can result in the multiple returns of the same record.
+#
 pop(){
 	echo "Popping ... `date`" >> $log_file_name
 	r=`sqlite3 -cmd '.timeout 5000' -line $database_file_name "select * from queue order by id asc limit 1"`
@@ -137,9 +140,13 @@ if [ ! -f $database_file_name ] ; then
 	#
 fi
 
+#	ln is one of the few commands that are atomic.  Using it here to lock the queue
+#	to avoid multiple rapid popping to return the same records.
+while ! ln -s ${database_file_name} ${database_file_name}.lock 2>/dev/null ; do :; done
+
 case "$1" in
-	peak )
-		shift; peak;;
+	peek )
+		shift; peek;;
 	pop )
 		shift; pop;;
 	push )
@@ -150,6 +157,9 @@ case "$1" in
 	list )
 		sqlite3 -cmd '.timeout 5000' $database_file_name "select * from queue";;
 esac
+
+#	rm is NOT atomic, but mv is
+mv ${database_file_name}.lock ${database_file_name}.$$.deleteme && rm ${database_file_name}.$$.deleteme
 
 
 #while getopts ":db:asdf" clueless
