@@ -20,11 +20,6 @@ touch ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 #	SLURMD_NODENAME=n0006
 #	SLURM_TASK_PID=13731
 
-
-me=`whoami`
-[ ! -z $me ] || me='jwendt'
-
-
 {
 	echo "Starting at ..."
 	date

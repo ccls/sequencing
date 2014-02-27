@@ -161,8 +161,17 @@ case "$1" in
 		sqlite3 -cmd '.timeout 5000' $database_file_name "select * from queue";;
 esac
 
+
+host=`hostname`
+
 #	rm is NOT atomic, but mv is
-mv ${database_file_name}.lock ${database_file_name}.$$.deleteme && rm ${database_file_name}.$$.deleteme
+mv ${database_file_name}.lock ${database_file_name}.$$.${host}.deleteme && rm ${database_file_name}.$$.${host}.deleteme
+#
+#	Actually found an undeleted ${database_file_name}.$$.deleteme
+#	Not sure what to do about it.
+#	Possible that 2 processes had same PID?  They are running on different computers.
+#	Added hostname to filename
+#
 
 
 #while getopts ":db:asdf" clueless
