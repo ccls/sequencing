@@ -130,28 +130,33 @@ while [ $# -ne 0 ] ; do
 
 			#	allowing for multiple db blasting
 			for db in `echo $dbs | sed 's/,/ /g'` ; do
-				cmd=''	#	gotta reset it
-				if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
-					#	trinity_input_single.uniq.fasta_00000416.fasta
-					#	=> 'uniq' for num.  oops
-					#	num=`basename $file | awk -F. '{print $2}' | awk -F_ '{print $NF}'`
-					#	num=`basename $file | awk -F. '{print $(NF-1)}' | awk -F_ '{print $NF}'`
-					num=`basename $file | awk -F. '{print $(NF-1)}'`
-					cmd="srun --share --job-name=${num}_$db"
-				fi
+				#
+				#	No longer putting cluster stuff in the queued command.
+				#	This way, I can use it whereever I like.
+				#
+#				cmd=''	#	gotta reset it
+#				if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
+#					#	trinity_input_single.uniq.fasta_00000416.fasta
+#					#	=> 'uniq' for num.  oops
+#					#	num=`basename $file | awk -F. '{print $2}' | awk -F_ '{print $NF}'`
+#					#	num=`basename $file | awk -F. '{print $(NF-1)}' | awk -F_ '{print $NF}'`
+#					num=`basename $file | awk -F. '{print $(NF-1)}'`
+#					cmd="srun --share --job-name=${num}_$db"
+#				fi
 				#echo db $db
-				cmd="$cmd blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt $options &"
+#				cmd="$cmd blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt $options &"
+				cmd="blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt $options"
 				#cmd="$cmd blastn_wrapper.sh $file $db &"
 
 				echo $cmd
 
-				if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
+#				if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
 					#	need to eval to use the &
 					#	want the & in the queue'd command, not here.
 					#	if were here, will cause database error by trying to write to it at same time
 					eval "simple_queue.sh push '$cmd'"
 					#eval $cmd
-				fi
+#				fi
 			done
 
 		done
