@@ -53,6 +53,43 @@ export BLASTDB
 
 bowtie2="bowtie2 -N 1 -q -S /dev/null --threads 4 "
 
+#
+#	Try to super simplify the bowtie stuff like so ....
+#
+#dbs="hg18 hg19 Blast1 Blast2 Homo_sapiens.GRCh37.69.cdna.all,Homo
+#	nt_human_1 nt_human_2,2 nt_human_3,3
+#	human_genomic_01
+#	human_genomic_02,02
+#	human_genomic_03,03
+#	human_genomic_04,04
+#	human_genomic_05,05
+#	human_genomic_06,06
+#	human_genomic_07,07
+#	human_genomic_08,08
+#	human_genomic_09,09
+#	human_genomic_10,10
+#	human_genomic_11,11
+#	human_genomic_12,12
+#	human_genomic_13,13"
+#
+#ifile='raw'
+#ofile='raw_not'
+#for db in $dbs; do
+#	file=${db##*,}	#	01
+#	db=${db%%,*}		#	nt_human_1
+#
+#	ofile=${ofile}_$file
+#	echo $ifile
+#	echo $db
+#	echo $ofile
+#	echo
+#	ifile=$ofile
+#done
+
+
+
+
+
 $bowtie2 -x hg18 \
 	-U raw.1.fastq,raw.2.fastq \
 	--un raw_not_hg18.fastq
