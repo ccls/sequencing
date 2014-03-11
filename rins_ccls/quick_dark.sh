@@ -51,105 +51,106 @@ export BLASTDB
 #	blastn
 #$BLASTDB - This is the variable which points to the Blast Database. This directory should contain the databases that you would want to search. BLAST by default checks this location and the current working directory for the presence of the databases. This variable is set during login by system login scripts , and may be changed by the user to point to her preferred location in her startup scripts. 
 
-bowtie2="bowtie2 -N 1 -q -S /dev/null --threads 4 "
+bowtie2="bowtie2 -N 1 -q -S /dev/null --threads 4"
 
 #
 #	Try to super simplify the bowtie stuff like so ....
 #
-#dbs="hg18 hg19 Blast1 Blast2 Homo_sapiens.GRCh37.69.cdna.all,Homo
-#	nt_human_1 nt_human_2,2 nt_human_3,3
-#	human_genomic_01
-#	human_genomic_02,02
-#	human_genomic_03,03
-#	human_genomic_04,04
-#	human_genomic_05,05
-#	human_genomic_06,06
-#	human_genomic_07,07
-#	human_genomic_08,08
-#	human_genomic_09,09
-#	human_genomic_10,10
-#	human_genomic_11,11
-#	human_genomic_12,12
-#	human_genomic_13,13"
-#
-#ifile='raw'
-#ofile='raw_not'
-#for db in $dbs; do
-#	file=${db##*,}	#	01
-#	db=${db%%,*}		#	nt_human_1
-#
-#	ofile=${ofile}_$file
+dbs="hg18 hg19 Blast1 Blast2,2 Homo_sapiens.GRCh37.69.cdna.all,Homo
+	nt_human_1 nt_human_2,2 nt_human_3,3
+	human_genomic_01
+	human_genomic_02,02
+	human_genomic_03,03
+	human_genomic_04,04
+	human_genomic_05,05
+	human_genomic_06,06
+	human_genomic_07,07
+	human_genomic_08,08
+	human_genomic_09,09
+	human_genomic_10,10
+	human_genomic_11,11
+	human_genomic_12,12
+	human_genomic_13,13"
+
+ifile='raw.1.fastq,raw.2'	#	yes, this works
+ofile='raw_not'
+for db in $dbs; do
+	#	If contains comma (nt_human_2,2), split it.  If not (hg18), db and suffix will be the same.
+	suffix=${db##*,}	#	2
+	db=${db%%,*}			#	nt_human_2
+	ofile=${ofile}_$suffix
+	$bowtie2 -x $db -U $ifile.fastq --un $ofile.fastq
 #	echo $ifile
 #	echo $db
 #	echo $ofile
 #	echo
-#	ifile=$ofile
-#done
-
-
-
-
-
-$bowtie2 -x hg18 \
-	-U raw.1.fastq,raw.2.fastq \
-	--un raw_not_hg18.fastq
-
-date
-
-$bowtie2 -x hg19 \
-	-U raw_not_hg18.fastq \
-	--un raw_not_hg18_hg19.fastq
-
-date
-
-$bowtie2 -x Blast1 \
-	-U raw_not_hg18_hg19.fastq \
-	--un raw_not_hg18_hg19_Blast1.fastq
-
-date
-
-$bowtie2 -x Blast2 \
-	-U raw_not_hg18_hg19_Blast1.fastq \
-	--un raw_not_hg18_hg19_Blast1_Blast2.fastq
-
-date
-
-$bowtie2 -x Homo_sapiens.GRCh37.69.cdna.all \
-	-U raw_not_hg18_hg19_Blast1_Blast2.fastq \
-	--un raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq
-
-date
-
-
-
-$bowtie2 -x nt_human_1 \
-	-U raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq \
-	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq 
-
-date
-
-$bowtie2 -x nt_human_2 \
-	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq \
-	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq
-
-date
-
-$bowtie2 -x nt_human_3 \
-	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq \
-	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3.fastq
-
-
-date
-
-
-ifile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3
-ofile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3_human_genomic
-for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 ; do
-	ofile=${ofile}_$n
-	$bowtie2 -x human_genomic_$n -U $ifile.fastq --un $ofile.fastq
-	date
 	ifile=$ofile
 done
+
+
+
+
+
+#$bowtie2 -x hg18 \
+#	-U raw.1.fastq,raw.2.fastq \
+#	--un raw_not_hg18.fastq
+#
+#date
+#
+#$bowtie2 -x hg19 \
+#	-U raw_not_hg18.fastq \
+#	--un raw_not_hg18_hg19.fastq
+#
+#date
+#
+#$bowtie2 -x Blast1 \
+#	-U raw_not_hg18_hg19.fastq \
+#	--un raw_not_hg18_hg19_Blast1.fastq
+#
+#date
+#
+#$bowtie2 -x Blast2 \
+#	-U raw_not_hg18_hg19_Blast1.fastq \
+#	--un raw_not_hg18_hg19_Blast1_Blast2.fastq
+#
+#date
+#
+#$bowtie2 -x Homo_sapiens.GRCh37.69.cdna.all \
+#	-U raw_not_hg18_hg19_Blast1_Blast2.fastq \
+#	--un raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq
+#
+#date
+#
+#
+#
+#$bowtie2 -x nt_human_1 \
+#	-U raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq \
+#	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq 
+#
+#date
+#
+#$bowtie2 -x nt_human_2 \
+#	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq \
+#	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq
+#
+#date
+#
+#$bowtie2 -x nt_human_3 \
+#	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq \
+#	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3.fastq
+#
+#
+#date
+#
+#
+#ifile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3
+#ofile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3_human_genomic
+#for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 ; do
+#	ofile=${ofile}_$n
+#	$bowtie2 -x human_genomic_$n -U $ifile.fastq --un $ofile.fastq
+#	date
+#	ifile=$ofile
+#done
 
 ln -s $ofile.fastq raw_non_human.fastq
 
