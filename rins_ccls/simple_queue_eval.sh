@@ -40,16 +40,23 @@ touch ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 			#
 			#	AND remove the trailing &!!!!!
 			#
-			cmd=`echo $cmd | sed 's/^srun.*blastn -q/blastn -q/' | sed 's/ &$//'`
+			#	Queue should no longer contain these.
+#			cmd=`echo $cmd | sed 's/^srun.*blastn -q/blastn -q/' | sed 's/ &$//'`
 			echo "Executing ..."
 			echo $cmd
 			date
-			status=`$cmd`
-			echo "Completed. :${status}:"
+			output=`$cmd`
+			status=$?
+			if [ $status -ne 0 ]; then
+				echo $cmd >> ~/ec/logs/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID.FAILED
+			fi
+			echo "Completed. :${output}:"	#	"output" will always be blank
 			date
 
 		else
-			sleep 10
+#			sleep 10
+			#	commit suicide
+			rm ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 		fi
 
 	done
