@@ -85,6 +85,7 @@ for db in $dbs; do
 #	echo $ofile
 #	echo
 	ifile=$ofile
+	date
 done
 
 
@@ -170,6 +171,7 @@ ln -s $ofile.fastq raw_non_human.fastq
 #	adding --min_contig_length 100 in attempt to get ALL input reads in the output
 #
 
+date
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
 Trinity.pl --seqType fq --bflyHeapSpaceMax 5G --JM 2G \
 	--min_contig_length 100 \
@@ -231,21 +233,22 @@ fastx_collapser -i trinity_input_single.fasta -o trinity_input_single.uniq.fasta
 
 
 #	even 10000 processes quite fast
-echo "Spliting fasta files into 10000 read fasta files and queueing for blasting to viral genomic"
+echo "Spliting fasta files into 20000 read fasta files and queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blastn.sh -m 10000 --dbs viral_genomic --options "-task blastn" trinity_non_human_single.fasta
+ec_fasta_split_and_blastn.sh -m 20000 --dbs viral_genomic --options "-task blastn" trinity_non_human_single.fasta
 date
-ec_fasta_split_and_blastn.sh -m 10000 --dbs viral_genomic --options "-task blastn" trinity_non_human_paired.fasta
+ec_fasta_split_and_blastn.sh -m 20000 --dbs viral_genomic --options "-task blastn" trinity_non_human_paired.fasta
 date
-ec_fasta_split_and_blastn.sh -m 10000 --dbs viral_genomic --options "-task blastn" trinity_input_single.uniq.fasta
+ec_fasta_split_and_blastn.sh -m 20000 --dbs viral_genomic --options "-task blastn" trinity_input_single.uniq.fasta
 
-echo "Spliting fasta files into 1000 read fasta files and queueing for blasting to nt"
+#	Defaults are -m 1000 and --dbs nt
+echo "Spliting fasta files into 2000 read fasta files and queueing for blasting to nt"
 date
-ec_fasta_split_and_blastn.sh trinity_non_human_single.fasta
+ec_fasta_split_and_blastn.sh -m 2000 trinity_non_human_single.fasta
 date
-ec_fasta_split_and_blastn.sh trinity_non_human_paired.fasta
+ec_fasta_split_and_blastn.sh -m 2000 trinity_non_human_paired.fasta
 date
-ec_fasta_split_and_blastn.sh trinity_input_single.uniq.fasta
+ec_fasta_split_and_blastn.sh -m 2000 trinity_input_single.uniq.fasta
 
 
 
