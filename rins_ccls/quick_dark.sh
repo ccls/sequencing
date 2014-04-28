@@ -80,78 +80,10 @@ for db in $dbs; do
 	db=${db%%,*}			#	nt_human_2
 	ofile=${ofile}_$suffix
 	$bowtie2 -x $db -U $ifile.fastq --un $ofile.fastq
-#	echo $ifile
-#	echo $db
-#	echo $ofile
-#	echo
 	ifile=$ofile
 	date
 done
 
-
-
-
-
-#$bowtie2 -x hg18 \
-#	-U raw.1.fastq,raw.2.fastq \
-#	--un raw_not_hg18.fastq
-#
-#date
-#
-#$bowtie2 -x hg19 \
-#	-U raw_not_hg18.fastq \
-#	--un raw_not_hg18_hg19.fastq
-#
-#date
-#
-#$bowtie2 -x Blast1 \
-#	-U raw_not_hg18_hg19.fastq \
-#	--un raw_not_hg18_hg19_Blast1.fastq
-#
-#date
-#
-#$bowtie2 -x Blast2 \
-#	-U raw_not_hg18_hg19_Blast1.fastq \
-#	--un raw_not_hg18_hg19_Blast1_Blast2.fastq
-#
-#date
-#
-#$bowtie2 -x Homo_sapiens.GRCh37.69.cdna.all \
-#	-U raw_not_hg18_hg19_Blast1_Blast2.fastq \
-#	--un raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq
-#
-#date
-#
-#
-#
-#$bowtie2 -x nt_human_1 \
-#	-U raw_not_hg18_hg19_Blast1_Blast2_Homo.fastq \
-#	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq 
-#
-#date
-#
-#$bowtie2 -x nt_human_2 \
-#	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1.fastq \
-#	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq
-#
-#date
-#
-#$bowtie2 -x nt_human_3 \
-#	-U raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2.fastq \
-#	--un raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3.fastq
-#
-#
-#date
-#
-#
-#ifile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3
-#ofile=raw_not_hg18_hg19_Blast1_Blast2_Homo_nt_human_1_2_3_human_genomic
-#for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 ; do
-#	ofile=${ofile}_$n
-#	$bowtie2 -x human_genomic_$n -U $ifile.fastq --un $ofile.fastq
-#	date
-#	ifile=$ofile
-#done
 
 ln -s $ofile.fastq raw_non_human.fastq
 
@@ -207,10 +139,6 @@ cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 
 
 echo "Removing duplicate reads from fasta files to speed up blasting."
-
-
-
-
 
 #bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_single.fasta
 #	=> trinity_input_single.uniq.fasta
