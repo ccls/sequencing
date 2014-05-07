@@ -152,15 +152,16 @@ install-trinity:
 #	cp -r $(TRINITY)/* $(BASE_BIN_DIR)
 #	These more explicit copies still copy too much, and the links
 #	considering using "cp -R" which will preserve the links
-	cp -r $(TRINITY)/Analysis $(BASE_BIN_DIR)
-	cp -r $(TRINITY)/Butterfly $(BASE_BIN_DIR)
-	cp -r $(TRINITY)/Chrysalis $(BASE_BIN_DIR)
-	cp -r $(TRINITY)/Inchworm $(BASE_BIN_DIR)
-	cp -r $(TRINITY)/PerlLib $(BASE_BIN_DIR)
-	cp -r $(TRINITY)/PerlLibAdaptors $(BASE_BIN_DIR)
-	cp -r $(TRINITY)/Trinity.pl $(BASE_BIN_DIR)
-	cp -r $(TRINITY)/trinity-plugins $(BASE_BIN_DIR)
-	cp -r $(TRINITY)/util $(BASE_BIN_DIR)
+#	cp -r $(TRINITY)/Analysis $(BASE_BIN_DIR)
+#	cp -r $(TRINITY)/Butterfly $(BASE_BIN_DIR)
+#	cp -r $(TRINITY)/Chrysalis $(BASE_BIN_DIR)
+#	cp -r $(TRINITY)/Inchworm $(BASE_BIN_DIR)
+#	cp -r $(TRINITY)/PerlLib $(BASE_BIN_DIR)
+#	cp -r $(TRINITY)/PerlLibAdaptors $(BASE_BIN_DIR)
+#	cp -r $(TRINITY)/Trinity.pl $(BASE_BIN_DIR)
+#	cp -r $(TRINITY)/trinity-plugins $(BASE_BIN_DIR)
+#	cp -r $(TRINITY)/util $(BASE_BIN_DIR)
+#	I highly recommend that you just add the trinity root directory to the PATH
 
 clean-trinity:
 	@printf "\nCLEANING TRINITY\n\n"
