@@ -43,7 +43,14 @@ ARGV.each do |filename|
 	#	It is substantially easier on memory though as it doesn't load
 	#	the entire file into memory.
 	puts "Scanning #{filename} for paired sequences (this can take a while) with ..."
-	command = "grep '^>' #{filename} | awk -F/ '{print $1}' | sort | uniq -d | sed 's/^>//'"
+
+
+#	this expects sequence names to end with /1 or /2
+#	command = "grep '^>' #{filename} | awk -F/ '{print $1}' | sort | uniq -d | sed 's/^>//'"
+#	this expects a space then lane-related and other irrelevant stuff
+	command = "grep '^>' #{filename} | awk '{print $1}' | sort | uniq -d | sed 's/^>//'"
+
+
 	puts command
 	paired_sequences_a = `#{command}`.chomp.split
 	paired_sequences = {}
