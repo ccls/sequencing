@@ -46,9 +46,11 @@ ARGV.each do |filename|
 
 
 #	this expects sequence names to end with /1 or /2
-#	command = "grep '^>' #{filename} | awk -F/ '{print $1}' | sort | uniq -d | sed 's/^>//'"
+	command = "grep '^>' #{filename} | awk -F/ '{print $1}' | sort | uniq -d | sed 's/^>//'"
 #	this expects a space then lane-related and other irrelevant stuff
-	command = "grep '^>' #{filename} | awk '{print $1}' | sort | uniq -d | sed 's/^>//'"
+#	command = "grep '^>' #{filename} | awk '{print $1}' | sort | uniq -d | sed 's/^>//'"
+#	As the purpose of this is to prep files for use with Trinity and
+#	Trinity requires the /1 or /2 laning, need to use the /1 or /2 laning.
 
 
 	puts command
