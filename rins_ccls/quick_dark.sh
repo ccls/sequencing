@@ -88,6 +88,72 @@ done
 ln -s $ofile.fastq raw_non_human.fastq
 
 
+#	to speed things onto the cluster, convert input fastq to fasta before trinity.
+#
+#	Looks like the trinity fastq converter changes the sequence name whilst the fastx command does not.
+#	Not sure if this will be an issue, but noting it. (had to modify my script bioruby_lane_fasta.rb)
+#
+#	==> raw_non_human.fasta <==
+#	>HWI-700460R:370:C38TNACXX:8:1101:12930:2231 1:N:0:CGATGT
+#	==> trinity_input_single.fasta <==
+#	>HWI-700460R:370:C38TNACXX:8:1101:12930:2231/1
+#
+#	The -n means keep sequences with unknown (N) nucleotides. (Do we want that?)
+#	-Q33 is UNDOCUMENTED AND NEEDED for our fastq files.
+
+echo
+echo "Converting FASTQ raw_non_human.fastq to FASTA raw_non_human.fasta"
+fastq_to_fasta -Q33 -n -i raw_non_human.fastq -o trinity_input_single.presed.fasta
+
+#	The output will be re-paired and run through Trinity which seems to REQUIRE
+#	that the sequences names be laned with /1 or /2 and NOT like ... 1:N:0:CGGAAT
+#warning, ignoring read: HS2:360:D1NTUACXX:8:1101:12056:83547 since cannot decipher if /1 or /2 of a pair.
+#	So we can use Trinity's converter, another converter or convert the output here?
+#	The RINS script doesn't do it.
+#	Trinity's fastool is buried inside it and not in the path.
+#tail trinity_input_single.fasta | sed 's;\(>.*\) \([12]\):.*$;\1/\2;'
+#jakewendt@fxdgroup-169-229-196-225 : TTV7 929> tail trinity_input_single.fasta | sed 's;\(>.*\) \([12]\):.*$;\1/\2;'
+#>HS2:360:D1NTUACXX:8:2308:19573:200502 2:Y:0:CGGAAT
+#>HS2:360:D1NTUACXX:8:2308:19573:200502/2
+
+sed 's;\(>.*\) \([12]\):.*$;\1/\2;' trinity_input_single.presed.fasta > trinity_input_single.fasta
+
+
+
+
+
+
+
+echo
+echo "Removing duplicate reads from fasta files to speed up blasting."
+
+#bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_single.fasta
+#	=> trinity_input_single.uniq.fasta
+#	using fastx_collapser instead.  Better on memory and faster.
+#	Also adds read count
+#	http://hannonlab.cshl.edu/fastx_toolkit/
+#	This will completely rename the reads so will lose lane info etc.
+fastx_collapser -i trinity_input_single.fasta -o trinity_input_single.uniq.fasta
+
+
+
+echo
+echo "Splitting input fasta file into 20000 read fasta files and queueing for blasting to viral genomic"
+date
+ec_fasta_split_and_blastn.sh -m 20000 --dbs viral_genomic --options "-task blastn" trinity_input_single.uniq.fasta
+sleep 2
+echo
+echo "Splitting input fasta file into 2000 read fasta files and queueing for blasting to nt"
+date
+ec_fasta_split_and_blastn.sh -m 2000 trinity_input_single.uniq.fasta
+
+
+
+
+
+
+
+
 #
 #	On genepi/n0, had some failure
 #
@@ -104,17 +170,32 @@ ln -s $ofile.fastq raw_non_human.fastq
 #
 
 date
+echo
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
-Trinity.pl --seqType fq --bflyHeapSpaceMax 5G --JM 2G \
+Trinity --seqType fa --bflyHeapSpaceMax 5G --JM 2G \
 	--min_contig_length 100 \
-	--single raw_non_human.fastq \
+	--single trinity_input_single.fasta \
 	--output trinity_output_single
 date
 
-cp trinity_output_single/single.fa trinity_input_single.fasta
+#cp trinity_output_single/single.fa trinity_input_single.fasta
 
 cp trinity_output_single/Trinity.fasta trinity_non_human_single.fasta
 
+
+echo
+echo "Splitting output fasta file into 20000 read fasta files and queueing for blasting to viral genomic"
+date
+ec_fasta_split_and_blastn.sh -m 20000 --dbs viral_genomic --options "-task blastn" trinity_non_human_single.fasta
+sleep 2
+echo
+echo "Splitting output fasta file into 2000 read fasta files and queueing for blasting to nt"
+date
+ec_fasta_split_and_blastn.sh -m 2000 trinity_non_human_single.fasta
+
+
+
+echo
 echo "Laning composite fasta file."
 bioruby_lane_fasta.rb trinity_input_single.fasta
 #	=> trinity_input_single_1.fasta, trinity_input_single_2.fasta
@@ -122,8 +203,9 @@ bioruby_lane_fasta.rb trinity_input_single.fasta
 mv trinity_input_single_1.fasta trinity_input_paired_1.fasta
 mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
 
+echo
 echo "de novo assembly of re-paired non-human using Trinity"
-Trinity.pl --seqType fa --bflyHeapSpaceMax 5G --JM 2G \
+Trinity --seqType fa --bflyHeapSpaceMax 5G --JM 2G \
 	--min_contig_length 100 \
 	--left  trinity_input_paired_1.fasta \
 	--right trinity_input_paired_2.fasta \
@@ -138,21 +220,6 @@ date
 cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 
 
-echo "Removing duplicate reads from fasta files to speed up blasting."
-
-#bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_single.fasta
-#	=> trinity_input_single.uniq.fasta
-#	using fastx_collapser instead.  Better on memory and faster.
-#	Also adds read count
-#	http://hannonlab.cshl.edu/fastx_toolkit/
-#	This will completely rename the reads so will lose lane info etc.
-fastx_collapser -i trinity_input_single.fasta -o trinity_input_single.uniq.fasta
-
-
-
-
-
-
 #
 #	We are no longer keeping trinity_input_paired related files
 #
@@ -161,22 +228,17 @@ fastx_collapser -i trinity_input_single.fasta -o trinity_input_single.uniq.fasta
 
 
 #	even 10000 processes quite fast
-echo "Spliting fasta files into 20000 read fasta files and queueing for blasting to viral genomic"
-date
-ec_fasta_split_and_blastn.sh -m 20000 --dbs viral_genomic --options "-task blastn" trinity_non_human_single.fasta
+echo
+echo "Splitting output fasta file into 20000 read fasta files and queueing for blasting to viral genomic"
 date
 ec_fasta_split_and_blastn.sh -m 20000 --dbs viral_genomic --options "-task blastn" trinity_non_human_paired.fasta
-date
-ec_fasta_split_and_blastn.sh -m 20000 --dbs viral_genomic --options "-task blastn" trinity_input_single.uniq.fasta
+sleep 2
 
 #	Defaults are -m 1000 and --dbs nt
-echo "Spliting fasta files into 2000 read fasta files and queueing for blasting to nt"
-date
-ec_fasta_split_and_blastn.sh -m 2000 trinity_non_human_single.fasta
+echo
+echo "Splitting output fasta file into 2000 read fasta files and queueing for blasting to nt"
 date
 ec_fasta_split_and_blastn.sh -m 2000 trinity_non_human_paired.fasta
-date
-ec_fasta_split_and_blastn.sh -m 2000 trinity_input_single.uniq.fasta
 
 
 
@@ -186,6 +248,7 @@ ec_fasta_split_and_blastn.sh -m 2000 trinity_input_single.uniq.fasta
 #ec_fasta_split_and_blastn.sh trinity_input_paired.uniq.fasta
 
 
+echo
 echo "Finished at ..."
 date
 
