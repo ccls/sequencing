@@ -26,6 +26,9 @@ touch ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 
 	while [ -f ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID ]; do
 
+		#
+		#	FYI. Counting can kill as it isn't dealt with if sqlite has a hissy fit.
+		#
 		available=`simple_queue.sh size`
 		[ ! -z $available ] || available=0
 
@@ -54,8 +57,7 @@ touch ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 			date
 
 		else
-#			sleep 10
-			#	commit suicide
+			echo "Available :${available}: not greater than zero.  Commiting suicide.  Goodbye cruel world!"
 			rm ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 		fi
 
