@@ -104,6 +104,52 @@ ln -s $ofile.fastq raw_non_human.fastq
 echo
 echo "Converting FASTQ raw_non_human.fastq to FASTA raw_non_human.fasta"
 fastq_to_fasta -Q33 -n -i raw_non_human.fastq -o trinity_input_single.presed.fasta
+status=$?
+
+#	sometimes bowtie mucks up the file during processing
+#	I'm guessing that this is the last run as bowtie did not, but has in the past, complain
+#fastq_to_fasta: Error: invalid quality score data on line 58491284 (quality_tok = "@C@FFFDFHHGHGJIJJIIJHGJJIJJIJIJJJIGIIIIIIJIJEHHFHFDFFFFEEEEECDDBCD@DACCDBBDDDD@>BDDCCCD@HWI-700460R:370:C38TNACXX:8:1308:8501:2767 1:N:0:ACAGTG"
+
+#	for some reason, the last 13 chars "CDABDDCD@<>9<" of the previous quality score were tossed?
+#	This really makes me question stuff.  What else is wrong, but not syntactically correct?
+#	Is it bowtie?  The filesystem?  The disk?  The network?
+#
+#	Do not delete these files until the very end.
+#	Checking if bowtie will complain on the corruption.
+#	fortunately bowtie will fail on this so certain the last bowtie caused this.
+#	Error: Encountered one or more spaces while parsing the quality string for read HWI-700460R:370:C38TNACXX:8:1308:7929:2821 1:N:0:ACAGTG.  If this is a FASTQ file with integer (non-ASCII-encoded) qualities, try re-running with the --integer-quals option.
+#	libc++abi.dylib: terminating with uncaught exception of type int
+#	bowtie2-align died with signal 6 (ABRT) 
+#
+
+#@HWI-700460R:370:C38TNACXX:8:1308:7929:2821 1:N:0:ACAGTG
+#GGAGGGAGGAAGACGAACGGAAGGACAGATCGGAAGAGCACACGTCTGAACTCCAGTCACACAGTGATCTCGTATGCCGTCTTCTGCTTGAAAAAAAAAA
+#+
+#@C@FFFDFHHGHGJIJJIIJHGJJIJJIJIJJJIGIIIIIIJIJEHHFHFDFFFFEEEEECDDBCD@DACCDBBDDDD@>BDDCCCD@HWI-700460R:370:C38TNACXX:8:1308:8501:2767 1:N:0:ACAGT        G
+#ACGAACGGAAGGACGGACGGCGCAGATCGGAAGAGCACACGTCTGAACTCCAGTCACACAGTGATCTCGTATGCCGTCTTCTGCTTGAAAAAAAAAAAAA
+#+
+#@@<DDDDADCFHB;E6F::?8@<FBGE)=85?BBBD>@CBB(55=>>C:@C3@@A@@CCBBA:@(+>@<8?>3::99<@B>4:>A::1:A@#########
+#
+#[jwendt@n0 MeSF001_SF3]$ grep -A 3  "@HWI-700460R:370:C38TNACXX:8:1308:7929:2821" raw.1.fastq 
+#
+#@HWI-700460R:370:C38TNACXX:8:1308:7929:2821 1:N:0:ACAGTG
+#GGAGGGAGGAAGACGAACGGAAGGACAGATCGGAAGAGCACACGTCTGAACTCCAGTCACACAGTGATCTCGTATGCCGTCTTCTGCTTGAAAAAAAAAA
+#+
+#@C@FFFDFHHGHGJIJJIIJHGJJIJJIJIJJJIGIIIIIIJIJEHHFHFDFFFFEEEEECDDBCD@DACCDBBDDDD@>BDDCCCDCDABDDCD@<>9<
+
+
+#	so, oddly enough, fastq_to_fasta failed again on line 205370349
+#	The missing characters from above ended up about 150000000 lines later?????
+#	But not in the original file, just the one after sed fixed the first problem????
+#	hidden control characters?
+#	MY FAULT!  I didn't include the lane in the sed so it did it twice as it was told.  My bad.
+#	Just the first problem.
+
+if [ $status -ne 0 ] ; then
+	date
+	echo "fastq_to_fasta failed with $status"
+	exit $status
+fi
 
 #	The output will be re-paired and run through Trinity which seems to REQUIRE
 #	that the sequences names be laned with /1 or /2 and NOT like ... 1:N:0:CGGAAT
