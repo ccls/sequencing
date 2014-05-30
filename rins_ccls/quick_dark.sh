@@ -80,6 +80,14 @@ for db in $dbs; do
 	db=${db%%,*}			#	nt_human_2
 	ofile=${ofile}_$suffix
 	$bowtie2 -x $db -U $ifile.fastq --un $ofile.fastq
+
+	status=$?
+	if [ $status -ne 0 ] ; then
+		date
+		echo "bowtie failed with $status"
+		exit $status
+	fi
+
 	ifile=$ofile
 	date
 done
@@ -163,6 +171,12 @@ fi
 #>HS2:360:D1NTUACXX:8:2308:19573:200502/2
 
 sed 's;\(>.*\) \([12]\):.*$;\1/\2;' trinity_input_single.presed.fasta > trinity_input_single.fasta
+status=$?
+if [ $status -ne 0 ] ; then
+	date
+	echo "sed failed with $status"
+	exit $status
+fi
 
 
 
@@ -180,6 +194,13 @@ echo "Removing duplicate reads from fasta files to speed up blasting."
 #	http://hannonlab.cshl.edu/fastx_toolkit/
 #	This will completely rename the reads so will lose lane info etc.
 fastx_collapser -i trinity_input_single.fasta -o trinity_input_single.uniq.fasta
+status=$?
+if [ $status -ne 0 ] ; then
+	date
+	echo "fastx_collapser failed with $status"
+	exit $status
+fi
+
 
 
 
