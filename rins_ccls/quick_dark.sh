@@ -170,13 +170,18 @@ fi
 #>HS2:360:D1NTUACXX:8:2308:19573:200502 2:Y:0:CGGAAT
 #>HS2:360:D1NTUACXX:8:2308:19573:200502/2
 
-sed 's;\(>.*\) \([12]\):.*$;\1/\2;' trinity_input_single.presed.fasta > trinity_input_single.fasta
+#	Also, fastx_collapser TOTALLY mucks up the read counts if the sequence name has a - in it.
+#	>HWI-700460R:370:C38TNACXX:8:1101:8490:2221 1:N:0:ATNACG
+#	there should be no - anywhere else in the fasta file so just replace all.
+
+sed 's;\(>.*\) \([12]\):.*$;\1/\2;' trinity_input_single.presed.fasta | sed 's/-/_/g' > trinity_input_single.fasta
 status=$?
 if [ $status -ne 0 ] ; then
 	date
 	echo "sed failed with $status"
 	exit $status
 fi
+
 
 
 
