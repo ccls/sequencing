@@ -103,6 +103,14 @@ pop(){
 #		sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
 #		sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
 
+
+#
+#	would prefer a "do/until" loop so only have the delete command once.
+#
+#	Actually, could remove the call before the loop.
+#	Maybe modify the insides a bit to only echo "failed" if delete_retries > 1 or something
+#
+
 		echo "Deleting ..." >> $log_file_name
 		sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
 		delete_retries=0
@@ -157,6 +165,8 @@ case "$1" in
 		shift; push $*;;
 	size | count | length )
 		sqlite3 -cmd '.timeout 5000' $database_file_name "select count(*) from queue" ;;
+#	if sqlite does its killing thing, this returns nothing.  Need to fix that.
+#	would also like to understand it
 	list )
 		sqlite3 -cmd '.timeout 5000' $database_file_name "select * from queue";;
 esac

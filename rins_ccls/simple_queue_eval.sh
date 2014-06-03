@@ -28,6 +28,7 @@ touch ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 
 		#
 		#	FYI. Counting can kill as it isn't dealt with if sqlite has a hissy fit.
+		#		Seems that if sqlite does its killing thing, returns blank.
 		#
 		available=`simple_queue.sh size`
 		[ ! -z $available ] || available=0
