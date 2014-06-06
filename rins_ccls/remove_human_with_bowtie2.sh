@@ -11,11 +11,11 @@
 #
 
 
-if [ $# -ne 1 ] ; then
+if [ $# -ne 2 ] ; then
 	echo
 	echo "Usage:"
 	echo
-	echo "`basename $0` input.fastq"
+	echo "`basename $0` input.1.fastq input.2.fastq"
 	echo
 	exit 9999		#	return values only from 0 to 15
 fi
@@ -27,8 +27,8 @@ fi
 now=`date "+%Y%m%d%H%M%S"`
 app=`basename $0`
 
-input=$1
-input_base=`basename $input`
+#input=$1
+#input_base=`basename $input`
 
 #dir=$1.$app.$now.$$
 #mkdir $dir
@@ -39,7 +39,8 @@ echo "Starting at ..."
 date
 pwd
 
-ln -s $input raw.fastq
+ln -s $1 raw.1.fastq
+ln -s $2 raw.2.fastq
 
 #indexes=/Volumes/cube/working/indexes
 #	leading with the ": " stops execution
@@ -74,7 +75,7 @@ dbs="hg18 hg19 Blast1 Blast2,2 Homo_sapiens.GRCh37.69.cdna.all,Homo
 	human_genomic_12,12
 	human_genomic_13,13"
 
-ifile='raw'
+ifile='raw.1.fastq,raw.2'
 ofile='raw_not'
 for db in $dbs; do
 	#	If contains comma (nt_human_2,2), split it.  If not (hg18), db and suffix will be the same.
