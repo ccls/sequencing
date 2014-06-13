@@ -186,6 +186,31 @@ fi
 
 
 
+
+
+
+echo
+echo "Removing duplicate reads from fasta files to speed up blasting."
+
+#bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_single.fasta
+#	=> trinity_input_single.uniq.fasta
+#	using fastx_collapser instead.  Better on memory and faster.
+#	Also adds read count
+#	http://hannonlab.cshl.edu/fastx_toolkit/
+#	This will completely rename the reads so will lose lane info etc.
+fastx_collapser -i trinity_input_single.fasta -o trinity_input_single.uniq.fasta
+status=$?
+if [ $status -ne 0 ] ; then
+	date
+	echo "fastx_collapser failed with $status"
+	exit $status
+fi
+
+
+
+
+
+
 echo
 echo "Finished at ..."
 date
