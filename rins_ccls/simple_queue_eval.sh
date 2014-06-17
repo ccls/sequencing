@@ -31,6 +31,7 @@ touch ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 		#		Seems that if sqlite does its killing thing, returns blank.
 		#
 		available=`simple_queue.sh size`
+		available_status=$?
 		[ ! -z $available ] || available=0
 
 		if [ $available -gt 0 ]; then
@@ -58,7 +59,7 @@ touch ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 			date
 
 		else
-			echo "Available :${available}: not greater than zero.  Commiting suicide.  Goodbye cruel world!"
+			echo "Available :${available}: not greater than zero.  Status:${available_status}:. Commiting suicide.  Goodbye cruel world!"
 			rm ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 		fi
 

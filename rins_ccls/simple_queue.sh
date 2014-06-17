@@ -46,7 +46,7 @@ log_file_name="$HOME/simple_queue.log"
 #	those that don't really need it, I'm gonna set a variable here for this.
 #
 #sqlite="sqlite3 -cmd '.timeout 5000' $database_file_name "
-#	using this variable doesn't work?
+#	using this variable doesn't work?  Quotes mucking it up?
 #sqlite3 -cmd '.timeout 5000' /Users/jakewendt/simple_queue.db
 #sqlite3: Error: too many options: "select * from queue"
 #Use -help for a list of options.
@@ -63,7 +63,7 @@ log_file_name="$HOME/simple_queue.log"
 #	I tried a number of different quoting, but still won't work?
 #
 
-max_delete_retries=5
+max_retries=5
 
 peek(){
 	echo "Peeking ... `date`" >> $log_file_name
@@ -114,7 +114,7 @@ pop(){
 		echo "Deleting ..." >> $log_file_name
 		sqlite3 -cmd '.timeout 5000' $database_file_name "delete from queue where id = $id"
 		delete_retries=0
-		while [ $delete_retries -lt $max_delete_retries -a \
+		while [ $delete_retries -lt $max_retries -a \
 			`sqlite3 -cmd '.timeout 5000' $database_file_name "select * from queue where id = $id" | wc -l` -gt 0 ]
 		do
 
@@ -134,6 +134,17 @@ push(){
 	echo "Pushing ... `date`" >> $log_file_name
 	sqlite3 -cmd '.timeout 5000' $database_file_name "insert into queue(command) values('$*')"
 	echo "Pushed $*" >> $log_file_name
+}
+
+count(){
+	status=9	#	set to some non-zero value
+	retries=0
+	while [ $status -ne 0 -a $retries -lt $max_retries ]
+	do
+		sqlite3 -cmd '.timeout 5000' $database_file_name "select count(*) from queue"
+		status=$?
+		retries=`expr $retries + 1`
+	done
 }
 
 if [ ! -f $database_file_name ] ; then
@@ -161,12 +172,9 @@ case "$1" in
 	pop )
 		shift; pop;;
 	push )
-#		shift; sqlite3 -cmd '.timeout 5000' $database_file_name "insert into queue(command) values('$*')";;
 		shift; push $*;;
 	size | count | length )
-		sqlite3 -cmd '.timeout 5000' $database_file_name "select count(*) from queue" ;;
-#	if sqlite does its killing thing, this returns nothing.  Need to fix that.
-#	would also like to understand it
+		count;;
 	list )
 		sqlite3 -cmd '.timeout 5000' $database_file_name "select * from queue";;
 esac
