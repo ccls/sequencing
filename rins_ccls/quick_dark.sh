@@ -173,6 +173,13 @@ fi
 #	Also, fastx_collapser TOTALLY mucks up the read counts if the sequence name has a - in it.
 #	>HWI-700460R:370:C38TNACXX:8:1101:8490:2221 1:N:0:ATNACG
 #	there should be no - anywhere else in the fasta file so just replace all.
+#
+#	FYI, I don't think this is actually a muck up.  I think that it is trying to preserve
+#	a previous counts by adding the counts in the sequence names by the number following the first
+#	dash in the sequence name, if there is one.  If too large, the number loops over and becomes 
+#	negative.  When really large, It loops around a couple times.
+#	It would be nice if there was some documentation about this.
+#
 
 sed 's;\(>.*\) \([12]\):.*$;\1/\2;' trinity_input_single.presed.fasta | sed 's/-/_/g' > trinity_input_single.fasta
 status=$?
