@@ -107,10 +107,10 @@ while [ $# -ne 0 ] ; do
 		fi
 
 		echo 'Counting "Query= " lines'
-		grep -n 'Query= ' $blast
+		grep 'Query= ' $blast | wc -l
 
 		echo 'Counting "Effective search space used:" lines'
-		grep -n 'Effective search space used:' $blast
+		grep 'Effective search space used:' $blast | wc -l
 
 #	If crashes, output is incomplete.  May not have "Effective search" line.  And "BLASTN" won't start on left.
 #	Trying without anchor.
