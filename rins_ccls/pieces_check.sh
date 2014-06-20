@@ -116,9 +116,12 @@ while [ $# -ne 0 ] ; do
 #	Trying without anchor.
 
 
-		echo "Checking for silent 'no longer exists' failures"
-		echo "Rerun if any found"
+		echo "Checking for silent failures. Rerun if any found."
+		echo "Checking for 'no longer exists' caused by database files temporarily disappearing?"
 		grep -n "no longer exists in database" $blast
+
+		echo "Checking for non-printable control characters (won't show the chars though) ..."
+		grep -n '[[:cntrl:]]'  $blast
 
 		if [ `grep '^BLASTN' $blast | wc -l` -gt 1 ] ; then
 			echo "  *  Too many 'first lines' in $blast"
