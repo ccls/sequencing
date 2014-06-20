@@ -97,14 +97,23 @@ while [ $# -ne 0 ] ; do
 #
 		if [[ ! `head -1 $blast` =~ ^BLASTN ]] ; then
 			echo "  *  First line in $blast is not correct"
-#		else
-#			echo 'good head'
+		else
+			echo 'First line is good'
 		fi
 		if [[ ! `tail -1 $blast` =~ ^Gap\ Penalties ]] ; then
 			echo "  *  Last line in $blast is not correct"
-#		else
-#			echo 'good tail'
+		else
+			echo 'Last line is good'
 		fi
+
+		echo 'Counting "Query= " lines'
+		grep -n 'Query= ' $blast
+
+		echo 'Counting "Effective search space used:" lines'
+		grep -n 'Effective search space used:' $blast
+
+#	If crashes, output is incomplete.  May not have "Effective search" line.  And "BLASTN" won't start on left.
+#	Trying without anchor.
 
 		if [ `grep '^BLASTN' $blast | wc -l` -gt 1 ] ; then
 			echo "  *  Too many 'first lines' in $blast"
