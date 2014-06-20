@@ -115,6 +115,11 @@ while [ $# -ne 0 ] ; do
 #	If crashes, output is incomplete.  May not have "Effective search" line.  And "BLASTN" won't start on left.
 #	Trying without anchor.
 
+
+		echo "Checking for silent 'no longer exists' failures"
+		echo "Rerun if any found"
+		grep -n "no longer exists in database" $blast
+
 		if [ `grep '^BLASTN' $blast | wc -l` -gt 1 ] ; then
 			echo "  *  Too many 'first lines' in $blast"
 		fi
