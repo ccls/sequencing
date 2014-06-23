@@ -106,29 +106,69 @@ while [ $# -ne 0 ] ; do
 			echo 'Last line is good'
 		fi
 
-		echo 'Counting "Query= " lines'
-		grep 'Query= ' $blast | wc -l
+#		echo 'Counting "Query= " lines'
+#		grep 'Query= ' $blast | wc -l
+#
+#		echo 'Counting "Effective search space used:" lines'
+#		grep 'Effective search space used:' $blast | wc -l
+#
+##	If crashes, output is incomplete.  May not have "Effective search" line.  And "BLASTN" won't start on left.
+##	Trying without anchor.
+#
+#
+#		echo "Checking for silent failures. Rerun if any found."
+#		echo "Checking for 'no longer exists' caused by database files temporarily disappearing?"
+#		grep -n "no longer exists in database" $blast
+#
+#		echo "Checking for non-printable control characters (won't show the chars though) ..."
+#		grep -n '[[:cntrl:]]'  $blast
+#
+#		if [ `grep '^BLASTN' $blast | wc -l` -gt 1 ] ; then
+#			echo "  *  Too many 'first lines' in $blast"
+#		fi
+#		if [ `grep '^Gap Penalties' $blast | wc -l` -gt 1 ] ; then
+#			echo "  *  Too many 'last lines' in $blast"
+#		fi
 
-		echo 'Counting "Effective search space used:" lines'
-		grep 'Effective search space used:' $blast | wc -l
-
-#	If crashes, output is incomplete.  May not have "Effective search" line.  And "BLASTN" won't start on left.
-#	Trying without anchor.
 
 
-		echo "Checking for silent failures. Rerun if any found."
-		echo "Checking for 'no longer exists' caused by database files temporarily disappearing?"
-		grep -n "no longer exists in database" $blast
+		#	using 1 awk call rather than 6 greps.  MUCH FASTER
 
-		echo "Checking for non-printable control characters (won't show the chars though) ..."
-		grep -n '[[:cntrl:]]'  $blast
+		awk '
+			BEGIN{}
+			(/BLASTN/){ blastn++ }
+			(/Gap Penalties/){ gap++ }
+			(/Query= /){ query++ }
+			(/Effective search space used:/){ effective++ }
+			(/no longer exists in database/){ nolonger++ }
+			(/[^[:print:]]/){ 
+				print "Non-printable character(s) found on line number :",NR,":"
+				print $0
+				control++ 
+			}
+			END{
+				print "BLASTN line count"
+				print blastn
+				if( blastn > 1 ){ print " * TOO MANY" }
+				print "Gap Penalties line count"
+				print gap
+				if( gap > 1 ){ print " * TOO MANY" }
+				print "Query=  line count"
+				print query
+				print "Effective search space used: line count"
+				print effective
+				print "no longer exists in database line count"
+				print nolonger
+				if( nolonger > 0 ){ print " * TOO MANY" }
+				print "control character line count"
+				print control
+				if( control > 0 ){ print " * TOO MANY" }
+			}
+		' $blast
 
-		if [ `grep '^BLASTN' $blast | wc -l` -gt 1 ] ; then
-			echo "  *  Too many 'first lines' in $blast"
-		fi
-		if [ `grep '^Gap Penalties' $blast | wc -l` -gt 1 ] ; then
-			echo "  *  Too many 'last lines' in $blast"
-		fi
+
+
+
 	done
 
 	shift

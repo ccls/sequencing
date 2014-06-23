@@ -76,36 +76,110 @@ while [ $# -ne 0 ] ; do
 			echo 'Last line is good (Gap Penalties)'
 		fi
 
-		echo 'Counting "BLASTN" lines'
-		grep 'BLASTN' $blast | wc -l
+#			echo 'Counting "BLASTN" lines'
+#			grep 'BLASTN' $blast | wc -l
+#	
+#			echo 'Counting "Gap Penalties" lines'
+#			grep 'Gap Penalties' $blast | wc -l
+#	
+#			echo 'Counting "Query= " lines'
+#			grep 'Query= ' $blast | wc -l
+#	
+#			echo 'Counting "Effective search space used:" lines'
+#			grep 'Effective search space used:' $blast | wc -l
+#	
+#	#	If crashes, output is incomplete.  May not have "Effective search" line.  And "BLASTN" won't start on left.
+#	#	Trying without anchor.
+#	
+#	
+#			echo "Checking for silent failures. Rerun if any found."
+#			echo "Checking for 'no longer exists' caused by database files temporarily disappearing?"
+#			grep -n "no longer exists in database" $blast
+#	
+#	
+#	#	not sure what the diffs would be here for these POSIX char classes
+#	#    [[:ascii:]] - matches a single ASCII char
+#	#    [^[:ascii:]] - matches a single non-ASCII char
+#	#[^[:print:]] will probably suffice for you.**
+#	
+#			echo "Checking for non-printable control characters (won't show the chars though) ..."
+#			grep -n '[[:cntrl:]]'  $blast
+#	
+#	#		if [ `grep '^BLASTN' $blast | wc -l` -gt 1 ] ; then
+#	#			echo "  *  Too many 'first lines' in $blast"
+#	#		fi
+#	#		if [ `grep '^Gap Penalties' $blast | wc -l` -gt 1 ] ; then
+#	#			echo "  *  Too many 'last lines' in $blast"
+#	#		fi
 
-		echo 'Counting "Gap Penalties" lines'
-		grep 'Gap Penalties' $blast | wc -l
-
-		echo 'Counting "Query= " lines'
-		grep 'Query= ' $blast | wc -l
-
-		echo 'Counting "Effective search space used:" lines'
-		grep 'Effective search space used:' $blast | wc -l
-
-#	If crashes, output is incomplete.  May not have "Effective search" line.  And "BLASTN" won't start on left.
-#	Trying without anchor.
 
 
-		echo "Checking for silent failures. Rerun if any found."
-		echo "Checking for 'no longer exists' caused by database files temporarily disappearing?"
-		grep -n "no longer exists in database" $blast
 
-		echo "Checking for non-printable control characters (won't show the chars though) ..."
-		grep -n '[[:cntrl:]]'  $blast
 
-#		if [ `grep '^BLASTN' $blast | wc -l` -gt 1 ] ; then
-#			echo "  *  Too many 'first lines' in $blast"
-#		fi
-#		if [ `grep '^Gap Penalties' $blast | wc -l` -gt 1 ] ; then
-#			echo "  *  Too many 'last lines' in $blast"
-#		fi
-	done
+
+
+# Here are the character classes defined by the POSIX standard.
+#
+#[:alnum:]
+#    Alphanumeric characters. 
+#[:alpha:]
+#    Alphabetic characters. 
+#[:blank:]
+#    Space and tab characters. 
+#[:cntrl:]
+#    Control characters. 
+#[:digit:]
+#    Numeric characters. 
+#[:graph:]
+#    Characters that are printable and are also visible. (A space is printable, but not visible, while an `a' is both.) 
+#[:lower:]
+#    Lower-case alphabetic characters. 
+#[:print:]
+#    Printable characters (characters that are not control characters.) 
+#[:punct:]
+#    Punctuation characters (characters that are not letter, digits, control characters, or space characters). 
+#[:space:]
+#    Space characters (such as space, tab, and formfeed, to name a few). 
+#[:upper:]
+#    Upper-case alphabetic characters. 
+#[:xdigit:]
+#    Characters that are hexadecimal digits. 
+
+
+#	interesting note.  [:cntrl] in awk includes carriage returns (not so in grep).  using non-printable
+
+
+		#	using 1 awk call rather than 6 greps.  MUCH FASTER
+
+		awk '
+			BEGIN{}
+			(/BLASTN/){ blastn++ }
+			(/Gap Penalties/){ gap++ }
+			(/Query= /){ query++ }
+			(/Effective search space used:/){ effective++ }
+			(/no longer exists in database/){ nolonger++ }
+			(/[^[:print:]]/){ 
+				print "Non-printable character(s) found on line number :",NR,":"
+				print $0
+				control++ 
+			}
+			END{
+				print "BLASTN line count"
+				print blastn
+				print "Gap Penalties line count"
+				print gap
+				print "Query=  line count"
+				print query
+				print "Effective search space used: line count"
+				print effective
+				print "no longer exists in database line count"
+				print nolonger
+				print "control character line count"
+				print control
+			}
+		' $blast
+
+	done	#	for blast in `ls $blast_glob` ; do
 
 	shift
 done
