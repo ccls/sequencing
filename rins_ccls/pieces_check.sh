@@ -130,52 +130,53 @@ while [ $# -ne 0 ] ; do
 #			echo "  *  Too many 'last lines' in $blast"
 #		fi
 
+		blastn_check.gawk $blastn
 
-
-		#	using 1 awk call rather than 6 greps.  MUCH FASTER
-		#	use GAWK instead of AWK.  Gets control chars better
-		gawk '
-			(/BLASTN/){ blastn++ }
-			(/Gap Penalties/){ gap++ }
-			(/Query= /){ query++ }
-			(/Effective search space used:/){ effective++ }
-			(/no longer exists in database/){ nolonger++ }
-			(/[^[:print:]]/){ 	#	too many (includes \anything?)
-				print "Non-printable character(s) found on line number :",NR,":"
-				print $0
-				nonprint++ 
-			}
-			(/[[:cntrl:]]/){	#	REQUIRES double brackets as they are for different reasons
-				print "Control character(s) found on line number :",NR,":"
-				print $0
-				control++ 
-			}
-			END{
-				print "BLASTN line count"
-				print blastn
-				if( blastn > 1 ){ print " * TOO MANY" }
-				print "Gap Penalties line count"
-				print gap
-				if( gap > 1 ){ print " * TOO MANY" }
-				if( blastn != gap ){ print " * BLASTN and Gap Penalties lines are out of sync" }
-				print "Query=  line count"
-				print query
-				print "Effective search space used: line count"
-				print effective
-				if( query != effective ){ print " * Query= and Effective search lines are out of sync" }
-				print "no longer exists in database line count"
-				print nolonger
-				if( nolonger > 0 ){ print " * TOO MANY" }
-				print "nonprint character line count"
-				print nonprint
-				if( nonprint > 0 ){ print " * TOO MANY" }
-				print "control character line count"
-				print control
-				if( control > 0 ){ print " * TOO MANY" }
-				print "---"
-			}
-		' $blast
-
+#
+#		#	using 1 awk call rather than 6 greps.  MUCH FASTER
+#		#	use GAWK instead of AWK.  Gets control chars better
+#		gawk '
+#			(/BLASTN/){ blastn++ }
+#			(/Gap Penalties/){ gap++ }
+#			(/Query= /){ query++ }
+#			(/Effective search space used:/){ effective++ }
+#			(/no longer exists in database/){ nolonger++ }
+#			(/[^[:print:]]/){ 	#	too many (includes \anything?)
+#				print "Non-printable character(s) found on line number :",NR,":"
+#				print $0
+#				nonprint++ 
+#			}
+#			(/[[:cntrl:]]/){	#	REQUIRES double brackets as they are for different reasons
+#				print "Control character(s) found on line number :",NR,":"
+#				print $0
+#				control++ 
+#			}
+#			END{
+#				print "BLASTN line count"
+#				print blastn
+#				if( blastn > 1 ){ print " * TOO MANY" }
+#				print "Gap Penalties line count"
+#				print gap
+#				if( gap > 1 ){ print " * TOO MANY" }
+#				if( blastn != gap ){ print " * BLASTN and Gap Penalties lines are out of sync" }
+#				print "Query=  line count"
+#				print query
+#				print "Effective search space used: line count"
+#				print effective
+#				if( query != effective ){ print " * Query= and Effective search lines are out of sync" }
+#				print "no longer exists in database line count"
+#				print nolonger
+#				if( nolonger > 0 ){ print " * TOO MANY" }
+#				print "nonprint character line count"
+#				print nonprint
+#				if( nonprint > 0 ){ print " * TOO MANY" }
+#				print "control character line count"
+#				print control
+#				if( control > 0 ){ print " * TOO MANY" }
+#				print "---"
+#			}
+#		' $blast
+#
 	done
 
 	shift
