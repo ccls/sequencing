@@ -41,10 +41,6 @@
 
 #	interesting note.  [:cntrl] in awk includes carriage returns (not so in grep).  using non-printable
 
-#	http://sed.sourceforge.net/sedfaq3.html
-#     [[:cntrl:]]  - [\x00-\x19\x7F] Control characters
-#			(/[:cntrl:][^]/){ 
-
 #	using 1 awk call rather than 6 greps.  MUCH FASTER
 
 #	awk seems to filter out the control character problems that I'm searching for !!!!!!!!!
