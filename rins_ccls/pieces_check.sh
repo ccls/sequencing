@@ -135,7 +135,6 @@ while [ $# -ne 0 ] ; do
 		#	using 1 awk call rather than 6 greps.  MUCH FASTER
 		#	use GAWK instead of AWK.  Gets control chars better
 		gawk '
-			BEGIN{}
 			(/BLASTN/){ blastn++ }
 			(/Gap Penalties/){ gap++ }
 			(/Query= /){ query++ }

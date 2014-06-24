@@ -158,7 +158,6 @@ while [ $# -ne 0 ] ; do
 		#	gawk (gnu's version of awk) WORKS!
 
 		gawk '
-			BEGIN{}
 			(/BLASTN/){ blastn++ }
 			(/Gap Penalties/){ gap++ }
 			(/Query= /){ query++ }
