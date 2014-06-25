@@ -63,24 +63,17 @@ exec gawk '
 	control++ 
 }
 END{
-	print "BLASTN line count"
-	print blastn
-	print "Gap Penalties line count"
-	print gap
+	print "BLASTN line count :",blastn,":"
+	print "Gap Penalties line count :",gap,":"
 	if( blastn != gap ){ print " * BLASTN and Gap Penalties lines are out of sync" }
-	print "Query=  line count"
-	print query
-	print "Effective search space used: line count"
-	print effective
+	print "Query=  line count :",query,":"
+	print "Effective search space used: line count :",effective,":"
 	if( query != effective ){ print " * Query= and Effective search lines are out of sync" }
-	print "no longer exists in database line count"
-	print nolonger
-	if( nolonger > 0 ){ print " * TOO MANY" }
-	print "nonprint character line count"
-	print nonprint
-	if( nonprint > 0 ){ print " * TOO MANY" }
-	print "control character line count"
-	print control
-	if( control > 0 ){ print " * TOO MANY" }
+	print "no longer exists in database line count :",nolonger,":"
+	if( nolonger > 0 ){ print " * TOO MANY no longer exists in database lines" }
+	print "nonprint character line count :",nonprint,":"
+	if( nonprint > 0 ){ print " * TOO MANY nonprintable characters" }
+	print "control character line count :",control,":"
+	if( control > 0 ){ print " * TOO MANY control characters" }
 	print "---"
 }' $@
