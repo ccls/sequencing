@@ -1,4 +1,4 @@
-#!/usr/bin/env gawk -f
+#!/bin/sh
 
 #		if [[ ! `head -1 $blast` =~ ^BLASTN ]] ; then
 #			echo "  *  First line in $blast is not correct"
@@ -46,6 +46,7 @@
 #	awk seems to filter out the control character problems that I'm searching for !!!!!!!!!
 #	gawk (gnu's version of awk) WORKS!
 
+exec gawk '
 (/BLASTN/){ blastn++ }
 (/Gap Penalties/){ gap++ }
 (/Query= /){ query++ }
@@ -82,4 +83,4 @@ END{
 	print control
 	if( control > 0 ){ print " * TOO MANY" }
 	print "---"
-}
+}' $@

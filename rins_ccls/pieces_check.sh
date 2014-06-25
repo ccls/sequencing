@@ -130,7 +130,7 @@ while [ $# -ne 0 ] ; do
 #			echo "  *  Too many 'last lines' in $blast"
 #		fi
 
-		blastn_check.gawk $blastn
+		blastn_check.sh $blast
 
 #
 #		#	using 1 awk call rather than 6 greps.  MUCH FASTER

@@ -64,18 +64,19 @@ install-all:
 	@printf "\nINSTALLING ALL\n\n"
 	$(MKDIR) $(BASE_BIN_DIR)
 
+#	Remove old stuff.  Need -f or get an error.
 install-scripts:
 	@printf "\nINSTALLING SCRIPTS\n\n"
-	#	Remove old stuff.  Need -f or get an error.
-	rm -f $(BASE_BIN_DIR)/blastn_check.sh
-	rm -f $(BASE_BIN_DIR)/fasta_read_split.sh
-	rm -f $(BASE_BIN_DIR)/fasta_size_split.sh
+	rm -f $(BASE_BIN_DIR)/blastn_check.gawk
+	rm -f $(BASE_BIN_DIR)/fasta_read_split.awk
+	rm -f $(BASE_BIN_DIR)/fasta_size_split.awk
 	rm -f $(BASE_BIN_DIR)/rins_ccls_lib.rb
 	cp rins_core/*pl $(BASE_BIN_DIR)
 	cp rins_ccls/*pl $(BASE_BIN_DIR)
 	cp rins_ccls/*rb $(BASE_BIN_DIR)
 	cp rins_ccls/*sh $(BASE_BIN_DIR)
-	cp rins_ccls/*awk $(BASE_BIN_DIR)
+
+#	cp rins_ccls/*awk $(BASE_BIN_DIR)
 #	*awk includes *.awk and *.gawk
 #	using latest trinity which may not need this
 #	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/util/
