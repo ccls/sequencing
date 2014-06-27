@@ -1,5 +1,22 @@
 #!/bin/sh
 
+script=`basename $0`
+
+if [ $# -eq 0 ]; then
+  echo
+  echo "checks the contents of the given blastn output file"
+  echo
+  echo "Usage:"
+  echo
+  echo "$script blastn output file(s)"
+  echo
+  echo "Example:"
+  echo "$script dna/output/fallon_SFPB001A_filtered_20130722/trinity_input_single.fasta.blastn.txt"
+  echo
+  exit
+fi
+
+
 #		if [[ ! `head -1 $blast` =~ ^BLASTN ]] ; then
 #			echo "  *  First line in $blast is not correct"
 #		else
@@ -46,7 +63,11 @@
 #	awk seems to filter out the control character problems that I'm searching for !!!!!!!!!
 #	gawk (gnu's version of awk) WORKS!
 
+
 exec gawk '
+(NR%100000 == 0){
+	print "Read",FNR,"lines from",FILENAME >> "'$HOME/$script'.log"
+}
 (/BLASTN/){ blastn++ }
 (/Gap Penalties/){ gap++ }
 (/Query= /){ query++ }
@@ -76,4 +97,5 @@ END{
 	print "control character line count :",control,":"
 	if( control > 0 ){ print " * TOO MANY control characters" }
 	print "---"
+	close("'$HOME/$script'.log")
 }' $@
