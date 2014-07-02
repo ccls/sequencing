@@ -145,7 +145,9 @@ while [ $# -ne 0 ] ; do
 #				fi
 				#echo db $db
 #				cmd="$cmd blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt $options &"
-				cmd="blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt $options"
+
+				db_base_name=`basename $db`
+				cmd="blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt 0 -out $file.blastn_${db_base_name}.txt $options"
 				#cmd="$cmd blastn_wrapper.sh $file $db &"
 
 				echo $cmd
