@@ -9,11 +9,13 @@ function usage(){
 	echo
 	echo "Usage:"
 	echo
-	echo "`basename $0` [--max_reads INTEGER] [--dbs COMMA_SEP_STRING] fasta_filelist"
+	echo "`basename $0` [--max_reads INTEGER] [--dbs COMMA_SEP_STRING] [--outfmt BLASTN_OUTFMT#] fasta_filelist"
 	echo
 	echo "The default max reads per piece is 1000."
 	echo
 	echo "The default dbs are just nt."
+	echo 
+	echo "The default outfmt is 0."
 	echo 
 	echo "Example: `basename $0` -m 500 --dbs nt,viral,hg /my/path/*fasta"
 	echo
@@ -39,6 +41,7 @@ export BLASTDB
 #fi
 
 max_reads=1000
+outfmt=0
 while [ $# -ne 0 ] ; do
 	case $1 in
 		-d|--d*)
@@ -54,7 +57,9 @@ while [ $# -ne 0 ] ; do
 				echo ; echo "max reads value not an integer"
 				usage
 			fi ;;
-		-o|--o*)
+		-ou|--ou*)
+			shift; outfmt=$1; shift ;;
+		-op|--op*)
 			shift; options=$1; shift ;;
 		-*)
 			echo ; echo "Unexpected args from: ${*}"; usage ;;
@@ -147,7 +152,7 @@ while [ $# -ne 0 ] ; do
 #				cmd="$cmd blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt $options &"
 
 				db_base_name=`basename $db`
-				cmd="blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt 0 -out $file.blastn_${db_base_name}.txt $options"
+				cmd="blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt $outfmt -out $file.blastn_${db_base_name}.txt $options"
 				#cmd="$cmd blastn_wrapper.sh $file $db &"
 
 				echo $cmd
