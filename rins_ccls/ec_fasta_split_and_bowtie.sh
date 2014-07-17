@@ -126,7 +126,7 @@ while [ $# -ne 0 ] ; do
 			for db in `echo $dbs | sed 's/,/ /g'` ; do
 
 				db_base_name=`basename $db`
-				cmd="bowtie2 -N 1 -f -S $file.$db_base_name.sam --threads 1 -x $db -U $file"
+				cmd="bowtie2 -N 1 -f -S $file.$db_base_name.sam --threads 1 -x $db -U $file 1> $file.$db_base_name.stdout 2> $file.$db_base_name.stderr"
 
 				echo $cmd
 
