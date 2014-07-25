@@ -129,7 +129,7 @@ while [ $# -ne 0 ] ; do
 
 		negative_gilist=''
 		if [ -f 'negative_gilist' ] ; then
-			negative_gilist='negative_gilist'
+			negative_gilist="-negativegilist $PWD/negative_gilist"
 		fi
 
 		#	on some occassions, this list is too long for ls so changing to find
@@ -165,7 +165,7 @@ while [ $# -ne 0 ] ; do
 #
 
 
-				cmd="blastn -negative_gilist $negative_gilist -show_gis -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt $outfmt -out $file.blastn_${db_base_name}.txt $options"
+				cmd="blastn $negative_gilist -show_gis -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt $outfmt -out $file.blastn_${db_base_name}.txt $options"
 #	20140724 - added -show_gis to potentially help with this Uncultured stuff
 				#cmd="$cmd blastn_wrapper.sh $file $db &"
 
