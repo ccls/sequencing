@@ -127,6 +127,10 @@ while [ $# -ne 0 ] ; do
 				print>>f
 			}' $1
 
+		negative_gilist=''
+		if [ -f 'negative_gilist' ] ; then
+			negative_gilist='negative_gilist'
+		fi
 
 		#	on some occassions, this list is too long for ls so changing to find
 		#	for file in `ls $PWD/$subdir/${fasta_base}_*.fasta` ; do
@@ -152,7 +156,17 @@ while [ $# -ne 0 ] ; do
 #				cmd="$cmd blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt $options &"
 
 				db_base_name=`basename $db`
-				cmd="blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt $outfmt -out $file.blastn_${db_base_name}.txt $options"
+
+
+#
+#	BE ADVISED!  For whatever reason, the order of some options does matter.
+#							I don't know why, but if negative_gilist is last, it is ignored.
+#							Could be others.
+#
+
+
+				cmd="blastn -negative_gilist $negative_gilist -show_gis -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt $outfmt -out $file.blastn_${db_base_name}.txt $options"
+#	20140724 - added -show_gis to potentially help with this Uncultured stuff
 				#cmd="$cmd blastn_wrapper.sh $file $db &"
 
 				echo $cmd

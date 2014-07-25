@@ -279,6 +279,15 @@ How to dump a blast database into a fasta file...
 
 	blastdbcmd -db SOMEBLASTDB -entry all > MYNEWFASTAFILE
 
+
+	blastdbcmd -db nt -entry all -outfmt '%a,%g,%T' -out nt.accession_gi_taxid.csv
+
+
+The sequence titles contain nearly every character from commas to colons, so I'm using a special character to delineate the fields.  "option 8" on a Mac produces a simple dot which does not appear to be used in any of the 50 million or so sequence titles, although for what I'm doing with the file, it is unnecessary.  I may use this to create a list of gi numbers to not include in blastn output by using the -negative\_gilist.  (using the dot seemed to anger the terminal? perhaps don't use.)
+
+	blastdbcmd -db nt -entry all -outfmt '%a•%g•%t' -out nt.accession_gi_title.csv
+
+
 ### TODO
 
 Bowtie2 won't run on my MacPro
