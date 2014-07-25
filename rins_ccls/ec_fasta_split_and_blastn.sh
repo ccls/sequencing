@@ -129,7 +129,7 @@ while [ $# -ne 0 ] ; do
 
 		negative_gilist=''
 		if [ -f 'negative_gilist' ] ; then
-			negative_gilist="-negativegilist $PWD/negative_gilist"
+			negative_gilist="-negative_gilist $PWD/negative_gilist"
 		fi
 
 		#	on some occassions, this list is too long for ls so changing to find
