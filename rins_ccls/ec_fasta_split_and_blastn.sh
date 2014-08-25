@@ -9,7 +9,9 @@ function usage(){
 	echo
 	echo "Usage:"
 	echo
-	echo "`basename $0` [--max_reads INTEGER] [--dbs COMMA_SEP_STRING] [--outfmt BLASTN_OUTFMT#] fasta_filelist"
+	echo "`basename $0` [--command COMMAND] [--max_reads INTEGER] [--dbs COMMA_SEP_STRING] [--outfmt BLASTN_OUTFMT#] fasta_filelist"
+	echo
+	echo "The default command is 'blastn'."
 	echo
 	echo "The default max reads per piece is 1000."
 	echo
@@ -25,7 +27,7 @@ function usage(){
 [[ $# -eq 0 ]] && usage
 
 uname=`uname -n`
-
+command='blastn'
 dbs='nt'
 
 #       leading with the ": " stops execution
@@ -44,6 +46,8 @@ max_reads=1000
 outfmt=0
 while [ $# -ne 0 ] ; do
 	case $1 in
+		-c|--c*)
+			shift; command=$1; shift ;;
 		-d|--d*)
 			shift; dbs=$1; shift ;;
 		-m|--m*)
@@ -139,45 +143,30 @@ while [ $# -ne 0 ] ; do
 
 			#	allowing for multiple db blasting
 			for db in `echo $dbs | sed 's/,/ /g'` ; do
-				#
-				#	No longer putting cluster stuff in the queued command.
-				#	This way, I can use it whereever I like.
-				#
-#				cmd=''	#	gotta reset it
-#				if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
-#					#	trinity_input_single.uniq.fasta_00000416.fasta
-#					#	=> 'uniq' for num.  oops
-#					#	num=`basename $file | awk -F. '{print $2}' | awk -F_ '{print $NF}'`
-#					#	num=`basename $file | awk -F. '{print $(NF-1)}' | awk -F_ '{print $NF}'`
-#					num=`basename $file | awk -F. '{print $(NF-1)}'`
-#					cmd="srun --share --job-name=${num}_$db"
-#				fi
-				#echo db $db
-#				cmd="$cmd blastn -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt 0 -out $file.blastn_${db}.txt $options &"
 
 				db_base_name=`basename $db`
 
+				#
+				# BE ADVISED!  For whatever reason, the order of some options does matter.
+				#              I don't know why, but if negative_gilist is last, it is ignored.
+				#              Could be others.
+				#
 
-#
-#	BE ADVISED!  For whatever reason, the order of some options does matter.
-#							I don't know why, but if negative_gilist is last, it is ignored.
-#							Could be others.
-#
+				#cmd="$command $negative_gilist -show_gis -query $file -db $db \
+				cmd="$command $negative_gilist -query $file -db $db \
+					-num_alignments 20 -num_descriptions 30 -evalue 0.05 -outfmt $outfmt \
+					-out $file.blastn_${db_base_name}.txt $options"
 
-
-				cmd="blastn $negative_gilist -show_gis -query $file -db $db -num_alignments 20 -evalue 0.05 -outfmt $outfmt -out $file.blastn_${db_base_name}.txt $options"
-#	20140724 - added -show_gis to potentially help with this Uncultured stuff
-				#cmd="$cmd blastn_wrapper.sh $file $db &"
+				#	20140724 - added -show_gis to potentially help with this Uncultured stuff
+				#	20140729 - added -num_descriptions 30 to help minimize file size
+				#	20140825 - commented out show_gis as may be contributing to larger output size
 
 				echo $cmd
 
-#				if [ $uname = "ec0000" -o $uname = "n0.berkeley.edu" ] ; then
-					#	need to eval to use the &
-					#	want the & in the queue'd command, not here.
-					#	if were here, will cause database error by trying to write to it at same time
-					eval "simple_queue.sh push '$cmd'"
-					#eval $cmd
-#				fi
+				#	20140729 - removed eval wrapper around the push command
+				#eval "simple_queue.sh push '$cmd'"
+				simple_queue.sh push "$cmd"
+
 			done
 
 		done
