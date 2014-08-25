@@ -7,7 +7,7 @@ function usage(){
 	echo "with no more than the maximum number of reads and sequentially numbers them"
 	echo "placing them in the aforementioned directories."
 	echo
-	echo "Usage:"
+	echo "Usage: (NO EQUALS SIGNS)"
 	echo
 	echo "`basename $0` [--command COMMAND] [--max_reads INTEGER] [--dbs COMMA_SEP_STRING] [--outfmt BLASTN_OUTFMT#] fasta_filelist"
 	echo
