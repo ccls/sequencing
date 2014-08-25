@@ -37,6 +37,7 @@ touch ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 		if [ $available -gt 0 ]; then
 
 			cmd=`simple_queue.sh pop`
+			echo "- - - - - - - - - -"
 			echo "Popped ..."
 			echo $cmd
 			#
@@ -57,7 +58,7 @@ touch ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
 			fi
 			echo "Completed. :${output}:"	#	"output" will always be blank
 			date
-
+			echo "- - - - - - - - - -"
 		else
 			echo "Available :${available}: not greater than zero.  Status:${available_status}:. Commiting suicide.  Goodbye cruel world!"
 			rm ~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID
