@@ -35,29 +35,46 @@
 
 script=`basename $0`
 
-if [ $# -eq 0 ]; then
+function usage(){
 	echo
 	echo "checks the contents of the given 'pieces' directory(ies)"
 	echo
 	echo "Usage:"
 	echo
-	echo "$script directory(ies)"
+	echo "$script [--blast COMMAND] [--skip INTEGER] directory(ies)"
+	echo
+	echo "COMMANDS: blastn, tblastx"
 	echo
 	echo "Example:"
 	echo "$script dna/output/fallon_SFPB001A_filtered_20130722/trinity_input_single.fasta.20130725154032.pieces"
 	echo
-	exit
-fi
+	exit 1
+}
+#	Basically, this is TRUE AND DO ...
+[ $# -eq 0 ] && usage
 
-tmp=`echo $1 | tr -cd '[:digit:]'`
-# need the x's in case is blank
-if [ "x${tmp}" == "x${1}" ] ; then
-	skip=$1
-	shift
-else
-	skip=0
-fi
-
+blast='blastn'
+skip=0
+while [ $# -ne 0 ] ; do
+	case $1 in
+		-b|--b*)
+			shift; blast=$1; shift ;;
+		-s|--s*)
+			shift;
+			tmp=`echo $1 | tr -cd '[:digit:]'`
+			if [ "x${tmp}" = "x${1}" ] ; then
+				skip=$1
+				shift
+			else
+				echo ; echo "skip value not an integer"
+				usage
+			fi ;;
+		-*)
+			echo ; echo "Unexpected args from: ${*}"; usage ;;
+		*)
+			break;;
+	esac
+done
 
 #
 #	It is unlikely that more than one will actually be called,
@@ -65,49 +82,46 @@ fi
 #
 while [ $# -ne 0 ] ; do
 	path=$1
-
-#	re-adding .fasta extension to increase findability.
-#	also may change the number of digits in pieces.
-#	would prefer to be able to glob like a regex \d+ , but can't
-#
-#	fasta_count=`ls $path/*fasta_????????? | wc -l`
-#	fake.fasta_000000006.fasta
 	fasta_count=`ls $path/*.fasta | wc -l`
-#	blast_count=`ls $path/*fasta_?????????.blastn.txt | wc -l`
-#	fake.fasta_000000006.fasta.blastn.txt
 	blast_count=`ls $path/*.fasta.blastn*.txt | wc -l`
 
 	echo "Found $fasta_count fasta files"
 	echo "Found $blast_count blast files"
 
-#	for blast in `ls $path/*fasta_?????????.blastn.txt` ; do
-	#
-	#	If there aren't any, this loop will crash
-	#	ls: fake.fasta.20130802170906.pieces/*fasta_*.blastn.txt: No such file or directory
-	#
 	i=0
-	for blast in `ls $path/*fasta.blastn*.txt` ; do
+	for blast_output in `ls $path/*fasta.blastn*.txt` ; do		#	change to 'find' loop?
 		i=`expr $i + 1`
 		if [ $i -le $skip ] ; then
-			echo "skipping $blast"
+			echo "skipping $blast_output"
 			continue
 		fi
-		echo "Checking $blast"
-#
-#	I think that double square brackets are only needed for regexps [[ ]]
-#
-		if [[ ! `head -1 $blast` =~ ^BLASTN ]] ; then
-			echo "  *  First line in $blast is not correct"
+		echo "Checking $blast_output"
+
+		case $blast in
+			'blastn')
+				head="^BLASTN"
+				tail="^Gap Penalties"
+				;;
+			'tblastx')
+				head="^TBLASTX"
+				tail="^Window for multiple hits"
+				;;
+			*)
+				echo "Unrecognized blast command $blast"
+		esac
+		if [[ ! `head -1 $blast_output` =~ $head ]] ; then
+			echo "  *  First line in $blast_output is not correct"
 		else
 			echo 'First line is good'
 		fi
-		if [[ ! `tail -1 $blast` =~ ^Gap\ Penalties ]] ; then
-			echo "  *  Last line in $blast is not correct"
+		if [[ ! `tail -1 $blast_output` =~ $tail ]] ; then
+			echo "  *  Last line in $blast_output is not correct"
 		else
 			echo 'Last line is good'
 		fi
 
-		blastn_check.sh $blast
+		#	--blast doesn't make any difference in blast_check.sh ...... yet anyway
+		blast_check.sh --blast $blast $blast_output
 
 	done
 

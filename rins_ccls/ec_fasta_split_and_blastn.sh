@@ -24,7 +24,7 @@ function usage(){
 	exit 1
 }
 #	Basically, this is TRUE AND DO ...
-[[ $# -eq 0 ]] && usage
+[ $# -eq 0 ] && usage
 
 uname=`uname -n`
 command='blastn'

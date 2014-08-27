@@ -67,6 +67,7 @@ install-all:
 #	Remove old stuff.  Need -f or get an error.
 install-scripts:
 	@printf "\nINSTALLING SCRIPTS\n\n"
+	rm -f $(BASE_BIN_DIR)/blastn_check.sh
 	rm -f $(BASE_BIN_DIR)/blastn_check.gawk
 	rm -f $(BASE_BIN_DIR)/fasta_read_split.awk
 	rm -f $(BASE_BIN_DIR)/fasta_size_split.awk
