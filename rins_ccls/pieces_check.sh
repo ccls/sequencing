@@ -83,13 +83,19 @@ done
 while [ $# -ne 0 ] ; do
 	path=$1
 	fasta_count=`ls $path/*.fasta | wc -l`
-	blast_count=`ls $path/*.fasta.blastn*.txt | wc -l`
+#	blast_count=`ls $path/*.fasta.blastn*.txt | wc -l`	#	drop the blastn now that tblastx also used
+	blast_count=`ls $path/*.fasta.*.txt | wc -l`
 
 	echo "Found $fasta_count fasta files"
 	echo "Found $blast_count blast files"
 
 	i=0
-	for blast_output in `ls $path/*fasta.blastn*.txt` ; do		#	change to 'find' loop?
+
+#for file in `find $PWD/$subdir -type f -name ${fasta_base}.\*.fasta` ; do
+
+#	for blast_output in `ls $path/*fasta.blastn*.txt` ; do		#	change to 'find' loop?
+#	drop the blastn now that tblastx also used
+	for blast_output in `find $path -type f -name \*fasta.\*.txt` ; do		#	change to 'find' loop?
 		i=`expr $i + 1`
 		if [ $i -le $skip ] ; then
 			echo "skipping $blast_output"

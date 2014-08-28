@@ -154,8 +154,8 @@ while [ $# -ne 0 ] ; do
 
 				#cmd="$command $negative_gilist -show_gis -query $file -db $db \
 				cmd="$command $negative_gilist -query $file -db $db \
-					-num_alignments 20 -num_descriptions 30 -evalue 0.05 -outfmt $outfmt \
-					-out $file.blastn_${db_base_name}.txt $options"
+					-num_alignments 20 -num_descriptions 20 -evalue 0.05 -outfmt $outfmt \
+					-out $file.${command}_${db_base_name}.txt $options"
 
 				#	20140724 - added -show_gis to potentially help with this Uncultured stuff
 				#	20140729 - added -num_descriptions 30 to help minimize file size
