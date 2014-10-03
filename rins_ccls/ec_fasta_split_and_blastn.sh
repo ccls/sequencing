@@ -9,17 +9,22 @@ function usage(){
 	echo
 	echo "Usage: (NO EQUALS SIGNS)"
 	echo
-	echo "`basename $0` [--command COMMAND] [--max_reads INTEGER] [--dbs COMMA_SEP_STRING] [--outfmt BLASTN_OUTFMT#] fasta_filelist"
+	echo "`basename $0` [--command COMMAND] [--max_reads INTEGER] [--dbs COMMA_SEP_STRING] "
+	echo "              [--evalue FLOAT] [--dust STRING]"
+	echo "              [--num_alignments INTEGER] [--num_descriptions INTEGER]"
+	echo "              [--outfmt BLASTN_OUTFMT#] fasta_filelist"
 	echo
-	echo "The default command is 'blastn'."
-	echo
-	echo "The default max reads per piece is 1000."
-	echo
-	echo "The default dbs are just nt."
+	echo "Defaults:"
+	echo "  command . : blastn"
+	echo "  max_reads : 1000"
+	echo "  dbs ..... : nt"
+	echo "  outfmt .. : 0"
+	echo "  evalue .. : 0.05"
+	echo "  dust .... : 20 64 1"
+	echo "  num_alignments .... : 20"
+	echo "  num_descriptions .. : 20"
 	echo 
-	echo "The default outfmt is 0."
-	echo 
-	echo "Example: `basename $0` -m 500 --dbs nt,viral,hg /my/path/*fasta"
+	echo "Example: `basename $0` --max 500 --dbs nt,viral,hg /my/path/*fasta"
 	echo
 	exit 1
 }
@@ -44,12 +49,24 @@ export BLASTDB
 
 max_reads=1000
 outfmt=0
+evalue=0.05
+num_alignments=20
+num_descriptions=20
+dust="20 64 1"
 while [ $# -ne 0 ] ; do
 	case $1 in
 		-c|--c*)
 			shift; command=$1; shift ;;
-		-d|--d*)
+		--db*)
 			shift; dbs=$1; shift ;;
+		--e*)
+			shift; evalue=$1; shift ;;
+		--du*)
+			shift; dust=$1; shift ;;
+		--num_a*)
+			shift; num_alignments=$1; shift ;;
+		--num_d*)
+			shift; num_descriptions=$1; shift ;;
 		-m|--m*)
 			shift; 
 			tmp=`echo $1 | tr -cd '[:digit:]'`
@@ -147,19 +164,20 @@ while [ $# -ne 0 ] ; do
 				db_base_name=`basename $db`
 
 				#
-				# BE ADVISED!  For whatever reason, the order of some options does matter.
+				# BE ADVISED!  For whatever reason, the order of some options DOES matter.
 				#              I don't know why, but if negative_gilist is last, it is ignored.
 				#              Could be others.
 				#
 
-				#cmd="$command $negative_gilist -show_gis -query $file -db $db \
-				cmd="$command $negative_gilist -query $file -db $db \
-					-num_alignments 20 -num_descriptions 20 -evalue 0.05 -outfmt $outfmt \
+				cmd="$command $negative_gilist -query $file -db $db -dust ''$dust'' \
+					-num_alignments $num_alignments -num_descriptions $num_descriptions -evalue $evalue -outfmt $outfmt \
 					-out $file.${command}_${db_base_name}.txt $options"
 
-				#	20140724 - added -show_gis to potentially help with this Uncultured stuff
-				#	20140729 - added -num_descriptions 30 to help minimize file size
-				#	20140825 - commented out show_gis as may be contributing to larger output size
+				#	20140724 - Added -show_gis to potentially help with this Uncultured stuff.
+				#	20140729 - Added -num_descriptions 30 to help minimize file size.
+				#	20140825 - Commented out show_gis as may be contributing to larger output size.
+				#	20141003 - Added num_alignments, num_descriptions, evalue and dust.
+				#            The dust value needs double single quoted when simple queue pushes it.
 
 				echo $cmd
 
