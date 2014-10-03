@@ -14,6 +14,9 @@ function usage(){
 	echo "              [--num_alignments INTEGER] [--num_descriptions INTEGER]"
 	echo "              [--outfmt BLASTN_OUTFMT#] fasta_filelist"
 	echo
+	echo "Notes:"
+	echo "  The dust value will require quotes if contains spaces like the default."
+	echo
 	echo "Defaults:"
 	echo "  command . : blastn"
 	echo "  max_reads : 1000"
@@ -24,7 +27,9 @@ function usage(){
 	echo "  num_alignments .... : 20"
 	echo "  num_descriptions .. : 20"
 	echo 
-	echo "Example: `basename $0` --max 500 --dbs nt,viral,hg /my/path/*fasta"
+	echo "Example:"
+	echo "  `basename $0` --max 500 --dbs nt,viral,hg /my/path/*fasta"
+	echo "  `basename $0` --dust '10 32 1' /my/path/*fasta"
 	echo
 	exit 1
 }
