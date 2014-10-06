@@ -8,7 +8,11 @@
 #	printf when printing it as print will add one.
 #
 
-exec awk '
+#	I don't see the purpose of using exec here.
+#	May be none as is last statement in script.
+#exec awk '
+
+awk '
 function maybe_print(){
 	if( ( sequence!="" ) && ( sequence !~ /N/ ) ){
 		print name

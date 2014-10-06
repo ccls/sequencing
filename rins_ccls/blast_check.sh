@@ -84,7 +84,12 @@ esac
 #	gawk (gnu's version of awk) WORKS!
 
 #	I don't understand the requirement for the "" around $head and $tail.  Without them, they fail.
-exec gawk '
+
+#	I don't see the purpose of using exec here.
+#	May be none as is last statement in script.
+#exec gawk '
+
+gawk '
 (NR%100000 == 0){
 	print "Read",FNR,"lines from",FILENAME >> "'$HOME/$script'.log"
 }
