@@ -40,19 +40,24 @@ while [ $# -ne 0 ] ; do
 #	( as awk breaks line into columns on whitespace )
 #
 #	moved comments outside of awk program so don't show in 'ps -ef'
-		awk '
-		BEGIN{
-			seq_name=""
-			seq_line=""
-		}
-		{
-			if( $1 == "Query=" ){
-				seq_name=$2
-				seq_line=$0
-			} else if(/No hits found/){
-				print seq_name
-			}
-		}' $1
+
+#		awk '
+#		BEGIN{
+#			seq_name=""
+#			seq_line=""
+#		}
+#		{
+#			if( $1 == "Query=" ){
+#				seq_name=$2
+#				seq_line=$0
+#			} else if(/No hits found/){
+#				print seq_name
+#			}
+#		}' $1
+
+		dir=`dirname $0`
+		awk -f $dir/select_no_hits_from_blast.awk $1
+
 #				print seq_line
 	else
 		echo "File '$1' not found?"
