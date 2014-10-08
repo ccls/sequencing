@@ -56,7 +56,7 @@ while [ $# -ne 0 ] ; do
 #		}' $1
 
 		dir=`dirname $0`
-		awk -f $dir/select_no_hits_from_blast.awk $1
+		awk -f "$dir/select_no_hits_from_blast.awk" $1
 
 #				print seq_line
 	else
