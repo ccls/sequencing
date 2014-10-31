@@ -247,11 +247,14 @@ ec_fasta_split_and_blastn.sh -m 2000 trinity_input_single.uniq.fasta
 #
 #	adding --min_contig_length 100 in attempt to get ALL input reads in the output
 #
+#	20141009 - added --run_as_paired.  Not sure how this will affect anything.
+#
 
 date
 echo
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
 Trinity --seqType fa --bflyHeapSpaceMax 5G --JM 2G \
+	--run_as_paired \
 	--min_contig_length 100 \
 	--single trinity_input_single.fasta \
 	--output trinity_output_single

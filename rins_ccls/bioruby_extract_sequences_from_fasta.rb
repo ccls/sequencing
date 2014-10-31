@@ -36,7 +36,7 @@ File.open(name_file,'r').each{|name|
 puts "Found #{names.length} sequence names."
 
 puts "Opening output file."
-outputfile = File.open("#{name_file}.fasta",'w')
+outputfile = File.open("#{name_file}.fa",'w')
 
 inputfile.each_with_index do |entry,index|
 	printf "\rReading sequence %#{max_digits}d of %#{max_digits}d", index+1, total_sequences
