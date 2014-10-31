@@ -16,6 +16,7 @@ function usage(){
 	echo
 	echo "Notes:"
 	echo "  The dust value will require quotes if contains spaces like the default."
+	echo "  (blastx and tblastx do not use -dust)"
 	echo
 	echo "Defaults:"
 	echo "  command . : blastn"
@@ -23,7 +24,7 @@ function usage(){
 	echo "  dbs ..... : nt"
 	echo "  outfmt .. : 0"
 	echo "  evalue .. : 0.05"
-	echo "  dust .... : 20 64 1"
+	echo "  dust .... : ''	(blastn default is '20 64 1')"
 	echo "  num_alignments .... : 20"
 	echo "  num_descriptions .. : 20"
 	echo 
@@ -57,7 +58,7 @@ outfmt=0
 evalue=0.05
 num_alignments=20
 num_descriptions=20
-dust="20 64 1"
+dust_value=""	#	"20 64 1"
 while [ $# -ne 0 ] ; do
 	case $1 in
 		-c|--c*)
@@ -67,7 +68,7 @@ while [ $# -ne 0 ] ; do
 		--e*)
 			shift; evalue=$1; shift ;;
 		--du*)
-			shift; dust=$1; shift ;;
+			shift; dust_value=$1; shift ;;
 		--num_a*)
 			shift; num_alignments=$1; shift ;;
 		--num_d*)
@@ -158,6 +159,11 @@ while [ $# -ne 0 ] ; do
 			negative_gilist="-negative_gilist $PWD/negative_gilist"
 		fi
 
+		dust=''
+		if [ -n "$dust_value" ] ; then	#	quotes are required
+			dust="-dust ''$dust_value''"
+		fi
+
 		#	on some occassions, this list is too long for ls so changing to find
 		#	for file in `ls $PWD/$subdir/${fasta_base}_*.fasta` ; do
 		#	interesting _*. is ok, but .*. is not.  must escape the * here so .\*.
@@ -174,9 +180,11 @@ while [ $# -ne 0 ] ; do
 				#              Could be others.
 				#
 
-				cmd="$command $negative_gilist -query $file -db $db -dust ''$dust'' \
-					-num_alignments $num_alignments -num_descriptions $num_descriptions -evalue $evalue -outfmt $outfmt \
+				cmd="$command $negative_gilist -query $file -db $db $dust \
+					-num_alignments $num_alignments -num_descriptions $num_descriptions \
+					-evalue $evalue -outfmt $outfmt \
 					-out $file.${command}_${db_base_name}.txt $options"
+
 
 				#	20140724 - Added -show_gis to potentially help with this Uncultured stuff.
 				#	20140729 - Added -num_descriptions 30 to help minimize file size.
