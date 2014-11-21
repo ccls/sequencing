@@ -248,6 +248,7 @@ ec_fasta_split_and_blastn.sh -m 2000 trinity_input_single.uniq.fasta
 #	adding --min_contig_length 100 in attempt to get ALL input reads in the output
 #
 #	20141009 - added --run_as_paired.  Not sure how this will affect anything.
+#             (we primarily use the paired output anyway)
 #
 
 date
@@ -295,7 +296,7 @@ Trinity --seqType fa --bflyHeapSpaceMax 5G --JM 2G \
 date
 
 #
-#	We are no longer keeping trinity_input_paired related files
+#	We are no longer keeping trinity_input_paired related files (subset of trinity_input_single)
 #
 #	cp trinity_output_paired/both.fa trinity_input_paired.fasta
 
@@ -303,7 +304,7 @@ cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 
 
 #
-#	We are no longer keeping trinity_input_paired related files
+#	We are no longer keeping trinity_input_paired related files (subset of trinity_input_single)
 #
 #bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_paired.fasta
 #	=> trinity_input_paired.uniq.fasta
@@ -325,7 +326,7 @@ ec_fasta_split_and_blastn.sh -m 2000 trinity_non_human_paired.fasta
 
 
 #
-#	We are no longer keeping trinity_input_paired related files
+#	We are no longer keeping trinity_input_paired related files (subset of trinity_input_single)
 #
 #ec_fasta_split_and_blastn.sh trinity_input_paired.uniq.fasta
 
