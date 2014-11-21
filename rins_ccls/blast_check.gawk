@@ -1,6 +1,6 @@
 BEGIN{
-	head="BLASTN"
-	tail="Gap Penalties"
+	if( head == "" ) head="BLASTN"
+	if( tail == "" ) tail="Gap Penalties"
 	head_count=0
 	tail_count=0
 }
