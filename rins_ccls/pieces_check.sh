@@ -95,7 +95,8 @@ while [ $# -ne 0 ] ; do
 
 #	for blast_output in `ls $path/*fasta.blastn*.txt` ; do		#	change to 'find' loop?
 #	drop the blastn now that tblastx also used
-	for blast_output in `find $path -type f -name \*fasta.\*.txt` ; do		#	change to 'find' loop?
+	#	20141126 - added -L to follow links (for nobackup on genepi)
+	for blast_output in `find -L $path -type f -name \*fasta.\*.txt` ; do		#	change to 'find' loop?
 		i=`expr $i + 1`
 		if [ $i -le $skip ] ; then
 			echo "skipping $blast_output"
