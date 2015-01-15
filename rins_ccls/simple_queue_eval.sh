@@ -15,6 +15,7 @@
 #	actually, this won't work as this script isn't actually run on the head node.
 #	will really be irrelevant as the old cluster will be going away.
 #cluster=`uname -n`
+#	$HOSTNAME may work though
 #pid_file="~/ec/pids/$cluster.$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID"
 #log_file="~/ec/logs/$cluster.$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID"	#	NO .log
 pid_file="~/ec/pids/$SLURMD_NODENAME.$SLURM_JOBID.$SLURM_TASK_PID"

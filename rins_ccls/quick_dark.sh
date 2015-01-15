@@ -56,8 +56,8 @@ bowtie2="bowtie2 -N 1 -q -S /dev/null --threads 4"
 #
 #	Try to super simplify the bowtie stuff like so ....
 #
+#	nt_human_1 nt_human_2,2 nt_human_3,3
 dbs="hg18 hg19 Blast1 Blast2,2 Homo_sapiens.GRCh37.69.cdna.all,Homo
-	nt_human_1 nt_human_2,2 nt_human_3,3
 	human_genomic_01
 	human_genomic_02,02
 	human_genomic_03,03
