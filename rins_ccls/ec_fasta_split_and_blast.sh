@@ -12,6 +12,8 @@ function usage(){
 	echo "`basename $0` [--command COMMAND] [--max_reads INTEGER] [--dbs COMMA_SEP_STRING] "
 	echo "              [--evalue FLOAT] [--dust STRING]"
 	echo "              [--num_alignments INTEGER] [--num_descriptions INTEGER]"
+	echo "              [--prefix STRING] [--suffix STRING]"
+	echo "              [--std_out_only]"
 	echo "              [--outfmt BLASTN_OUTFMT#] fasta_filelist"
 	echo
 	echo "Notes:"
@@ -27,6 +29,8 @@ function usage(){
 	echo "  dust .... : ''	(blastn default is '20 64 1')"
 	echo "  num_alignments .... : 20"
 	echo "  num_descriptions .. : 20"
+	echo "  prefix .. : "
+	echo "  suffix .. : "
 	echo 
 	echo "Example:"
 	echo "  `basename $0` --max 500 --dbs nt,viral,hg /my/path/*fasta"
@@ -58,6 +62,9 @@ outfmt=0
 evalue=0.05
 num_alignments=20
 num_descriptions=20
+prefix=''
+suffix=''
+std_out_only='false'
 dust_value=""	#	"20 64 1"
 while [ $# -ne 0 ] ; do
 	case $1 in
@@ -88,6 +95,12 @@ while [ $# -ne 0 ] ; do
 			shift; outfmt=$1; shift ;;
 		-op|--op*)
 			shift; options=$1; shift ;;
+		--pr*)
+			shift; prefix=$1; shift ;;
+		--su*)
+			shift; suffix=$1; shift ;;
+		--st*)
+			std_out_only='true'; shift ;;
 		-*)
 			echo ; echo "Unexpected args from: ${*}"; usage ;;
 		*) 
@@ -108,13 +121,16 @@ while [ $# -ne 0 ] ; do
 		#	% and %% start from the trailing or right side (could be similar to using basename)
 
 		#	not used so why bother
-		#		fasta_dir=`dirname $1`
+		#	20150116 - using
+		fasta_dir=`dirname $1`
 
-		subdir=`basename $1`.${now}.pieces
+		#subdir=`basename $1`.${now}.pieces
+		subdir=$fasta_dir/`basename $1`.${now}.pieces
 
 		#
 		#	if given path to file, put output there or where command was executed???
 		#	I say where command is executed.
+		#	20150116 - And now I say where the file is.
 		#
 		mkdir $subdir
 
@@ -167,7 +183,8 @@ while [ $# -ne 0 ] ; do
 		#	on some occassions, this list is too long for ls so changing to find
 		#	for file in `ls $PWD/$subdir/${fasta_base}_*.fasta` ; do
 		#	interesting _*. is ok, but .*. is not.  must escape the * here so .\*.
-		for file in `find $PWD/$subdir -type f -name ${fasta_base}.\*.fasta` ; do
+#		for file in `find $PWD/$subdir -type f -name ${fasta_base}.\*.fasta` ; do
+		for file in `find $subdir -type f -name ${fasta_base}.\*.fasta` ; do
 
 			#	allowing for multiple db blasting
 			for db in `echo $dbs | sed 's/,/ /g'` ; do
@@ -180,10 +197,10 @@ while [ $# -ne 0 ] ; do
 				#              Could be others.
 				#
 
-				cmd="$command $negative_gilist -query $file -db $db $dust \
+				cmd="$prefix $command $negative_gilist -query $file -db $db $dust \
 					-num_alignments $num_alignments -num_descriptions $num_descriptions \
 					-evalue $evalue -outfmt $outfmt \
-					-out $file.${command}_${db_base_name}.txt $options"
+					-out $file.${command}_${db_base_name}.txt $options $suffix"
 
 
 				#	20140724 - Added -show_gis to potentially help with this Uncultured stuff.
@@ -194,9 +211,11 @@ while [ $# -ne 0 ] ; do
 
 				echo $cmd
 
-				#	20140729 - removed eval wrapper around the push command
-				#eval "simple_queue.sh push '$cmd'"
-				simple_queue.sh push "$cmd"
+				if [ $std_out_only != 'true' ] ; then
+					#	20140729 - removed eval wrapper around the push command
+					#eval "simple_queue.sh push '$cmd'"
+					simple_queue.sh push "$cmd"
+				fi
 
 			done
 
