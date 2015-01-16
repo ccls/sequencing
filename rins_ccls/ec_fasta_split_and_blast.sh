@@ -124,8 +124,11 @@ while [ $# -ne 0 ] ; do
 		#	20150116 - using
 		fasta_dir=`dirname $1`
 
-		#subdir=`basename $1`.${now}.pieces
-		subdir=$fasta_dir/`basename $1`.${now}.pieces
+		subdir=`basename $1`.${now}.pieces
+
+		if [[ $fasta_dir != '.' ]] ; then
+			subdir=$fasta_dir/$subdir
+		fi
 
 		#
 		#	if given path to file, put output there or where command was executed???
@@ -178,6 +181,16 @@ while [ $# -ne 0 ] ; do
 		dust=''
 		if [ -n "$dust_value" ] ; then	#	quotes are required
 			dust="-dust ''$dust_value''"
+		fi
+
+		#	ensure that the subdir is an absolute path
+		#	on a Mac, this can be a problem as -f isn't supported.
+		#	would have to install coreutils macport and link greadlink to readlink.
+	#	subdir=`readlink -f $subdir`
+		
+		#	not as pretty, but just as effective
+		if [[ ! $subdir =~ ^/ ]] ; then
+			subdir=$PWD/$subdir
 		fi
 
 		#	on some occassions, this list is too long for ls so changing to find
