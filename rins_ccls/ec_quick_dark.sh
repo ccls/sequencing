@@ -231,11 +231,14 @@ echo "Splitting input fasta file into 20000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
 ec_fasta_split_and_blastn.sh --std_out_only --max_reads 20000 \
-	--prefix "srun --cpus-per-task=4" --suffix " &" --options "-num_threads 4" \
+	--prefix "srun --cpus-per-task=4" --suffix " &" \
 	--dbs viral_genomic \
-	--options "-task blastn" \
+	--options "-num_threads 4 -task blastn" \
 	trinity_input_single.uniq.fasta > blastn.trinity_input_single.uniq.fasta.viral_genomic
-sleep 2
+
+#	This sleep is used to ensure that the directory created above
+#	does not have the same timestamp as the one below.
+sleep 2	
 
 echo
 echo "Splitting input fasta file into 5000 read fasta files" \
@@ -294,10 +297,13 @@ echo "Splitting output fasta file into 20000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
 ec_fasta_split_and_blastn.sh --std_out_only --max_reads 20000 \
-	--prefix "srun --cpus-per-task=4" --suffix " &" --options "-num_threads 4" \
+	--prefix "srun --cpus-per-task=4" --suffix " &" \
 	--dbs viral_genomic \
-	--options "-task blastn" \
+	--options "-num_threads 4 -task blastn" \
 	trinity_non_human_single.fasta > blastn.trinity_non_human_single.fasta.viral_genomic
+
+#	This sleep is used to ensure that the directory created above
+#	does not have the same timestamp as the one below.
 sleep 2
 
 echo
@@ -356,10 +362,13 @@ echo "Splitting output fasta file into 20000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
 ec_fasta_split_and_blastn.sh --std_out_only --max_reads 20000 \
-	--prefix "srun --cpus-per-task=4" --suffix " &" --options "-num_threads 4" \
+	--prefix "srun --cpus-per-task=4" --suffix " &" \
 	--dbs viral_genomic \
-	--options "-task blastn" \
+	--options "-num_threads 4 -task blastn" \
 	trinity_non_human_paired.fasta > blastn.trinity_non_human_paired.fasta.viral_genomic
+
+#	This sleep is used to ensure that the directory created above
+#	does not have the same timestamp as the one below.
 sleep 2
 
 #	Defaults are -m 1000 and --dbs nt
