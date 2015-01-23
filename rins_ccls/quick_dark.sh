@@ -217,14 +217,24 @@ fi
 
 
 echo
-echo "Splitting input fasta file into 20000 read fasta files and queueing for blasting to viral genomic"
+echo "Splitting input fasta file into 20000 read fasta files and" \
+	"queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blastn.sh -m 20000 --dbs viral_genomic --options "-task blastn" trinity_input_single.uniq.fasta
+ec_fasta_split_and_blast.sh --max_reads 20000 \
+	--dbs viral_genomic \
+	--options "-task blastn" \
+	trinity_input_single.uniq.fasta
+
+#	This sleep is used to ensure that the directory created above
+#	does not have the same timestamp as the one below.
 sleep 2
+
 echo
-echo "Splitting input fasta file into 2000 read fasta files and queueing for blasting to nt"
+echo "Splitting input fasta file into 2000 read fasta files and" \
+	"queueing for blasting to nt"
 date
-ec_fasta_split_and_blastn.sh -m 2000 trinity_input_single.uniq.fasta
+ec_fasta_split_and_blast.sh --max_reads 2000 \
+	trinity_input_single.uniq.fasta
 
 
 
@@ -267,14 +277,24 @@ cp trinity_output_single/Trinity.fasta trinity_non_human_single.fasta
 
 
 echo
-echo "Splitting output fasta file into 20000 read fasta files and queueing for blasting to viral genomic"
+echo "Splitting output fasta file into 20000 read fasta files and" \
+	"queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blastn.sh -m 20000 --dbs viral_genomic --options "-task blastn" trinity_non_human_single.fasta
+ec_fasta_split_and_blast.sh --max_reads 20000 \
+	--dbs viral_genomic \
+	--options "-task blastn" \
+	trinity_non_human_single.fasta
+
+#	This sleep is used to ensure that the directory created above
+#	does not have the same timestamp as the one below.
 sleep 2
+
 echo
-echo "Splitting output fasta file into 2000 read fasta files and queueing for blasting to nt"
+echo "Splitting output fasta file into 2000 read fasta files and" \
+	"queueing for blasting to nt"
 date
-ec_fasta_split_and_blastn.sh -m 2000 trinity_non_human_single.fasta
+ec_fasta_split_and_blast.sh --max_reads 2000 \
+	trinity_non_human_single.fasta
 
 
 
@@ -312,23 +332,32 @@ cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
 
 #	even 10000 processes quite fast
 echo
-echo "Splitting output fasta file into 20000 read fasta files and queueing for blasting to viral genomic"
+echo "Splitting output fasta file into 20000 read fasta files and" \
+	"queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blastn.sh -m 20000 --dbs viral_genomic --options "-task blastn" trinity_non_human_paired.fasta
+ec_fasta_split_and_blast.sh --max_reads 20000 \
+	--dbs viral_genomic \
+	--options "-task blastn" \
+	trinity_non_human_paired.fasta
+
+#	This sleep is used to ensure that the directory created above
+#	does not have the same timestamp as the one below.
 sleep 2
 
 #	Defaults are -m 1000 and --dbs nt
 echo
-echo "Splitting output fasta file into 2000 read fasta files and queueing for blasting to nt"
+echo "Splitting output fasta file into 2000 read fasta files and" \
+	"queueing for blasting to nt"
 date
-ec_fasta_split_and_blastn.sh -m 2000 trinity_non_human_paired.fasta
+ec_fasta_split_and_blast.sh --max_reads 2000 \
+	trinity_non_human_paired.fasta
 
 
 
 #
 #	We are no longer keeping trinity_input_paired related files (subset of trinity_input_single)
 #
-#ec_fasta_split_and_blastn.sh trinity_input_paired.uniq.fasta
+#ec_fasta_split_and_blast.sh trinity_input_paired.uniq.fasta
 
 
 echo

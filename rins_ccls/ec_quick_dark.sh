@@ -230,7 +230,7 @@ echo
 echo "Splitting input fasta file into 20000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blastn.sh --std_out_only --max_reads 20000 \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 20000 \
 	--prefix "srun --cpus-per-task=4" --suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
@@ -244,7 +244,7 @@ echo
 echo "Splitting input fasta file into 5000 read fasta files" \
 	"and queueing for blasting to nt"
 date
-ec_fasta_split_and_blastn.sh --std_out_only --max_reads 5000 \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
 	--prefix "srun --cpus-per-task=4" --suffix " &" --options "-num_threads 4" \
 	trinity_input_single.uniq.fasta > blastn.trinity_input_single.uniq.fasta.nt
 
@@ -296,7 +296,7 @@ echo
 echo "Splitting output fasta file into 20000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blastn.sh --std_out_only --max_reads 20000 \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 20000 \
 	--prefix "srun --cpus-per-task=4" --suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
@@ -310,7 +310,7 @@ echo
 echo "Splitting output fasta file into 5000 read fasta files" \
 	"and queueing for blasting to nt"
 date
-ec_fasta_split_and_blastn.sh --max_reads 5000 \
+ec_fasta_split_and_blast.sh --max_reads 5000 \
 	--prefix "srun --cpus-per-task=4" --suffix " &" --options "-num_threads 4" \
 	trinity_non_human_single.fasta > blastn.trinity_non_human_single.fasta.nt
 
@@ -361,7 +361,7 @@ echo
 echo "Splitting output fasta file into 20000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blastn.sh --std_out_only --max_reads 20000 \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 20000 \
 	--prefix "srun --cpus-per-task=4" --suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
@@ -376,7 +376,7 @@ echo
 echo "Splitting output fasta file into 5000 read fasta files" \
 	"and queueing for blasting to nt"
 date
-ec_fasta_split_and_blastn.sh --std_out_only --max_reads 5000 \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
 	--prefix "srun --cpus-per-task=4" --suffix " &" --options "-num_threads 4" \
 	trinity_non_human_paired.fasta > blastn.trinity_non_human_paired.fasta.nt
 
@@ -386,7 +386,7 @@ ec_fasta_split_and_blastn.sh --std_out_only --max_reads 5000 \
 #	We are no longer keeping trinity_input_paired related files 
 #		(subset of trinity_input_single)
 #
-#ec_fasta_split_and_blastn.sh trinity_input_paired.uniq.fasta
+#ec_fasta_split_and_blast.sh trinity_input_paired.uniq.fasta
 
 
 echo
