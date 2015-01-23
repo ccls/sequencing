@@ -93,7 +93,8 @@ for db in $dbs; do
 done
 
 
-ln -s $ofile.fastq raw_non_human.fastq
+#ln -s $ofile.fastq raw_non_human.fastq
+mv $ofile.fastq raw_non_human.fastq
 
 
 #	to speed things onto the cluster, convert input fastq to fasta before trinity.
