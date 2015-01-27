@@ -122,6 +122,19 @@ fastq_to_fasta -Q33 -n \
 	-o trinity_input_single.presed.fasta
 status=$?
 
+
+rins_ccls/ec_quick_dark.sh
+
+if [ -f raw_non_human.fastq ] ; then
+	chmod -w raw_non_human.fastq
+	md5sum raw_non_human.fastq >> md5sums
+	gzip --best raw_non_human.fastq
+	md5sum raw_non_human.fastq.gz >> md5sums
+fi
+
+
+
+
 #	sometimes bowtie mucks up the file during processing
 #	I'm guessing that this is the last run as bowtie did not, but has in the past, complain
 #fastq_to_fasta: Error: invalid quality score data on line 58491284 (quality_tok = "@C@FFFDFHHGHGJIJJIIJHGJJIJJIJIJJJIGIIIIIIJIJEHHFHFDFFFFEEEEECDDBCD@DACCDBBDDDD@>BDDCCCD@HWI-700460R:370:C38TNACXX:8:1308:8501:2767 1:N:0:ACAGTG"
@@ -198,9 +211,12 @@ if [ $status -ne 0 ] ; then
 fi
 
 
-
-
-
+if [ -f trinity_input_single.presed.fasta ] ; then
+	chmod -w trinity_input_single.presed.fasta
+	md5sum trinity_input_single.presed.fasta >> md5sums
+	gzip --best trinity_input_single.presed.fasta.gz
+	md5sum trinity_input_single.presed.fasta.gz >> md5sums
+fi
 
 
 
@@ -249,6 +265,14 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
 	trinity_input_single.uniq.fasta > blastn.trinity_input_single.uniq.fasta.nt
 
 
+if [ -f trinity_input_single.uniq.fasta ] ; then
+	chmod -w trinity_input_single.uniq.fasta
+	md5sum trinity_input_single.uniq.fasta >> md5sums
+	gzip --best trinity_input_single.uniq.fasta
+	md5sum trinity_input_single.uniq.fasta.gz >> md5sums
+fi
+
+
 
 
 
@@ -275,12 +299,13 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
 #	20150121 - removing --bflyHeapSpaceMax 5G
 #	20150121 - added --CPU 4
 #	20150122 - added --CPU 8
+#	20150125 - changed 20G down to 10G as all failed
 #
 
 date
 echo
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
-Trinity --seqType fa --JM 20G \
+Trinity --seqType fa --JM 10G \
 	--run_as_paired \
 	--CPU 8 --min_contig_length 100 \
 	--single trinity_input_single.fasta \
@@ -314,12 +339,25 @@ ec_fasta_split_and_blast.sh --max_reads 5000 \
 	--prefix "srun --cpus-per-task=4" --suffix " &" --options "-num_threads 4" \
 	trinity_non_human_single.fasta > blastn.trinity_non_human_single.fasta.nt
 
+if [ -f trinity_non_human_single.fasta ] ; then
+	chmod -w trinity_non_human_single.fasta
+	md5sum trinity_non_human_single.fasta >> md5sums
+	gzip --best trinity_non_human_single.fasta
+	md5sum trinity_non_human_single.fasta.gz >> md5sums
+fi
 
 
 echo
 echo "Laning composite fasta file."
 bioruby_lane_fasta.rb trinity_input_single.fasta
 #	=> trinity_input_single_1.fasta, trinity_input_single_2.fasta
+
+if [ -f trinity_input_single.fasta ] ; then
+	chmod -w trinity_input_single.fasta
+	md5sum trinity_input_single.fasta >> md5sums
+	gzip --best trinity_input_single.fasta
+	md5sum trinity_input_single.fasta.gz >> md5sums
+fi
 
 mv trinity_input_single_1.fasta trinity_input_paired_1.fasta
 mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
@@ -329,16 +367,32 @@ mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
 #	20150121 - removing --bflyHeapSpaceMax 5G
 #	20150121 - added --CPU 4
 #	20150122 - added --CPU 8
+#	20150125 - changed 20G down to 10G as all failed
 #
 
 echo
 echo "de novo assembly of re-paired non-human using Trinity"
-Trinity --seqType fa --JM 20G \
+Trinity --seqType fa --JM 10G \
 	--CPU 8 --min_contig_length 100 \
 	--left  trinity_input_paired_1.fasta \
 	--right trinity_input_paired_2.fasta \
 	--output trinity_output_paired
 date
+
+
+if [ -f trinity_input_paired_1.fasta ] ; then
+	chmod -w trinity_input_paired_1.fasta
+	md5sum trinity_input_paired_1.fasta >> md5sums
+	gzip --best trinity_input_paired_1.fasta
+	md5sum trinity_input_paired_1.fasta.gz >> md5sums
+fi
+
+if [ -f trinity_input_paired_2.fasta ] ; then
+	chmod -w trinity_input_paired_2.fasta
+	md5sum trinity_input_paired_2.fasta >> md5sums
+	gzip --best trinity_input_paired_2.fasta
+	md5sum trinity_input_paired_2.fasta.gz >> md5sums
+fi
 
 #
 #	We are no longer keeping trinity_input_paired related files (subset of trinity_input_single)
@@ -379,6 +433,14 @@ date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
 	--prefix "srun --cpus-per-task=4" --suffix " &" --options "-num_threads 4" \
 	trinity_non_human_paired.fasta > blastn.trinity_non_human_paired.fasta.nt
+
+
+if [ -f trinity_non_human_paired.fasta ] ; then
+	chmod -w trinity_non_human_paired.fasta
+	md5sum trinity_non_human_paired.fasta >> md5sums
+	gzip --best trinity_non_human_paired.fasta
+	md5sum trinity_non_human_paired.fasta.gz >> md5sums
+fi
 
 
 
