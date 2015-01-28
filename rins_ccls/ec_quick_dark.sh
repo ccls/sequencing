@@ -49,6 +49,7 @@ fi
 
 #	used with all of the ec_fasta_split_and_blast calls
 srun="srun --nice --share --exclude=n0000,n0001,n0002 --cpus-per-task=4"
+base=`basename $PWD`
 
 
 #	they MUST be exported, apparently, to be picked up by bowtie2
@@ -252,7 +253,7 @@ echo "Splitting input fasta file into 30000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 30000 \
-	--prefix "$srun --job-name=blastn_tis_viral" \
+	--prefix "$srun --job-name=blastn_tis_viral_$base" \
 	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
@@ -267,7 +268,7 @@ echo "Splitting input fasta file into 5000 read fasta files" \
 	"and queueing for blasting to nt"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
-	--prefix "$srun --job-name=blastn_tis_nt" \
+	--prefix "$srun --job-name=blastn_tis_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
 	trinity_input_single.uniq.fasta > blastn.trinity_input_single.uniq.fasta.nt
 
@@ -329,7 +330,7 @@ echo "Splitting output fasta file into 30000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 30000 \
-	--prefix "$srun --job-name=blastn_tnhs_viral" \
+	--prefix "$srun --job-name=blastn_tnhs_viral_$base" \
 	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
@@ -344,7 +345,7 @@ echo "Splitting output fasta file into 5000 read fasta files" \
 	"and queueing for blasting to nt"
 date
 ec_fasta_split_and_blast.sh --max_reads 5000 \
-	--prefix "$srun --job-name=blastn_tnhs_nt" \
+	--prefix "$srun --job-name=blastn_tnhs_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
 	trinity_non_human_single.fasta > blastn.trinity_non_human_single.fasta.nt
 
@@ -425,7 +426,7 @@ echo "Splitting output fasta file into 30000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 30000 \
-	--prefix "$srun --job-name=blastn_tnhp_viral" \
+	--prefix "$srun --job-name=blastn_tnhp_viral_$base" \
 	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
@@ -441,7 +442,7 @@ echo "Splitting output fasta file into 5000 read fasta files" \
 	"and queueing for blasting to nt"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
-	--prefix "$srun --job-name=blastn_tnhp_nt" \
+	--prefix "$srun --job-name=blastn_tnhp_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
 	trinity_non_human_paired.fasta > blastn.trinity_non_human_paired.fasta.nt
 
