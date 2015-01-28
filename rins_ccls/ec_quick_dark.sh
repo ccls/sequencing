@@ -46,6 +46,11 @@ fi
 : ${BOWTIE2_INDEXES:="/Volumes/cube/working/indexes"}
 : ${BLASTDB:="/Volumes/cube/working/indexes"}
 
+
+#	used with all of the ec_fasta_split_and_blast calls
+srun="srun --nice --share --exclude=n0000,n0001,n0002 --cpus-per-task=4"
+
+
 #	they MUST be exported, apparently, to be picked up by bowtie2
 export BOWTIE2_INDEXES
 export BLASTDB
@@ -243,11 +248,12 @@ fi
 
 
 echo
-echo "Splitting input fasta file into 20000 read fasta files" \
+echo "Splitting input fasta file into 30000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blast.sh --std_out_only --max_reads 20000 \
-	--prefix "srun --cpus-per-task=4" --suffix " &" \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 30000 \
+	--prefix "$srun --job-name=blastn_tis_viral" \
+	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
 	trinity_input_single.uniq.fasta > blastn.trinity_input_single.uniq.fasta.viral_genomic
@@ -261,7 +267,8 @@ echo "Splitting input fasta file into 5000 read fasta files" \
 	"and queueing for blasting to nt"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
-	--prefix "srun --cpus-per-task=4" --suffix " &" --options "-num_threads 4" \
+	--prefix "$srun --job-name=blastn_tis_nt" \
+	--suffix " &" --options "-num_threads 4" \
 	trinity_input_single.uniq.fasta > blastn.trinity_input_single.uniq.fasta.nt
 
 
@@ -318,11 +325,12 @@ cp trinity_output_single.nobackup/Trinity.fasta trinity_non_human_single.fasta
 
 
 echo
-echo "Splitting output fasta file into 20000 read fasta files" \
+echo "Splitting output fasta file into 30000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blast.sh --std_out_only --max_reads 20000 \
-	--prefix "srun --cpus-per-task=4" --suffix " &" \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 30000 \
+	--prefix "$srun --job-name=blastn_tnhs_viral" \
+	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
 	trinity_non_human_single.fasta > blastn.trinity_non_human_single.fasta.viral_genomic
@@ -336,7 +344,8 @@ echo "Splitting output fasta file into 5000 read fasta files" \
 	"and queueing for blasting to nt"
 date
 ec_fasta_split_and_blast.sh --max_reads 5000 \
-	--prefix "srun --cpus-per-task=4" --suffix " &" --options "-num_threads 4" \
+	--prefix "$srun --job-name=blastn_tnhs_nt" \
+	--suffix " &" --options "-num_threads 4" \
 	trinity_non_human_single.fasta > blastn.trinity_non_human_single.fasta.nt
 
 if [ -f trinity_non_human_single.fasta ] ; then
@@ -412,11 +421,12 @@ cp trinity_output_paired.nobackup/Trinity.fasta trinity_non_human_paired.fasta
 
 #	even 10000 processes quite fast
 echo
-echo "Splitting output fasta file into 20000 read fasta files" \
+echo "Splitting output fasta file into 30000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blast.sh --std_out_only --max_reads 20000 \
-	--prefix "srun --cpus-per-task=4" --suffix " &" \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 30000 \
+	--prefix "$srun --job-name=blastn_tnhp_viral" \
+	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
 	trinity_non_human_paired.fasta > blastn.trinity_non_human_paired.fasta.viral_genomic
@@ -431,7 +441,8 @@ echo "Splitting output fasta file into 5000 read fasta files" \
 	"and queueing for blasting to nt"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
-	--prefix "srun --cpus-per-task=4" --suffix " &" --options "-num_threads 4" \
+	--prefix "$srun --job-name=blastn_tnhp_nt" \
+	--suffix " &" --options "-num_threads 4" \
 	trinity_non_human_paired.fasta > blastn.trinity_non_human_paired.fasta.nt
 
 
