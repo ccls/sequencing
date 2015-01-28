@@ -124,7 +124,7 @@ while [ $# -ne 0 ] ; do
 		#	20150116 - using
 		fasta_dir=`dirname $1`
 
-		subdir=`basename $1`.${now}.pieces
+		subdir=`basename $1`.${now}.pieces.nobackup
 
 		if [[ $fasta_dir != '.' ]] ; then
 			subdir=$fasta_dir/$subdir

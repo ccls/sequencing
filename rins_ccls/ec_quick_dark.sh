@@ -309,12 +309,12 @@ Trinity --seqType fa --JM 10G \
 	--run_as_paired \
 	--CPU 8 --min_contig_length 100 \
 	--single trinity_input_single.fasta \
-	--output trinity_output_single
+	--output trinity_output_single.nobackup
 date
 
 #cp trinity_output_single/single.fa trinity_input_single.fasta
 
-cp trinity_output_single/Trinity.fasta trinity_non_human_single.fasta
+cp trinity_output_single.nobackup/Trinity.fasta trinity_non_human_single.fasta
 
 
 echo
@@ -376,7 +376,7 @@ Trinity --seqType fa --JM 10G \
 	--CPU 8 --min_contig_length 100 \
 	--left  trinity_input_paired_1.fasta \
 	--right trinity_input_paired_2.fasta \
-	--output trinity_output_paired
+	--output trinity_output_paired.nobackup
 date
 
 
@@ -399,7 +399,7 @@ fi
 #
 #	cp trinity_output_paired/both.fa trinity_input_paired.fasta
 
-cp trinity_output_paired/Trinity.fasta trinity_non_human_paired.fasta
+cp trinity_output_paired.nobackup/Trinity.fasta trinity_non_human_paired.fasta
 
 
 #
