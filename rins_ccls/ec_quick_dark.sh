@@ -27,6 +27,19 @@ if [ $# -eq 0 ]; then
 	exit
 fi
 
+function archive(){ 
+	if [ -f $1 ] ; then
+		chmod +w md5sums
+		chmod -w $1
+		md5sum $1 >> md5sums
+		gzip --best $1
+		md5sum ${1}.gz >> md5sums
+		chmod -w md5sums
+	fi
+}
+
+
+
 {
 echo "Starting at ..."
 date
@@ -129,14 +142,7 @@ fastq_to_fasta -Q33 -n \
 status=$?
 
 
-rins_ccls/ec_quick_dark.sh
-
-if [ -f raw_non_human.fastq ] ; then
-	chmod -w raw_non_human.fastq
-	md5sum raw_non_human.fastq >> md5sums
-	gzip --best raw_non_human.fastq
-	md5sum raw_non_human.fastq.gz >> md5sums
-fi
+archive raw_non_human.fastq
 
 
 
@@ -216,13 +222,7 @@ if [ $status -ne 0 ] ; then
 	exit $status
 fi
 
-
-if [ -f trinity_input_single.presed.fasta ] ; then
-	chmod -w trinity_input_single.presed.fasta
-	md5sum trinity_input_single.presed.fasta >> md5sums
-	gzip --best trinity_input_single.presed.fasta.gz
-	md5sum trinity_input_single.presed.fasta.gz >> md5sums
-fi
+archive trinity_input_single.presed.fasta
 
 
 
@@ -272,13 +272,7 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
 	--suffix " &" --options "-num_threads 4" \
 	trinity_input_single.uniq.fasta > blastn.trinity_input_single.uniq.fasta.nt
 
-
-if [ -f trinity_input_single.uniq.fasta ] ; then
-	chmod -w trinity_input_single.uniq.fasta
-	md5sum trinity_input_single.uniq.fasta >> md5sums
-	gzip --best trinity_input_single.uniq.fasta
-	md5sum trinity_input_single.uniq.fasta.gz >> md5sums
-fi
+archive trinity_input_single.uniq.fasta
 
 
 
@@ -310,6 +304,10 @@ fi
 #	20150125 - changed 20G down to 10G as all failed
 #
 
+
+trinity_output="/tmp/$PWD/trinity_output_single"
+mkdir -p $trinity_output
+
 date
 echo
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
@@ -317,12 +315,13 @@ Trinity --seqType fa --JM 10G \
 	--run_as_paired \
 	--CPU 8 --min_contig_length 100 \
 	--single trinity_input_single.fasta \
-	--output trinity_output_single.nobackup
+	--output $trinity_output
 date
 
 #cp trinity_output_single/single.fa trinity_input_single.fasta
 
-cp trinity_output_single.nobackup/Trinity.fasta trinity_non_human_single.fasta
+cp $trinity_output/Trinity.fasta trinity_non_human_single.fasta
+/bin/rm -rf $trinity_output
 
 
 echo
@@ -349,12 +348,7 @@ ec_fasta_split_and_blast.sh --max_reads 5000 \
 	--suffix " &" --options "-num_threads 4" \
 	trinity_non_human_single.fasta > blastn.trinity_non_human_single.fasta.nt
 
-if [ -f trinity_non_human_single.fasta ] ; then
-	chmod -w trinity_non_human_single.fasta
-	md5sum trinity_non_human_single.fasta >> md5sums
-	gzip --best trinity_non_human_single.fasta
-	md5sum trinity_non_human_single.fasta.gz >> md5sums
-fi
+archive trinity_non_human_single.fasta
 
 
 echo
@@ -362,12 +356,8 @@ echo "Laning composite fasta file."
 bioruby_lane_fasta.rb trinity_input_single.fasta
 #	=> trinity_input_single_1.fasta, trinity_input_single_2.fasta
 
-if [ -f trinity_input_single.fasta ] ; then
-	chmod -w trinity_input_single.fasta
-	md5sum trinity_input_single.fasta >> md5sums
-	gzip --best trinity_input_single.fasta
-	md5sum trinity_input_single.fasta.gz >> md5sums
-fi
+archive trinity_input_single.fasta
+
 
 mv trinity_input_single_1.fasta trinity_input_paired_1.fasta
 mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
@@ -380,36 +370,30 @@ mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
 #	20150125 - changed 20G down to 10G as all failed
 #
 
+trinity_output="/tmp/$PWD/trinity_output_paired"
+mkdir -p $trinity_output
+
+date
 echo
 echo "de novo assembly of re-paired non-human using Trinity"
 Trinity --seqType fa --JM 10G \
 	--CPU 8 --min_contig_length 100 \
 	--left  trinity_input_paired_1.fasta \
 	--right trinity_input_paired_2.fasta \
-	--output trinity_output_paired.nobackup
+	--output $trinity_output
 date
 
-
-if [ -f trinity_input_paired_1.fasta ] ; then
-	chmod -w trinity_input_paired_1.fasta
-	md5sum trinity_input_paired_1.fasta >> md5sums
-	gzip --best trinity_input_paired_1.fasta
-	md5sum trinity_input_paired_1.fasta.gz >> md5sums
-fi
-
-if [ -f trinity_input_paired_2.fasta ] ; then
-	chmod -w trinity_input_paired_2.fasta
-	md5sum trinity_input_paired_2.fasta >> md5sums
-	gzip --best trinity_input_paired_2.fasta
-	md5sum trinity_input_paired_2.fasta.gz >> md5sums
-fi
-
 #
-#	We are no longer keeping trinity_input_paired related files (subset of trinity_input_single)
+#	We are no longer keeping trinity_input_paired related files 
+#		(subset of trinity_input_single)
 #
 #	cp trinity_output_paired/both.fa trinity_input_paired.fasta
 
-cp trinity_output_paired.nobackup/Trinity.fasta trinity_non_human_paired.fasta
+cp $trinity_output/Trinity.fasta trinity_non_human_paired.fasta
+/bin/rm -rf $trinity_output
+
+archive trinity_input_paired_1.fasta
+archive trinity_input_paired_2.fasta
 
 
 #
@@ -446,13 +430,7 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
 	--suffix " &" --options "-num_threads 4" \
 	trinity_non_human_paired.fasta > blastn.trinity_non_human_paired.fasta.nt
 
-
-if [ -f trinity_non_human_paired.fasta ] ; then
-	chmod -w trinity_non_human_paired.fasta
-	md5sum trinity_non_human_paired.fasta >> md5sums
-	gzip --best trinity_non_human_paired.fasta
-	md5sum trinity_non_human_paired.fasta.gz >> md5sums
-fi
+archive trinity_non_human_paired.fasta
 
 
 
