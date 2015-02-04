@@ -249,10 +249,10 @@ fi
 
 
 echo
-echo "Splitting input fasta file into 30000 read fasta files" \
+echo "Splitting input fasta file into 40000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blast.sh --std_out_only --max_reads 30000 \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--prefix "$srun --job-name=blastn_tis_viral_$base" \
 	--suffix " &" \
 	--dbs viral_genomic \
@@ -264,10 +264,10 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 30000 \
 sleep 2	
 
 echo
-echo "Splitting input fasta file into 5000 read fasta files" \
+echo "Splitting input fasta file into 10000 read fasta files" \
 	"and queueing for blasting to nt"
 date
-ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_tis_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
 	trinity_input_single.uniq.fasta > blastn.trinity_input_single.uniq.fasta.nt
@@ -318,17 +318,15 @@ Trinity --seqType fa --JM 10G \
 	--output $trinity_output
 date
 
-#cp trinity_output_single/single.fa trinity_input_single.fasta
-
 cp $trinity_output/Trinity.fasta trinity_non_human_single.fasta
 /bin/rm -rf $trinity_output
 
 
 echo
-echo "Splitting output fasta file into 30000 read fasta files" \
+echo "Splitting output fasta file into 40000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blast.sh --std_out_only --max_reads 30000 \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--prefix "$srun --job-name=blastn_tnhs_viral_$base" \
 	--suffix " &" \
 	--dbs viral_genomic \
@@ -340,10 +338,10 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 30000 \
 sleep 2
 
 echo
-echo "Splitting output fasta file into 5000 read fasta files" \
+echo "Splitting output fasta file into 10000 read fasta files" \
 	"and queueing for blasting to nt"
 date
-ec_fasta_split_and_blast.sh --max_reads 5000 \
+ec_fasta_split_and_blast.sh --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_tnhs_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
 	trinity_non_human_single.fasta > blastn.trinity_non_human_single.fasta.nt
@@ -387,7 +385,6 @@ date
 #	We are no longer keeping trinity_input_paired related files 
 #		(subset of trinity_input_single)
 #
-#	cp trinity_output_paired/both.fa trinity_input_paired.fasta
 
 cp $trinity_output/Trinity.fasta trinity_non_human_paired.fasta
 /bin/rm -rf $trinity_output
@@ -406,10 +403,10 @@ archive trinity_input_paired_2.fasta
 
 #	even 10000 processes quite fast
 echo
-echo "Splitting output fasta file into 30000 read fasta files" \
+echo "Splitting output fasta file into 40000 read fasta files" \
 	"and queueing for blasting to viral genomic"
 date
-ec_fasta_split_and_blast.sh --std_out_only --max_reads 30000 \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--prefix "$srun --job-name=blastn_tnhp_viral_$base" \
 	--suffix " &" \
 	--dbs viral_genomic \
@@ -422,10 +419,10 @@ sleep 2
 
 #	Defaults are -m 1000 and --dbs nt
 echo
-echo "Splitting output fasta file into 5000 read fasta files" \
+echo "Splitting output fasta file into 10000 read fasta files" \
 	"and queueing for blasting to nt"
 date
-ec_fasta_split_and_blast.sh --std_out_only --max_reads 5000 \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_tnhp_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
 	trinity_non_human_paired.fasta > blastn.trinity_non_human_paired.fasta.nt
