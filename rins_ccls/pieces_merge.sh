@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 #
 #	pieces_merge.sh  dna/output/fallon_SFPB001A_filtered_20130722/trinity_input_single.fasta.20130725154032.pieces
@@ -38,6 +38,7 @@ while [ $# -ne 0 ] ; do
 	#	XXX is just used as a placeholder.
 	for pieces in `find -L $1 -type f -name \*fasta.\*.txt | sed 's/.[0-9]\{6\}.fasta./.XXX./g' | uniq` ; do
 
+		date
 		echo $pieces
 		#	trinity_non_human_single.fasta.20150125184145.pieces.nobackup/trinity_non_human_single.XXX.blastn_nt.txt
 		base=`basename $pieces`
