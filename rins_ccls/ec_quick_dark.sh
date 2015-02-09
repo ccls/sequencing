@@ -222,9 +222,9 @@ if [ $status -ne 0 ] ; then
 	exit $status
 fi
 
-archive trinity_input_single.presed.fasta
-
-
+if [ -s trinity_input_single.fasta ] ; then
+	rm trinity_input_single.presed.fasta
+fi
 
 echo
 echo "Removing duplicate reads from fasta files to speed up blasting."
@@ -244,8 +244,6 @@ if [ $status -ne 0 ] ; then
 	echo "fastx_collapser failed with $status"
 	exit $status
 fi
-
-
 
 
 echo
@@ -389,8 +387,10 @@ date
 cp $trinity_output/Trinity.fasta trinity_non_human_paired.fasta
 /bin/rm -rf $trinity_output
 
-archive trinity_input_paired_1.fasta
-archive trinity_input_paired_2.fasta
+if [ -s trinity_non_human_paired.fasta ] ; then
+	rm trinity_input_paired_1.fasta
+	rm trinity_input_paired_2.fasta
+fi
 
 
 #
@@ -442,5 +442,5 @@ echo
 echo "Finished at ..."
 date
 
-#} 1>>quick_dark.out 2>>quick_dark.err
-} 1>>quick_dark.out 2>&1
+} 1>>quick_dark.out 2>>quick_dark.err
+#} 1>>quick_dark.out 2>&1
