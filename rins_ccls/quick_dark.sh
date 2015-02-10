@@ -366,4 +366,6 @@ echo "Finished at ..."
 date
 
 #} 1>>quick_dark.out 2>>quick_dark.err
+# With the -x the commands are sent to STDERR before execution
+#	so send both STDOUT and STDERR to same file.
 } 1>>quick_dark.out 2>&1
