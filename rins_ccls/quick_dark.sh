@@ -182,6 +182,37 @@ fi
 #	It would be nice if there was some documentation about this.
 #
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#	TAG EACH READ WITH THE SAMPLE NAME?
+#	Names can include dashes as well as other chars so replace them with underscores as well.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 sed 's;\(>.*\) \([12]\):.*$;\1/\2;' trinity_input_single.presed.fasta | sed 's/-/_/g' > trinity_input_single.fasta
 status=$?
 if [ $status -ne 0 ] ; then
@@ -353,6 +384,14 @@ date
 ec_fasta_split_and_blast.sh --max_reads 2000 \
 	trinity_non_human_paired.fasta
 
+
+#	Defaults are -m 1000 and --dbs nt
+echo
+echo "Splitting output fasta file into 10000 read fasta files" \
+	"and queueing for tblastx'ing to viral_genomic"
+date
+ec_fasta_split_and_blast.sh --command tblastx --max_reads 10000 \
+	trinity_non_human_paired.fasta
 
 
 #

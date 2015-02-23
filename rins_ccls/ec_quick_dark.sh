@@ -214,6 +214,37 @@ fi
 #	It would be nice if there was some documentation about this.
 #
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#	TAG EACH READ WITH THE SAMPLE NAME?
+#	Names can include dashes as well as other chars so replace them with underscores as well.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 sed 's;\(>.*\) \([12]\):.*$;\1/\2;' trinity_input_single.presed.fasta | sed 's/-/_/g' > trinity_input_single.fasta
 status=$?
 if [ $status -ne 0 ] ; then
@@ -248,7 +279,7 @@ fi
 
 echo
 echo "Splitting input fasta file into 40000 read fasta files" \
-	"and queueing for blasting to viral genomic"
+	"and queueing for blastn'ing to viral genomic"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--prefix "$srun --job-name=blastn_tis_viral_$base" \
@@ -263,7 +294,7 @@ sleep 2
 
 echo
 echo "Splitting input fasta file into 10000 read fasta files" \
-	"and queueing for blasting to nt"
+	"and queueing for blastn'ing to nt"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_tis_nt_$base" \
@@ -322,7 +353,7 @@ cp $trinity_output/Trinity.fasta trinity_non_human_single.fasta
 
 echo
 echo "Splitting output fasta file into 40000 read fasta files" \
-	"and queueing for blasting to viral genomic"
+	"and queueing for blastn'ing to viral genomic"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--prefix "$srun --job-name=blastn_tnhs_viral_$base" \
@@ -337,7 +368,7 @@ sleep 2
 
 echo
 echo "Splitting output fasta file into 10000 read fasta files" \
-	"and queueing for blasting to nt"
+	"and queueing for blastn'ing to nt"
 date
 ec_fasta_split_and_blast.sh --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_tnhs_nt_$base" \
@@ -404,7 +435,7 @@ fi
 #	even 10000 processes quite fast
 echo
 echo "Splitting output fasta file into 40000 read fasta files" \
-	"and queueing for blasting to viral genomic"
+	"and queueing for blastn'ing to viral genomic"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--prefix "$srun --job-name=blastn_tnhp_viral_$base" \
@@ -420,12 +451,22 @@ sleep 2
 #	Defaults are -m 1000 and --dbs nt
 echo
 echo "Splitting output fasta file into 10000 read fasta files" \
-	"and queueing for blasting to nt"
+	"and queueing for blastn'ing to nt"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_tnhp_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
 	trinity_non_human_paired.fasta > blastn.trinity_non_human_paired.fasta.nt
+
+#	Defaults are -m 1000 and --dbs nt
+echo
+echo "Splitting output fasta file into 10000 read fasta files" \
+	"and queueing for tblastx'ing to viral_genomic"
+date
+ec_fasta_split_and_blast.sh --command tblastx --std_out_only --max_reads 10000 \
+	--prefix "$srun --job-name=tblastx_tnhp_viral_$base" \
+	--suffix " &" --options "-num_threads 4" \
+	trinity_non_human_paired.fasta > tblastx.trinity_non_human_paired.fasta.viral_genomic
 
 archive trinity_non_human_paired.fasta
 
