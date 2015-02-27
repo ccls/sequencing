@@ -31,22 +31,34 @@ else
 fi
 
 while [ $# -ne 0 ] ; do
-	awk '
-	BEGIN{
+	base=${1%.*}	#	remove the extension
+
+	now=`date "+%Y%m%d%H%M%S"`
+	#	expecting trailing / later so make sure its here now...
+	subdir=$base.${now}.pieces.nobackup/
+	mkdir $subdir
+
+	awk -v subdir="$subdir" -v base="$base" -v max_reads="$max_reads" '
+	function reset(){
 		read_count=0
+		f=sprintf("%s%s.%05d.fasta",subdir,base,++file_number)
+	}
+	BEGIN{
 		file_number=0
-		f=sprintf("'$1'_%04d",++file_number)
+		reset()
 	}	
 	{
 		if(/^>/){
-			if( read_count >= '$max_reads' ){
+			if( read_count >= max_reads ){
 				close(f)
-				f=sprintf("'$1'_%04d",++file_number)
-				read_count=0
+				reset()
 			}
 			read_count++
 		}
 		print>>f
+	}
+	END {
+		close(f)
 	}' $1
 	shift
 done

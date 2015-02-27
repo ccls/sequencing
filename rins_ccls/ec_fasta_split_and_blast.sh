@@ -124,7 +124,8 @@ while [ $# -ne 0 ] ; do
 		#	20150116 - using
 		fasta_dir=`dirname $1`
 
-		subdir=`basename $1`.${now}.pieces.nobackup
+		#	Expecting a trailing / later, so make sure its here...
+		subdir=`basename $1`.${now}.pieces.nobackup/
 
 		if [[ $fasta_dir != '.' ]] ; then
 			subdir=$fasta_dir/$subdir
@@ -155,18 +156,20 @@ while [ $# -ne 0 ] ; do
 		#	I'd also like to undo the duplication of setting the read_count, f and file_number
 		#
 
-		awk '
+		awk -v fasta_base="$fasta_base" -v subdir="$subdir" -v max_reads="$max_reads" '
+			function reset(){
+				read_count=0
+				f=sprintf("%s%s.%06d.fasta",subdir,fasta_base,++file_number)
+			}
 			BEGIN{
 				file_number=0
-				read_count=0
-				f=sprintf("'$subdir/$fasta_base'.%06d.fasta",++file_number)
+				reset()
 			}
 			{
 				if(/^>/){
-					if( read_count >= '$max_reads' ){
+					if( read_count >= max_reads ){
 						close(f)
-						f=sprintf("'$subdir/$fasta_base'.%06d.fasta",++file_number)
-						read_count=0
+						reset()
 					}
 					read_count++
 				}
