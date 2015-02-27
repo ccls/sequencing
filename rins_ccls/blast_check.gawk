@@ -17,6 +17,7 @@ BEGIN{
 	print $0
 	nonprint++ 
 }
+#	control chars found on EVERY line if this were awk instead of gawk
 (/[[:cntrl:]]/){	#	REQUIRES double brackets as they are for different reasons
 	print "Control character(s) found on line number :",NR,":"
 	print $0

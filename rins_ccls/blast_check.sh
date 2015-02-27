@@ -49,4 +49,11 @@ esac
 
 
 dir=`dirname $0`
+#
+#	Why did I need gawk and not just awk?
+#	I'm guessing its due to the character classes I used for matching.
+#	In this gawk script, awk finds control characters on EVERY line
+#	making it really kinda pointless.
+#
 gawk -v head="$head" -v tail="$tail" -f "$dir/blast_check.gawk" $@
+
