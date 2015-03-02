@@ -20,7 +20,7 @@ while [ $# -ne 0 ] ; do
 #		--partition=bigmem \
 #		--exclude=n[0000-0029] \
 	srun --share --nice \
-		--exclude=n[0000-0019] \
+		--exclude=n[0000-0009] \
 		--job-name="gunzip_${name}" \
 		--output=$base \
 		--error=$base.gunzip.errors.`date "+%Y%m%d%H%M%S"`  \
