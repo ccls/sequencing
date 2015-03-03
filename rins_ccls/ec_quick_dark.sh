@@ -331,6 +331,7 @@ archive trinity_input_single.uniq.fasta
 #	20150121 - added --CPU 4
 #	20150122 - added --CPU 8
 #	20150125 - changed 20G down to 10G as all failed
+#	20150303 - change --JM to --max_memory
 #
 
 
@@ -340,7 +341,7 @@ mkdir -p $trinity_output
 date
 echo
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
-Trinity --seqType fa --JM 10G \
+Trinity --seqType fa --max_memory 10G \
 	--run_as_paired \
 	--CPU 8 --min_contig_length 100 \
 	--single trinity_input_single.fasta \
@@ -395,6 +396,7 @@ mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
 #	20150121 - added --CPU 4
 #	20150122 - added --CPU 8
 #	20150125 - changed 20G down to 10G as all failed
+#	20150303 - change --JM to --max_memory
 #
 
 trinity_output="/tmp/$PWD/trinity_output_paired"
@@ -403,7 +405,7 @@ mkdir -p $trinity_output
 date
 echo
 echo "de novo assembly of re-paired non-human using Trinity"
-Trinity --seqType fa --JM 10G \
+Trinity --seqType fa --max_memory 10G \
 	--CPU 8 --min_contig_length 100 \
 	--left  trinity_input_paired_1.fasta \
 	--right trinity_input_paired_2.fasta \

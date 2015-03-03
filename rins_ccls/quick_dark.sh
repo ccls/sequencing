@@ -291,12 +291,13 @@ ec_fasta_split_and_blast.sh --max_reads 2000 \
 #
 #	20141009 - added --run_as_paired.  Not sure how this will affect anything.
 #             (we primarily use the paired output anyway)
+#	20150303 - change --JM to --max_memory
 #
 
 date
 echo
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
-Trinity --seqType fa --bflyHeapSpaceMax 5G --JM 2G \
+Trinity --seqType fa --bflyHeapSpaceMax 5G --max_memory 2G \
 	--run_as_paired \
 	--min_contig_length 100 \
 	--single trinity_input_single.fasta \
@@ -340,7 +341,7 @@ mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
 
 echo
 echo "de novo assembly of re-paired non-human using Trinity"
-Trinity --seqType fa --bflyHeapSpaceMax 5G --JM 2G \
+Trinity --seqType fa --bflyHeapSpaceMax 5G --max_memory 2G \
 	--min_contig_length 100 \
 	--left  trinity_input_paired_1.fasta \
 	--right trinity_input_paired_2.fasta \
