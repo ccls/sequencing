@@ -5,11 +5,6 @@ if [ $# -eq 0 ]; then
 	exit
 fi
 
-
-#	This could be a nice utility script.
-#	Import it to sequencing/
-
-
 while [ $# -ne 0 ] ; do
 	echo $1
 	base=${1%.*}		#	drop the .gz extensino
@@ -31,12 +26,7 @@ while [ $# -ne 0 ] ; do
 #	gunzip not threaded.  would only block other jobs' usage of node.
 #		--cpus-per-task=8 \
 
-#		--output=$base.gunzip.output.`date "+%Y%m%d%H%M%S"`  \
-#		gunzip -c $1 > $base &
-
 #	gunzip -c ends up in the srun --output and not my > $base
-
-#	do I need $PWD anywhere? I don't appear to.
 
 	shift
 done

@@ -5,10 +5,6 @@ if [ $# -eq 0 ]; then
 	exit
 fi
 
-#	This could also be a nice utility script.
-#	Import it to sequencing/
-
-
 while [ $# -ne 0 ] ; do
 	echo $1
 	base=${1%.*}
