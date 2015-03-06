@@ -74,6 +74,7 @@ install-scripts:
 	rm -f $(BASE_BIN_DIR)/fasta_size_split.awk
 	rm -f $(BASE_BIN_DIR)/remove_N_reads_from_fasta.awk
 	rm -f $(BASE_BIN_DIR)/rins_ccls_lib.rb
+	rm -f $(BASE_BIN_DIR)/srun_blastn_to_nt.sh
 	cp rins_core/*pl $(BASE_BIN_DIR)
 	cp rins_ccls/*awk $(BASE_BIN_DIR)
 	cp rins_ccls/*pl $(BASE_BIN_DIR)
