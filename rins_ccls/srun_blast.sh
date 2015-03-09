@@ -17,6 +17,8 @@ function usage(){
 	echo "  command . : blastn"
 	echo "  db  ..... : nt"
 	echo "  outfmt .. : 0"
+	echo "  ......... :   0=pairwise text"
+	echo "  ......... :  10=csv"
 	echo "  evalue .. : 0.05"
 	echo 
 	echo "Example:"
