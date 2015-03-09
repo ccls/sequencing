@@ -28,7 +28,7 @@ function usage(){
 [ $# -eq 0 ] && usage
 
 outfmt=0
-e=0.05
+evalue=0.05
 command='blastn'
 db='nt'
 
@@ -64,12 +64,12 @@ while [ $# -ne 0 ] ; do
 		--begin=23:00 \
 		--job-name="${command}_${db}_${name}" \
 		--cpus-per-task=8 \
-		--output=$base.${command}_${db}.${e}.output.`date "+%Y%m%d%H%M%S"`  \
-		--error=$base.${command}_${db}.${e}.errors.`date "+%Y%m%d%H%M%S"`  \
+		--output=$base.${command}_${db}.${evalue}.output.`date "+%Y%m%d%H%M%S"`  \
+		--error=$base.${command}_${db}.${evalue}.errors.`date "+%Y%m%d%H%M%S"`  \
 		${command} -num_threads 8 -num_alignments 20 -num_descriptions 20 \
-			-evalue ${e} -outfmt ${outfmt} -db ${db} \
+			-evalue ${evalue} -outfmt ${outfmt} -db ${db} \
 			-query $1 \
-			-out $base.${command}_${db}.${e}.txt &
+			-out $base.${command}_${db}.${evalue}.txt &
 
 	shift
 done
