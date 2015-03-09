@@ -41,7 +41,7 @@ while [ $# -ne 0 ] ; do
 	awk -v subdir="$subdir" -v base="$base" -v max_reads="$max_reads" '
 	function reset(){
 		read_count=0
-		f=sprintf("%s%s.%05d.fasta",subdir,base,++file_number)
+		f=sprintf("%s%s.%06d.fasta",subdir,base,++file_number)
 	}
 	BEGIN{
 		file_number=0

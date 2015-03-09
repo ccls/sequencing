@@ -36,7 +36,7 @@ while [ $# -ne 0 ] ; do
 	#	Unlikely.  But possible.
 	#	trinity_non_human_single.fasta.20150125184142.pieces.nobackup/trinity_non_human_single.000001.fasta.blastn_viral_genomic.txt
 	#	XXX is just used as a placeholder.
-	for pieces in `find -L $1 -type f -name \*fasta.\*.txt | sed 's/.[0-9]\{6\}.fasta./.XXX./g' | uniq` ; do
+	for pieces in `find -L $1 -type f -name \*.txt | sed 's/.[0-9]\{6\}./.XXX./g' | uniq` ; do
 
 		date
 		echo $pieces
