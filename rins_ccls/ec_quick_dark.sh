@@ -118,7 +118,7 @@ done
 
 
 #ln -s $ofile.fastq raw_non_human.fastq
-mv $ofile.fastq raw_non_human.fastq
+mv $ofile.fastq $base.non_human.fastq
 
 
 #	to speed things onto the cluster, convert input fastq to fasta before trinity.
@@ -137,12 +137,11 @@ mv $ofile.fastq raw_non_human.fastq
 echo
 echo "Converting FASTQ raw_non_human.fastq to FASTA raw_non_human.fasta"
 fastq_to_fasta -Q33 -n \
-	-i raw_non_human.fastq \
-	-o trinity_input_single.presed.fasta
+	-i $base.non_human.fastq \
+	-o $base.non_human.presed.fasta
 status=$?
 
-
-archive raw_non_human.fastq
+archive $base.non_human.fastq
 
 
 
@@ -214,38 +213,11 @@ fi
 #	It would be nice if there was some documentation about this.
 #
 
+#	20150310 - Tagging samples with the sample name as prefix
+#
+#sed 's;\(>.*\) \([12]\):.*$;\1/\2;' $base.non_human.presed.fasta | sed 's/-/_/g' > $base.non_human.fasta
+sed 's;^\(>.*\) \([12]\):.*$;\1/\2;' $base.non_human.presed.fasta | sed "s/^>/>${base}_/" | sed 's/-/_/g' > $base.non_human.fasta
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-#	TAG EACH READ WITH THE SAMPLE NAME?
-#	Names can include dashes as well as other chars so replace them with underscores as well.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-sed 's;\(>.*\) \([12]\):.*$;\1/\2;' trinity_input_single.presed.fasta | sed 's/-/_/g' > trinity_input_single.fasta
 status=$?
 if [ $status -ne 0 ] ; then
 	date
@@ -253,8 +225,8 @@ if [ $status -ne 0 ] ; then
 	exit $status
 fi
 
-if [ -s trinity_input_single.fasta ] ; then
-	rm trinity_input_single.presed.fasta
+if [ -s $base.non_human.fasta ] ; then
+	rm $base.non_human.presed.fasta
 fi
 
 echo
@@ -267,8 +239,8 @@ echo "Removing duplicate reads from fasta files to speed up blasting."
 #	http://hannonlab.cshl.edu/fastx_toolkit/
 #	This will completely rename the reads so will lose lane info etc.
 
-fastx_collapser -i trinity_input_single.fasta \
-	-o trinity_input_single.uniq.fasta
+fastx_collapser -i $base.non_human.fasta \
+	-o $base.non_human.uniq.fasta
 status=$?
 if [ $status -ne 0 ] ; then
 	date
@@ -276,17 +248,20 @@ if [ $status -ne 0 ] ; then
 	exit $status
 fi
 
+#
+#	20150310 - What's the purpose of specifying "-task blastn"?
+#
 
 echo
 echo "Splitting input fasta file into 40000 read fasta files" \
 	"and queueing for blastn'ing to viral genomic"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
-	--prefix "$srun --job-name=blastn_tis_viral_$base" \
+	--prefix "$srun --job-name=blastn_nhs_viral_$base" \
 	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
-	trinity_input_single.uniq.fasta > blastn.trinity_input_single.uniq.fasta.viral_genomic
+	$base.non_human.uniq.fasta > blastn.$base.non_human.uniq.viral_genomic
 
 #	This sleep is used to ensure that the directory created above
 #	does not have the same timestamp as the one below.
@@ -297,16 +272,11 @@ echo "Splitting input fasta file into 10000 read fasta files" \
 	"and queueing for blastn'ing to nt"
 date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 10000 \
-	--prefix "$srun --job-name=blastn_tis_nt_$base" \
+	--prefix "$srun --job-name=blastn_nhs_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
-	trinity_input_single.uniq.fasta > blastn.trinity_input_single.uniq.fasta.nt
+	$base.non_human.uniq.fasta > blastn.$base.non_human.uniq.nt
 
-archive trinity_input_single.uniq.fasta
-
-
-
-
-
+archive $base.non_human.uniq.fasta
 
 
 
@@ -344,11 +314,11 @@ echo "de novo assembly of single 'unpaired' non-human using Trinity"
 Trinity --seqType fa --max_memory 10G \
 	--run_as_paired \
 	--CPU 8 --min_contig_length 100 \
-	--single trinity_input_single.fasta \
+	--single $base.non_human.fasta \
 	--output $trinity_output
 date
 
-cp $trinity_output/Trinity.fasta trinity_non_human_single.fasta
+cp $trinity_output/Trinity.fasta $base.non_human.single.trinity.fasta
 /bin/rm -rf $trinity_output
 
 
@@ -361,7 +331,7 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
-	trinity_non_human_single.fasta > blastn.trinity_non_human_single.fasta.viral_genomic
+	$base.non_human.single.trinity.fasta > blastn.$base.non_human.single.trinity.viral_genomic
 
 #	This sleep is used to ensure that the directory created above
 #	does not have the same timestamp as the one below.
@@ -374,21 +344,21 @@ date
 ec_fasta_split_and_blast.sh --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_tnhs_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
-	trinity_non_human_single.fasta > blastn.trinity_non_human_single.fasta.nt
+	$base.non_human.single.trinity.fasta > blastn.$base.non_human.single.trinity.nt
 
-archive trinity_non_human_single.fasta
+archive $base.non_human.single.trinity.fasta
 
 
 echo
 echo "Laning composite fasta file."
-bioruby_lane_fasta.rb trinity_input_single.fasta
+bioruby_lane_fasta.rb $base.non_human.fasta
 #	=> trinity_input_single_1.fasta, trinity_input_single_2.fasta
 
-archive trinity_input_single.fasta
+archive $base.non_human.fasta
 
 
-mv trinity_input_single_1.fasta trinity_input_paired_1.fasta
-mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
+mv $base.non_human_1.fasta $base.non_human.paired_1.fasta
+mv $base.non_human_2.fasta $base.non_human.paired_2.fasta
 
 #
 #	20150121 - update JM from 2G to 20G to match script run on cluster
@@ -407,8 +377,8 @@ echo
 echo "de novo assembly of re-paired non-human using Trinity"
 Trinity --seqType fa --max_memory 10G \
 	--CPU 8 --min_contig_length 100 \
-	--left  trinity_input_paired_1.fasta \
-	--right trinity_input_paired_2.fasta \
+	--left  $base.non_human.paired_1.fasta \
+	--right $base.non_human.paired_2.fasta \
 	--output $trinity_output
 date
 
@@ -417,12 +387,12 @@ date
 #		(subset of trinity_input_single)
 #
 
-cp $trinity_output/Trinity.fasta trinity_non_human_paired.fasta
+cp $trinity_output/Trinity.fasta $base.non_human.paired.trinity.fasta
 /bin/rm -rf $trinity_output
 
-if [ -s trinity_non_human_paired.fasta ] ; then
-	rm trinity_input_paired_1.fasta
-	rm trinity_input_paired_2.fasta
+if [ -s $base.non_human.paired.trinity.fasta ] ; then
+	rm $base.non_human.paired_1.fasta
+	rm $base.non_human.paired_2.fasta
 fi
 
 
@@ -444,7 +414,7 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
-	trinity_non_human_paired.fasta > blastn.trinity_non_human_paired.fasta.viral_genomic
+	$base.non_human.paired.trinity.fasta > blastn.$base.non_human.paired.trinity.viral_genomic
 
 #	This sleep is used to ensure that the directory created above
 #	does not have the same timestamp as the one below.
@@ -458,7 +428,7 @@ date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_tnhp_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
-	trinity_non_human_paired.fasta > blastn.trinity_non_human_paired.fasta.nt
+	$base.non_human.paired.trinity.fasta > blastn.$base.non_human.paired.trinity.nt
 
 #	Defaults are -m 1000 and --dbs nt
 echo
@@ -468,9 +438,9 @@ date
 ec_fasta_split_and_blast.sh --command tblastx --std_out_only --max_reads 10000 \
 	--prefix "$srun --job-name=tblastx_tnhp_viral_$base" \
 	--suffix " &" --options "-num_threads 4" \
-	trinity_non_human_paired.fasta > tblastx.trinity_non_human_paired.fasta.viral_genomic
+	$base.non_human.paired.trinity.fasta > tblastx.$base.non_human.paired.trinity.viral_genomic
 
-archive trinity_non_human_paired.fasta
+archive $base.non_human.paired.trinity.fasta
 
 
 
