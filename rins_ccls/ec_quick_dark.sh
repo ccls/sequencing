@@ -214,7 +214,8 @@ fi
 #	20150310 - Tagging samples with the sample name as prefix
 #
 #sed 's;\(>.*\) \([12]\):.*$;\1/\2;' $base.non_human.presed.fasta | sed 's/-/_/g' > $base.non_human.fasta
-sed 's;^\(>.*\) \([12]\):.*$;\1/\2;' $base.non_human.presed.fasta | sed "s/^>/>${base}_/" | sed 's/-/_/g' > $base.non_human.fasta
+sed 's;^\(>.*\) \([12]\):.*$;\1/\2;' $base.non_human.presed.fasta | \
+	sed "s/^>/>${base}_/" | sed 's/-/_/g' > $base.non_human.fasta
 
 status=$?
 if [ $status -ne 0 ] ; then
@@ -326,14 +327,14 @@ fi
 date
 
 #cp $trinity_output/Trinity.fasta $base.non_human.single.trinity.fasta
-sed "s/^>/>${base}_/" $trinity_output/Trinity.fasta | sed 's/-/_/g' > $base.non_human.single.trinity.fasta
-/bin/rm -rf $trinity_output
-
+sed "s/^>/>${base}_/" $trinity_output/Trinity.fasta | \
+	sed 's/-/_/g' > $base.non_human.single.trinity.fasta
 if [ ! -s $base.non_human.single.trinity.fasta ] ; then
 	date
 	echo "Something is wrong with $base.non_human.single.trinity.fasta"
 	exit 999
 fi
+/bin/rm -rf $trinity_output
 
 
 echo
@@ -345,7 +346,8 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
-	$base.non_human.single.trinity.fasta > blastn.$base.non_human.single.trinity.viral_genomic
+	$base.non_human.single.trinity.fasta > \
+		blastn.$base.non_human.single.trinity.viral_genomic
 
 #	This sleep is used to ensure that the directory created above
 #	does not have the same timestamp as the one below.
@@ -358,7 +360,8 @@ date
 ec_fasta_split_and_blast.sh --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_tnhs_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
-	$base.non_human.single.trinity.fasta > blastn.$base.non_human.single.trinity.nt
+	$base.non_human.single.trinity.fasta > \
+		blastn.$base.non_human.single.trinity.nt
 
 archive $base.non_human.single.trinity.fasta
 
@@ -411,14 +414,14 @@ date
 #
 
 #cp $trinity_output/Trinity.fasta $base.non_human.paired.trinity.fasta
-sed "s/^>/>${base}_/" $trinity_output/Trinity.fasta | sed 's/-/_/g' > $base.non_human.paired.trinity.fasta
-/bin/rm -rf $trinity_output
-
+sed "s/^>/>${base}_/" $trinity_output/Trinity.fasta | \
+	sed 's/-/_/g' > $base.non_human.paired.trinity.fasta
 if [ ! -s $base.non_human.paired.trinity.fasta ] ; then
 	date
 	echo "Something is wrong with $base.non_human.paired.trinity.fasta"
 	exit 999
 fi
+/bin/rm -rf $trinity_output
 
 #if [ -s $base.non_human.paired.trinity.fasta ] ; then
 #	rm $base.non_human.paired_1.fasta
@@ -443,7 +446,8 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
-	$base.non_human.paired.trinity.fasta > blastn.$base.non_human.paired.trinity.viral_genomic
+	$base.non_human.paired.trinity.fasta > \
+		blastn.$base.non_human.paired.trinity.viral_genomic
 
 #	This sleep is used to ensure that the directory created above
 #	does not have the same timestamp as the one below.
@@ -457,7 +461,8 @@ date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_tnhp_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
-	$base.non_human.paired.trinity.fasta > blastn.$base.non_human.paired.trinity.nt
+	$base.non_human.paired.trinity.fasta > 
+		blastn.$base.non_human.paired.trinity.nt
 
 #	Defaults are -m 1000 and --dbs nt
 echo
@@ -467,7 +472,8 @@ date
 ec_fasta_split_and_blast.sh --command tblastx --std_out_only --max_reads 10000 \
 	--prefix "$srun --job-name=tblastx_tnhp_viral_$base" \
 	--suffix " &" --options "-num_threads 4" \
-	$base.non_human.paired.trinity.fasta > tblastx.$base.non_human.paired.trinity.viral_genomic
+	$base.non_human.paired.trinity.fasta > \
+		tblastx.$base.non_human.paired.trinity.viral_genomic
 
 archive $base.non_human.paired.trinity.fasta
 
