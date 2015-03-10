@@ -318,9 +318,9 @@ Trinity --seqType fa --max_memory 10G \
 	--output $trinity_output
 date
 
-cp $trinity_output/Trinity.fasta $base.non_human.single.trinity.fasta
+#cp $trinity_output/Trinity.fasta $base.non_human.single.trinity.fasta
+sed "s/^>/>${base}_/" $trinity_output/Trinity.fasta | sed 's/-/_/g' > $base.non_human.single.trinity.fasta
 /bin/rm -rf $trinity_output
-
 
 echo
 echo "Splitting output fasta file into 40000 read fasta files" \
@@ -387,14 +387,14 @@ date
 #		(subset of trinity_input_single)
 #
 
-cp $trinity_output/Trinity.fasta $base.non_human.paired.trinity.fasta
+#cp $trinity_output/Trinity.fasta $base.non_human.paired.trinity.fasta
+sed "s/^>/>${base}_/" $trinity_output/Trinity.fasta | sed 's/-/_/g' > $base.non_human.paired.trinity.fasta
 /bin/rm -rf $trinity_output
 
 if [ -s $base.non_human.paired.trinity.fasta ] ; then
 	rm $base.non_human.paired_1.fasta
 	rm $base.non_human.paired_2.fasta
 fi
-
 
 #
 #	We are no longer keeping trinity_input_paired related files 
