@@ -80,6 +80,8 @@ install-scripts:
 	cp rins_ccls/*pl $(BASE_BIN_DIR)
 	cp rins_ccls/*rb $(BASE_BIN_DIR)
 	cp rins_ccls/*sh $(BASE_BIN_DIR)
+	rm -f $(BASE_BIN_DIR)/dark.rb
+	rm -f $(BASE_BIN_DIR)/dark_OLD.rb
 
 #	cp rins_ccls/*awk $(BASE_BIN_DIR)
 #	*awk would include *.awk and *.gawk
