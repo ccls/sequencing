@@ -22,7 +22,9 @@ ARGV.each do |filename|
 	root_filename = File.basename(filename,root_extname)
 	lanes = [1,2]	#[]
 
-	command = "grep '^>' #{filename} | wc -l"
+	#command = "grep '^>' #{filename} | wc -l"
+	#	grep has a built-in counter which is faster
+	command = "grep -c '^>' #{filename}"
 	puts "Counting sequences with ..."
 	puts command
 

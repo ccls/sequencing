@@ -73,7 +73,9 @@ inputfile     = Bio::FlatFile.auto(filename)
 root_extname  = File.extname(filename)		#	will include the '.'
 root_filename = File.basename(filename,root_extname)
 
-command = "grep '^>' #{filename} | wc -l"
+#command = "grep '^>' #{filename} | wc -l"
+#	grep has a built-in counter which is faster
+command = "grep -c '^>' #{filename}"
 puts "Counting sequences with ..."
 puts command
 total_sequences = `#{command}`.to_i
