@@ -116,8 +116,6 @@ for db in $dbs; do
 	date
 done
 
-
-#ln -s $ofile.fastq raw_non_human.fastq
 mv $ofile.fastq $base.non_human.fastq
 
 
@@ -135,7 +133,7 @@ mv $ofile.fastq $base.non_human.fastq
 #	-Q33 is UNDOCUMENTED AND NEEDED for our fastq files.
 
 echo
-echo "Converting FASTQ raw_non_human.fastq to FASTA raw_non_human.fasta"
+echo "Converting FASTQ non_human.fastq to FASTA non_human.fasta"
 fastq_to_fasta -Q33 -n \
 	-i $base.non_human.fastq \
 	-o $base.non_human.presed.fasta
@@ -312,15 +310,31 @@ date
 echo
 echo "de novo assembly of single 'unpaired' non-human using Trinity"
 Trinity --seqType fa --max_memory 10G \
+	--bypass_java_version_check \
 	--run_as_paired \
 	--CPU 8 --min_contig_length 100 \
 	--single $base.non_human.fasta \
 	--output $trinity_output
+
+status=$?
+if [ $status -ne 0 ] ; then
+	date
+	echo "Trinity failed with $status"
+	exit $status
+fi
+
 date
 
 #cp $trinity_output/Trinity.fasta $base.non_human.single.trinity.fasta
 sed "s/^>/>${base}_/" $trinity_output/Trinity.fasta | sed 's/-/_/g' > $base.non_human.single.trinity.fasta
 /bin/rm -rf $trinity_output
+
+if [ ! -s $base.non_human.single.trinity.fasta ] ; then
+	date
+	echo "Something is wrong with $base.non_human.single.trinity.fasta"
+	exit 999
+fi
+
 
 echo
 echo "Splitting output fasta file into 40000 read fasta files" \
@@ -376,10 +390,19 @@ date
 echo
 echo "de novo assembly of re-paired non-human using Trinity"
 Trinity --seqType fa --max_memory 10G \
+	--bypass_java_version_check \
 	--CPU 8 --min_contig_length 100 \
 	--left  $base.non_human.paired_1.fasta \
 	--right $base.non_human.paired_2.fasta \
 	--output $trinity_output
+
+status=$?
+if [ $status -ne 0 ] ; then
+	date
+	echo "Trinity failed with $status"
+	exit $status
+fi
+
 date
 
 #
@@ -391,10 +414,16 @@ date
 sed "s/^>/>${base}_/" $trinity_output/Trinity.fasta | sed 's/-/_/g' > $base.non_human.paired.trinity.fasta
 /bin/rm -rf $trinity_output
 
-if [ -s $base.non_human.paired.trinity.fasta ] ; then
-	rm $base.non_human.paired_1.fasta
-	rm $base.non_human.paired_2.fasta
+if [ ! -s $base.non_human.paired.trinity.fasta ] ; then
+	date
+	echo "Something is wrong with $base.non_human.paired.trinity.fasta"
+	exit 999
 fi
+
+#if [ -s $base.non_human.paired.trinity.fasta ] ; then
+#	rm $base.non_human.paired_1.fasta
+#	rm $base.non_human.paired_2.fasta
+#fi
 
 #
 #	We are no longer keeping trinity_input_paired related files 
