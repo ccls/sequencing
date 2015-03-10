@@ -466,6 +466,10 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 10000 \
 	$base.non_human.paired.trinity.fasta > 
 		blastn.$base.non_human.paired.trinity.nt
 
+#	This sleep is used to ensure that the directory created above
+#	does not have the same timestamp as the one below.
+sleep 2	
+
 #	Defaults are -m 1000 and --dbs nt
 echo
 echo "Splitting output fasta file into 10000 read fasta files" \
