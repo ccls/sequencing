@@ -410,10 +410,6 @@ fi
 
 date
 
-#
-#	We are no longer keeping trinity_input_paired related files 
-#		(subset of trinity_input_single)
-#
 
 #cp $trinity_output/Trinity.fasta $base.non_human.paired.trinity.fasta
 sed "s/^>/>${base}_/" $trinity_output/Trinity.fasta | \
@@ -425,17 +421,8 @@ if [ ! -s $base.non_human.paired.trinity.fasta ] ; then
 fi
 /bin/rm -rf $trinity_output
 
-#if [ -s $base.non_human.paired.trinity.fasta ] ; then
-#	rm $base.non_human.paired_1.fasta
-#	rm $base.non_human.paired_2.fasta
-#fi
-
-#
-#	We are no longer keeping trinity_input_paired related files 
-#		(subset of trinity_input_single)
-#
-#bioruby_extract_uniq_sequences_from_fasta.rb trinity_input_paired.fasta
-#	=> trinity_input_paired.uniq.fasta
+rm $base.non_human.paired_1.fasta
+rm $base.non_human.paired_2.fasta
 
 
 #	even 10000 processes quite fast
@@ -482,14 +469,6 @@ ec_fasta_split_and_blast.sh --command tblastx --std_out_only --max_reads 10000 \
 		tblastx.$base.non_human.paired.trinity.viral_genomic
 
 archive $base.non_human.paired.trinity.fasta
-
-
-
-#
-#	We are no longer keeping trinity_input_paired related files 
-#		(subset of trinity_input_single)
-#
-#ec_fasta_split_and_blast.sh trinity_input_paired.uniq.fasta
 
 
 echo
