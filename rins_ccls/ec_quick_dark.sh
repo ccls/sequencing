@@ -301,6 +301,7 @@ archive $base.non_human.uniq.fasta
 #	20150122 - added --CPU 8
 #	20150125 - changed 20G down to 10G as all failed
 #	20150303 - change --JM to --max_memory
+#	20150310 - the cluster is running a newer version of java so bypass check
 #
 
 
@@ -384,6 +385,7 @@ mv $base.non_human_2.fasta $base.non_human.paired_2.fasta
 #	20150122 - added --CPU 8
 #	20150125 - changed 20G down to 10G as all failed
 #	20150303 - change --JM to --max_memory
+#	20150310 - the cluster is running a newer version of java so bypass check
 #
 
 trinity_output="/tmp/$PWD/trinity_output_paired"
