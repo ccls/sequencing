@@ -16,7 +16,7 @@
 #	Eventually, may want to pass number of cpus or threads so
 #	execs can use the same number.
 
-if [ $# -eq 0 ]; then
+if [ $# -ne 2 ]; then
 	echo
 	echo "Usage:"
 	echo
@@ -44,10 +44,10 @@ function archive(){
 echo "Starting at ..."
 date
 
-if [ $# -eq 2 ] ; then
+#if [ $# -eq 2 ] ; then
 	ln -s $1 raw.1.fastq
 	ln -s $2 raw.2.fastq
-fi
+#fi
 #	else ...
 #	I expect the existance of raw.1.fastq and raw.2.fastq
 #
