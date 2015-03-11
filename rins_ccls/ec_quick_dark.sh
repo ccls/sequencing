@@ -393,11 +393,13 @@ archive $base.non_human.trinity.blastn_nt.txt
 #	ec_fasta_split_and_blast.sh --command tblastx --std_out_only --max_reads 10000 \
 #		--prefix "$srun --job-name=tblastx_tnhs_viral_$base" \
 #		--suffix " &" --options "-num_threads 8" \
+#		--dbs viral_genomic \
 #		$base.non_human.trinity.fasta > \
 #			tblastx.$base.non_human.trinity.viral_genomic.nobackup
 
 echo "tblastx'ing to viral_genomic"
-tblastx -db nt -num_alignments 20 -num_descriptions 20 \
+tblastx -num_alignments 20 -num_descriptions 20 \
+	-db viral_genomic \
 	-evalue 0.05 -outfmt 0 -num_threads 8 \
 	-query $base.non_human.trinity.fasta \
 	-out $base.non_human.trinity.tblastx_nt.txt
@@ -502,6 +504,7 @@ archive $base.non_human.trinity.fasta
 #	ec_fasta_split_and_blast.sh --command tblastx --std_out_only --max_reads 10000 \
 #		--prefix "$srun --job-name=tblastx_tnhp_viral_$base" \
 #		--suffix " &" --options "-num_threads 4" \
+#		--dbs viral_genomic \
 #		$base.non_human.paired.trinity.fasta > \
 #			tblastx.$base.non_human.paired.trinity.viral_genomic
 #
