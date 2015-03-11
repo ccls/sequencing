@@ -55,6 +55,11 @@ done
 
 #	Warning: The parameter -num_descriptions is ignored for output formats > 4 . Use -max_target_seqs to control output
 
+if [[ $outfmt -gt 4 ]] ; then
+	other='-max_target_seqs 20'
+else
+	other='-num_alignments 20 -num_descriptions 20'
+fi
 
 while [ $# -ne 0 ] ; do
 	echo $1
@@ -72,7 +77,7 @@ while [ $# -ne 0 ] ; do
 		--cpus-per-task=8 \
 		--output=$base.${command}_${db}.${evalue}.output.`date "+%Y%m%d%H%M%S"`  \
 		--error=$base.${command}_${db}.${evalue}.errors.`date "+%Y%m%d%H%M%S"`  \
-		${command} -num_threads 8 -num_alignments 20 -num_descriptions 20 \
+		${command} -num_threads 8 $other \
 			-evalue ${evalue} -outfmt ${outfmt} -db ${db} \
 			-query $1 \
 			-out $base.${command}_${db}.${evalue}.${ext} &
