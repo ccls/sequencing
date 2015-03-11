@@ -260,7 +260,8 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--suffix " &" \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
-	$base.non_human.uniq.fasta > blastn.$base.non_human.uniq.viral_genomic
+	$base.non_human.uniq.fasta > \
+		blastn.$base.non_human.uniq.viral_genomic.nobackup
 
 #	This sleep is used to ensure that the directory created above
 #	does not have the same timestamp as the one below.
@@ -273,7 +274,8 @@ date
 ec_fasta_split_and_blast.sh --std_out_only --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_nhs_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
-	$base.non_human.uniq.fasta > blastn.$base.non_human.uniq.nt
+	$base.non_human.uniq.fasta > \
+		blastn.$base.non_human.uniq.nt.nobackup
 
 archive $base.non_human.uniq.fasta
 
@@ -348,7 +350,7 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
 	--dbs viral_genomic \
 	--options "-num_threads 4 -task blastn" \
 	$base.non_human.trinity.fasta > \
-		blastn.$base.non_human.trinity.viral_genomic
+		blastn.$base.non_human.trinity.viral_genomic.nobackup
 
 #	This sleep is used to ensure that the directory created above
 #	does not have the same timestamp as the one below.
@@ -358,7 +360,7 @@ echo
 echo "Splitting output fasta file into 10000 read fasta files" \
 	"and queueing for blastn'ing to nt"
 date
-ec_fasta_split_and_blast.sh --max_reads 10000 \
+ec_fasta_split_and_blast.sh --std_out_only --max_reads 10000 \
 	--prefix "$srun --job-name=blastn_tnhs_nt_$base" \
 	--suffix " &" --options "-num_threads 4" \
 	$base.non_human.trinity.fasta > \
@@ -376,7 +378,7 @@ ec_fasta_split_and_blast.sh --command tblastx --std_out_only --max_reads 10000 \
 	--prefix "$srun --job-name=tblastx_tnhs_viral_$base" \
 	--suffix " &" --options "-num_threads 8" \
 	$base.non_human.trinity.fasta > \
-		tblastx.$base.non_human.trinity.viral_genomic
+		tblastx.$base.non_human.trinity.viral_genomic.nobackup
 
 archive $base.non_human.trinity.fasta
 
