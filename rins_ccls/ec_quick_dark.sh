@@ -402,8 +402,8 @@ tblastx -num_alignments 20 -num_descriptions 20 \
 	-db viral_genomic \
 	-evalue 0.05 -outfmt 0 -num_threads 8 \
 	-query $base.non_human.trinity.fasta \
-	-out $base.non_human.trinity.tblastx_nt.txt
-archive $base.non_human.trinity.tblastx_nt.txt
+	-out $base.non_human.trinity.tblastx_viral_genomic.txt
+archive $base.non_human.trinity.tblastx_viral_genomic.txt
 
 archive $base.non_human.trinity.fasta
 
