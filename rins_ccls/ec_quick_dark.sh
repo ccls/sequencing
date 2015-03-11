@@ -358,7 +358,7 @@ blastn -db viral_genomic -num_alignments 20 -num_descriptions 20 \
 	-query $base.non_human.trinity.fasta \
 	-num_threads 8 -task blastn \
 	-out $base.non_human.trinity.blastn_viral_genomic.txt
-
+archive $base.non_human.trinity.blastn_viral_genomic.txt
 
 #	#	This sleep is used to ensure that the directory created above
 #	#	does not have the same timestamp as the one below.
@@ -379,6 +379,7 @@ blastn -db nt -num_alignments 20 -num_descriptions 20 -evalue 0.05 -outfmt 0 \
 	-num_threads 8 \
 	-query $base.non_human.trinity.fasta \
 	-out $base.non_human.trinity.blastn_nt.txt
+archive $base.non_human.trinity.blastn_nt.txt
 
 
 #	#	This sleep is used to ensure that the directory created above
@@ -400,6 +401,7 @@ tblastx -db nt -num_alignments 20 -num_descriptions 20 \
 	-evalue 0.05 -outfmt 0 -num_threads 8 \
 	-query $base.non_human.trinity.fasta \
 	-out $base.non_human.trinity.tblastx_nt.txt
+archive $base.non_human.trinity.tblastx_nt.txt
 
 archive $base.non_human.trinity.fasta
 
