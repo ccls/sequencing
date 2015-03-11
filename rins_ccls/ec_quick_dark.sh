@@ -386,9 +386,9 @@ archive $base.non_human.trinity.fasta
 #	echo "Laning composite fasta file."
 #	bioruby_lane_fasta.rb $base.non_human.fasta
 #	#	=> trinity_input_single_1.fasta, trinity_input_single_2.fasta
-#
-#	archive $base.non_human.fasta
-#
+
+	archive $base.non_human.fasta
+
 #	mv $base.non_human_1.fasta $base.non_human.paired_1.fasta
 #	mv $base.non_human_2.fasta $base.non_human.paired_2.fasta
 #
