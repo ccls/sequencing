@@ -44,15 +44,16 @@ while [ $# -ne 0 ] ; do
 		base=`basename $pieces`
 		#	trinity_non_human_single.XXX.blastn_nt.txt
 
-		mmv -a "${pieces/.XXX./*}" ${base/.XXX./.}
+		outname=${base/.XXX./.}
+		outname=${outname/.fasta./.}
+
+		mmv -a "${pieces/.XXX./*}" $outname
 		#mmv -a "trinity_non_human_single.fasta.20150125184145.pieces.nobackup/trinity_non_human_single*blastn_nt.txt" trinity_non_human_single.blastn_nt.txt
 
-		rename .fasta. . ${base/.XXX./.}
-
-		chmod -w ${base/.XXX./.}
-		md5sum ${base/.XXX./.} >> md5sums
-		gzip --best  ${base/.XXX./.}
-		md5sum ${base/.XXX./.}.gz >> md5sums
+		chmod -w $outname
+		md5sum $outname >> md5sums
+		gzip --best  $outname
+		md5sum $outname.gz >> md5sums
 
 	done
 	shift
