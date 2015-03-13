@@ -47,6 +47,8 @@ while [ $# -ne 0 ] ; do
 		mmv -a "${pieces/.XXX./*}" ${base/.XXX./.}
 		#mmv -a "trinity_non_human_single.fasta.20150125184145.pieces.nobackup/trinity_non_human_single*blastn_nt.txt" trinity_non_human_single.blastn_nt.txt
 
+		rename .fasta. . ${base/.XXX./.}
+
 		chmod -w ${base/.XXX./.}
 		md5sum ${base/.XXX./.} >> md5sums
 		gzip --best  ${base/.XXX./.}
