@@ -251,21 +251,29 @@ fi
 #	20150310 - What's the purpose of specifying "-task blastn"?
 #
 
-echo
-echo "Splitting input fasta file into 40000 read fasta files" \
-	"and queueing for blastn'ing to viral genomic"
-date
-ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
-	--prefix "$srun --job-name=blastn_nhs_viral_$base" \
-	--suffix " &" \
-	--dbs viral_genomic \
-	--options "-num_threads 4 -task blastn" \
-	$base.non_human.uniq.fasta > \
-		blastn.$base.non_human.uniq.viral_genomic.nobackup
+#	echo
+#	echo "Splitting input fasta file into 40000 read fasta files" \
+#		"and queueing for blastn'ing to viral genomic"
+#	date
+#	ec_fasta_split_and_blast.sh --std_out_only --max_reads 40000 \
+#		--prefix "$srun --job-name=blastn_nhs_viral_$base" \
+#		--suffix " &" \
+#		--dbs viral_genomic \
+#		--options "-num_threads 4 -task blastn" \
+#		$base.non_human.uniq.fasta > \
+#			blastn.$base.non_human.uniq.viral_genomic.nobackup
+#	
+#	#	This sleep is used to ensure that the directory created above
+#	#	does not have the same timestamp as the one below.
+#	sleep 2
 
-#	This sleep is used to ensure that the directory created above
-#	does not have the same timestamp as the one below.
-sleep 2
+echo "blastn'ing nhs to viral genomic"
+blastn -db viral_genomic -num_alignments 20 -num_descriptions 20 \
+	-evalue 0.05 -outfmt 0 \
+	-query $base.non_human.uniq.fasta \
+	-num_threads 8 -task blastn \
+	-out $base.non_human.uniq.blastn_viral_genomic.txt
+archive $base.non_human.uniq.blastn_viral_genomic.txt
 
 echo
 echo "Splitting input fasta file into 10000 read fasta files" \
@@ -352,7 +360,7 @@ fi
 #		$base.non_human.trinity.fasta > \
 #			blastn.$base.non_human.trinity.viral_genomic.nobackup
 
-echo "blastn'ing to viral genomic"
+echo "blastn'ing assembled non_human to viral genomic"
 blastn -db viral_genomic -num_alignments 20 -num_descriptions 20 \
 	-evalue 0.05 -outfmt 0 \
 	-query $base.non_human.trinity.fasta \
@@ -374,7 +382,7 @@ archive $base.non_human.trinity.blastn_viral_genomic.txt
 #		$base.non_human.trinity.fasta > \
 #			blastn.$base.non_human.trinity.nt
 
-echo "blastn'ing to nt"
+echo "blastn'ing assembled non_human to nt"
 blastn -db nt -num_alignments 20 -num_descriptions 20 -evalue 0.05 -outfmt 0 \
 	-num_threads 8 \
 	-query $base.non_human.trinity.fasta \
@@ -397,7 +405,7 @@ archive $base.non_human.trinity.blastn_nt.txt
 #		$base.non_human.trinity.fasta > \
 #			tblastx.$base.non_human.trinity.viral_genomic.nobackup
 
-echo "tblastx'ing to viral_genomic"
+echo "tblastx'ing assembled non_human to viral_genomic"
 tblastx -num_alignments 20 -num_descriptions 20 \
 	-db viral_genomic \
 	-evalue 0.05 -outfmt 0 -num_threads 8 \
