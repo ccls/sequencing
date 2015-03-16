@@ -35,7 +35,12 @@ MKDIR        = mkdir -p
 #
 #	could eventually add Vicuna and Mira
 #
-TARGETS = blat bowtie bowtie2 blast bwa trinity price velvet ray
+#
+#	As this is outdated and we don't (not allowed to) install these
+#	anymore, removing them from list to avoid accidents.
+#
+#TARGETS = blat bowtie bowtie2 blast bwa trinity price velvet ray
+TARGETS = 
 
 
 #	the @ prefix means the line will be executed, but not printed
@@ -67,6 +72,19 @@ install-all:
 #	Remove old stuff.  Need -f or get an error.
 install-scripts:
 	@printf "\nINSTALLING SCRIPTS\n\n"
+	#	No longer using rins, so why keep installing
+	rm -f $(BASE_BIN_DIR)/blastn_cleanup.pl
+	rm -f $(BASE_BIN_DIR)/blatoutcandidate.pl
+	rm -f $(BASE_BIN_DIR)/candidate_non_human.pl
+	rm -f $(BASE_BIN_DIR)/chopreads.pl
+	rm -f $(BASE_BIN_DIR)/compress.pl
+	rm -f $(BASE_BIN_DIR)/fastq2fasta.pl
+	rm -f $(BASE_BIN_DIR)/modify_trinity_output.pl
+	rm -f $(BASE_BIN_DIR)/pull_reads_fasta.pl
+	rm -f $(BASE_BIN_DIR)/rins.pl
+	rm -f $(BASE_BIN_DIR)/sam2names.pl
+	rm -f $(BASE_BIN_DIR)/write_result.pl
+	#	remove old, deprecated scripts
 	rm -f $(BASE_BIN_DIR)/ec_fasta_split_and_blastn.sh
 	rm -f $(BASE_BIN_DIR)/blastn_check.sh
 	rm -f $(BASE_BIN_DIR)/blastn_check.gawk
@@ -75,17 +93,29 @@ install-scripts:
 	rm -f $(BASE_BIN_DIR)/remove_N_reads_from_fasta.awk
 	rm -f $(BASE_BIN_DIR)/rins_ccls_lib.rb
 	rm -f $(BASE_BIN_DIR)/srun_blastn_to_nt.sh
-	cp rins_core/*pl $(BASE_BIN_DIR)
+	#	No longer using rins, so why keep installing
+	#	cp rins_core/*pl $(BASE_BIN_DIR)
 	cp rins_ccls/*awk $(BASE_BIN_DIR)
 	cp rins_ccls/*pl $(BASE_BIN_DIR)
 	cp rins_ccls/*rb $(BASE_BIN_DIR)
 	cp rins_ccls/*sh $(BASE_BIN_DIR)
+	#	remove old, no longer used scripts (there are others, just not sure which)
+	rm -f $(BASE_BIN_DIR)/rins.rb
+	rm -f $(BASE_BIN_DIR)/blastn_cleanup.rb
+	rm -f $(BASE_BIN_DIR)/blatoutcandidate.rb
+	rm -f $(BASE_BIN_DIR)/candidate_non_human.rb
+	rm -f $(BASE_BIN_DIR)/file_format_detector.rb
+	rm -f $(BASE_BIN_DIR)/pull_reads_fasta.rb
+	rm -f $(BASE_BIN_DIR)/sam2names.rb
+	rm -f $(BASE_BIN_DIR)/write_result.rb
+	rm -f $(BASE_BIN_DIR)/add_descriptions_to_results.rb
+	rm -f $(BASE_BIN_DIR)/just_first_contig_match_results.rb
 	rm -f $(BASE_BIN_DIR)/dark.rb
 	rm -f $(BASE_BIN_DIR)/dark_OLD.rb
 
 #	cp rins_ccls/*awk $(BASE_BIN_DIR)
 #	*awk would include *.awk and *.gawk
-#	using latest trinity which may not need this
+#	using latest trinity which DOES not need this
 #	cp SAM_filter_out_unmapped_reads.pl $(BASE_BIN_DIR)/util/
 
 
