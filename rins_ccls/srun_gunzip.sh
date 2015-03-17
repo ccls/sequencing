@@ -17,9 +17,12 @@ while [ $# -ne 0 ] ; do
 	srun --share --nice \
 		--exclude=n[0000-0009] \
 		--job-name="gunzip_${name}" \
-		--output=$base \
+		--output=$base.gunzip.output.`date "+%Y%m%d%H%M%S"`.nobackup  \
 		--error=$base.gunzip.errors.`date "+%Y%m%d%H%M%S"`.nobackup  \
-		gunzip -c $1 &
+		gunzip -k $1 &
+
+#	20150317 - gzip upgraded! Can use -k now. --output should be empty now.
+#		--output=$base \
 
 #	Sadly, cluster has an old version of gunzip so need to use -c instead of -k
 
