@@ -75,8 +75,8 @@ while [ $# -ne 0 ] ; do
 		--begin=23:00 \
 		--job-name="${command}_${db}_${name}" \
 		--cpus-per-task=8 \
-		--output=$base.${command}_${db}.${evalue}.output.`date "+%Y%m%d%H%M%S"`  \
-		--error=$base.${command}_${db}.${evalue}.errors.`date "+%Y%m%d%H%M%S"`  \
+		--output=$base.${command}_${db}.${evalue}.output.`date "+%Y%m%d%H%M%S"`.nobackup  \
+		--error=$base.${command}_${db}.${evalue}.errors.`date "+%Y%m%d%H%M%S"`.nobackup  \
 		${command} -num_threads 8 $other \
 			-evalue ${evalue} -outfmt ${outfmt} -db ${db} \
 			-query $1 \

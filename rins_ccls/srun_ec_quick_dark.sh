@@ -10,6 +10,6 @@ base=`basename $PWD`
 srun --nice --share --partition=bigmem \
 	--job-name="dark_${base}" \
 	--cpus-per-task=8 \
-	--error=$base.quick_dark.errors.`date "+%Y%m%d%H%M%S"` \
-	--output=$base.quick_dark.output.`date "+%Y%m%d%H%M%S"` \
+	--error=$base.quick_dark.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
+	--output=$base.quick_dark.output.`date "+%Y%m%d%H%M%S"`.nobackup \
 	ec_quick_dark.sh $1 $2 &

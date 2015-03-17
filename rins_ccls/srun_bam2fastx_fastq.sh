@@ -18,8 +18,8 @@ while [ $# -ne 0 ] ; do
 		--exclude=n[0000-0009] \
 		--job-name="bam2fastx_${name}" \
 		--cpus-per-task=8 \
-		--error=$base.bam2fastx.errors.`date "+%Y%m%d%H%M%S"` \
-		--output=$base.bam2fastx.output.`date "+%Y%m%d%H%M%S"` \
+		--error=$base.bam2fastx.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
+		--output=$base.bam2fastx.output.`date "+%Y%m%d%H%M%S"`.nobackup \
 		bam2fastx --fastq --all -N \
 			-o $name.fastq \
 			$1 &

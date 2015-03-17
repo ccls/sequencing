@@ -18,7 +18,7 @@ while [ $# -ne 0 ] ; do
 		--exclude=n[0000-0009] \
 		--job-name="gunzip_${name}" \
 		--output=$base \
-		--error=$base.gunzip.errors.`date "+%Y%m%d%H%M%S"`  \
+		--error=$base.gunzip.errors.`date "+%Y%m%d%H%M%S"`.nobackup  \
 		gunzip -c $1 &
 
 #	Sadly, cluster has an old version of gunzip so need to use -c instead of -k

@@ -17,8 +17,8 @@ while [ $# -ne 0 ] ; do
 		--partition=bigmem \
 		--exclude=n[0000-0009] \
 		--job-name="fastx_collapser_${name}" \
-		--output=$base.fastx_collapser.output.`date "+%Y%m%d%H%M%S"`  \
-		--error=$base.fastx_collapser.errors.`date "+%Y%m%d%H%M%S"`  \
+		--output=$base.fastx_collapser.output.`date "+%Y%m%d%H%M%S"`.nobackup  \
+		--error=$base.fastx_collapser.errors.`date "+%Y%m%d%H%M%S"`.nobackup  \
 		fastx_collapser -i $1 -o $base.collapsed.fasta &
 
 

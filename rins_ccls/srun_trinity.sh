@@ -17,8 +17,8 @@ while [ $# -ne 0 ] ; do
 	srun --nice --share --partition=bigmem \
 		--job-name="Trinity_${name}" \
 		--cpus-per-task=8 \
-		--error=$base.trinity.errors.`date "+%Y%m%d%H%M%S"` \
-		--output=$base.trinity.output.`date "+%Y%m%d%H%M%S"` \
+		--error=$base.trinity.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
+		--output=$base.trinity.output.`date "+%Y%m%d%H%M%S"`.nobackup \
 		Trinity --CPU 8 \
 			--bypass_java_version_check \
 			--normalize_reads \

@@ -18,8 +18,8 @@ while [ $# -ne 0 ] ; do
 		--exclude=n[0000-0009] \
 		--job-name="lane_fastq_${name}" \
 		--cpus-per-task=8 \
-		--error=$base.lane_fastq.errors.`date "+%Y%m%d%H%M%S"` \
-		--output=$base.lane_fastq.output.`date "+%Y%m%d%H%M%S"` \
+		--error=$base.lane_fastq.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
+		--output=$base.lane_fastq.output.`date "+%Y%m%d%H%M%S"`.nobackup \
 		awk '
 			( /\/1$/ ){ f=sprintf("%s.1.fastq",substr(FILENAME,0,index(FILENAME,".fastq")-1)) }
 			( /\/2$/ ){ f=sprintf("%s.2.fastq",substr(FILENAME,0,index(FILENAME,".fastq")-1)) }
