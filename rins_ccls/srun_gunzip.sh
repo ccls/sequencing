@@ -15,6 +15,7 @@ while [ $# -ne 0 ] ; do
 #		--partition=bigmem \
 #		--exclude=n[0000-0029] \
 	srun --share --nice \
+		--partition=all \
 		--exclude=n[0000-0009] \
 		--job-name="gunzip_${name}" \
 		--output=$base.gunzip.output.`date "+%Y%m%d%H%M%S"`.nobackup  \

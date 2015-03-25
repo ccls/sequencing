@@ -14,6 +14,7 @@ while [ $# -ne 0 ] ; do
 #		--partition=bigmem \
 #		--exclude=n[0000-0029] \
 	srun --share --nice \
+		--partition=all \
 		--exclude=n[0000-0009] \
 		--job-name="fastq_to_fasta_${name}" \
 		--output=$PWD/$base.fastq_to_fasta.output.`date "+%Y%m%d%H%M%S"`.nobackup  \
