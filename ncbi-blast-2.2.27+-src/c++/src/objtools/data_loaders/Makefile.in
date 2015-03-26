@@ -1,6 +1,0 @@
-# $Id: Makefile.in 373382 2012-08-29 14:09:59Z camacho $
-
-SUB_PROJ = genbank lds lds2 blastdb cdd trace patcher
-
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

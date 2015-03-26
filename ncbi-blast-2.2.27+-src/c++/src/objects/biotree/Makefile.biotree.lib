@@ -1,3 +1,0 @@
-ASN_DEP = seq seqset
-LIB = biotree
-SRC = biotree__ biotree___

@@ -8,7 +8,7 @@ BASE_BIN_DIR = ${BASE_DIR}/bin
 BLAT    = blatSrc34
 
 #	for some reason 2.2.25+ seems to be installed?
-BLAST   = ncbi-blast-2.2.27+-src/c++
+#BLAST   = ncbi-blast-2.2.27+-src/c++
 
 BOWTIE  = bowtie-0.12.8
 
@@ -40,7 +40,7 @@ MKDIR        = mkdir -p
 #	anymore, removing them from list to avoid accidents.
 #
 #TARGETS = blat bowtie bowtie2 blast bwa trinity price velvet ray
-#TARGETS = blat bowtie bowtie2 blast bwa price velvet ray
+#TARGETS = blat bowtie bowtie2 bwa price velvet ray
 TARGETS = 
 
 
@@ -54,7 +54,7 @@ TARGETS =
 
 #	all is the default target that is used when none are given
 #all: blat bowtie bowtie2 blast bwa trinity price
-#all: blat bowtie bowtie2 blast bwa price
+#all: blat bowtie bowtie2 bwa price
 all: make-all $(TARGETS)
 	@printf "\nDONE MAKING ALL\n\n"
 
@@ -63,7 +63,7 @@ make-all:
 
 #install: all
 #install: install_all install_bowtie install_bowtie2 install_blat install_blast install_trinity install_bwa install_price install_scripts
-#install: install_all install_bowtie install_bowtie2 install_blat install_blast install_bwa install_price install_scripts
+#install: install_all install_bowtie install_bowtie2 install_blat install_bwa install_price install_scripts
 install: install-all $(TARGETS:%=install-%) install-scripts
 	@printf "\nDONE INSTALLING ALL\n\n"
 	@printf "Add  $(BASE_BIN_DIR) TO YOUR PATH\n\n"
@@ -174,18 +174,18 @@ clean-bowtie2:
 	cd $(BOWTIE2) && make clean
 
 
-blast:
-	@printf "\nMAKING BLAST\n\n"
-#	Use BASE_DIR as blast creates bin/, lib/ and include/
-	cd $(BLAST) && ./configure --prefix=$(BASE_DIR) && make
-
-install-blast:
-	@printf "\nINSTALLING BLAST\n\n"
-	cd $(BLAST) && make install
-
-clean-blast:
-	@printf "\nCLEANING BLAST\n\n"
-	/bin/rm -rf $(BLAST)/*-Debug*
+#blast:
+#	@printf "\nMAKING BLAST\n\n"
+##	Use BASE_DIR as blast creates bin/, lib/ and include/
+#	cd $(BLAST) && ./configure --prefix=$(BASE_DIR) && make
+#
+#install-blast:
+#	@printf "\nINSTALLING BLAST\n\n"
+#	cd $(BLAST) && make install
+#
+#clean-blast:
+#	@printf "\nCLEANING BLAST\n\n"
+#	/bin/rm -rf $(BLAST)/*-Debug*
 
 
 #

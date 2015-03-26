@@ -1,9 +1,0 @@
-#include "../../projects/ncbi_gbench.lst"
-internal/txserver
-internal/myncbi$
-internal/mapview/ideogram/coord_remap$
-internal/algo/id_mapper
-internal/algo/align/prosplign
-internal/blast/DistribDbSupport
-internal/gpipe/align_db
-internal/sra
