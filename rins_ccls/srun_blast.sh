@@ -2,11 +2,6 @@
 
 function usage(){
 	echo
-	echo "Creates a directory of the name of each of the given fasta files and appends"
-	echo "the date and .pieces.  The fasta file is then split into fasta files each"
-	echo "with no more than the maximum number of reads and sequentially numbers them"
-	echo "placing them in the aforementioned directories."
-	echo
 	echo "Usage: (NO EQUALS SIGNS)"
 	echo
 	echo "`basename $0` [--command COMMAND] [--db BLAST_DATABASE] "
