@@ -32,6 +32,7 @@ I created the root Makefile to control the making and installing of these
 packages on MY MACHINE (Mac Pro 10.6.8) and so far this works.
 Used GCC 421
 
+( No longer including Trinity. Installation of it is straight forward. )
 
 
 [RINS Package](http://khavarilab.stanford.edu/resources.html) 
