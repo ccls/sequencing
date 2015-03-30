@@ -4,7 +4,7 @@ function usage(){
 	echo
 	echo "Usage: (NO EQUALS SIGNS)"
 	echo
-	echo "`basename $0` [--db BOWTIE2_INDEX] "
+	echo "`basename $0` [--db BOWTIE2_INDEX] [--other OTHER_BOWTIE2_OPTIONS]"
 	echo
 	echo "Defaults:"
 	echo "  db  ..... : hg19"
@@ -18,11 +18,14 @@ function usage(){
 [ $# -eq 0 ] && usage
 
 db='hg19'
+other=''
 
 while [ $# -ne 0 ] ; do
 	case $1 in
 		-d|--d*)
 			shift; db=$1; shift ;;
+		-o|--o*)
+			shift; other=$1; shift ;;
 		-*)
 			echo ; echo "Unexpected args from: ${*}"; usage ;;
 		*) 
@@ -39,20 +42,20 @@ while [ $# -ne 0 ] ; do
 	#filetype=${1:(-1)}
 	[[ ${1:(-1)} -eq 'q' ]] && filetype='-q' || filetype='-f'
 
+	o=${other//[^[:alnum:]]/_}
 
 #		--partition=bigmem \
 #		--exclude=n[0000-0029] \
 #		--begin=23:00 \
 
 	srun --nice --share --partition=bigmem \
-		--job-name="bowtie2_${name}_${db}" \
+		--job-name="bowtie2_${name}_${db}_${o}" \
 		--cpus-per-task=8 \
-		--error=$base.bowtie2.${db}.very-sensitive-local.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
-		--output=$base.bowtie2.${db}.very-sensitive-local.output.`date "+%Y%m%d%H%M%S"`.nobackup \
+		--error=$base.bowtie2.${db}.${o}.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
+		--output=$base.bowtie2.${db}.${o}.output.`date "+%Y%m%d%H%M%S"`.nobackup \
 		bowtie2 $filetype --threads 8 \
-			--very-sensitive-local \
-			-x $db \
-			-U $1 -S $base.bowtie2.${db}.very-sensitive-local.sam &
+			-x $db $other \
+			-U $1 -S $base.bowtie2.${db}.${o}.sam &
 
 #	bowtie2 can use $BOWTIE2_INDEXES for path
 #			-x /my/home/ccls/indexes/bowtie2/herv_k113 \
