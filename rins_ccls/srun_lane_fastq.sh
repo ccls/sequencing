@@ -28,7 +28,7 @@ while [ $# -ne 0 ] ; do
 					substr($0,length,1))
 			}
 			print >> f 
-		' $1 &
+		}' $1 &
 
 	shift
 done
