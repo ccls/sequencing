@@ -49,6 +49,7 @@ while [ $# -ne 0 ] ; do
 #		--begin=23:00 \
 
 	srun --nice --share --partition=bigmem \
+		--exclude=n[0000-0009] \
 		--job-name="bowtie2_${name}_${db}_${o}" \
 		--cpus-per-task=8 \
 		--error=$base.bowtie2.${db}.${o}.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
