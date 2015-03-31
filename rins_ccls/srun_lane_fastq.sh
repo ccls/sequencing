@@ -48,3 +48,7 @@ done
 #
 #	So basically, just take the last character of the first line of 
 #	every 4 line block to determine which lane it is.
+#
+#	This isn't the best either as the sequence name may
+#	not be laned and could end in anything.
+#
