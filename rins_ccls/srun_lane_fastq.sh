@@ -24,7 +24,7 @@ while [ $# -ne 0 ] ; do
 		awk '{
 			if( ( (NR-1) % 4 ) == 0 ){
 				f=sprintf("%s.%i.fastq", 
-					substr(FILENAME,0,index(FILENAME,".fastq")-1), 
+					substr(FILENAME,1,index(FILENAME,".fastq")-1), 
 					substr($0,length,1))
 			}
 			print >> f 
