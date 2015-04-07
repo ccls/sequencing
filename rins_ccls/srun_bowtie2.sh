@@ -10,6 +10,8 @@ function usage(){
 	echo "Defaults:"
 	echo "  db  ..... : hg19"
 	echo 
+	echo "If --paired is used, expects fasta/fastq files in proper order"
+	echo 
 	echo "Example:"
 	echo "  `basename $0` --db hg19 /my/path/*fasta"
 	echo
@@ -58,7 +60,10 @@ while [ $# -ne 0 ] ; do
 		files="-1 $1 "
 		shift
 		files+="-2 $1"
+		base=${base%_R?}
+		name=${name%_R?}
 	fi
+	echo $files
 
 	srun --nice --share --partition=bigmem \
 		--exclude=n[0000-0009] \
