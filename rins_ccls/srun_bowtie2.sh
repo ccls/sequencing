@@ -5,6 +5,7 @@ function usage(){
 	echo "Usage: (NO EQUALS SIGNS)"
 	echo
 	echo "`basename $0` [--db BOWTIE2_INDEX] [--other OTHER_BOWTIE2_OPTIONS]"
+	echo "   --paired [NO VALUE!]"
 	echo
 	echo "Defaults:"
 	echo "  db  ..... : hg19"
@@ -19,6 +20,7 @@ function usage(){
 
 db='hg19'
 other=''
+paired='false'
 
 while [ $# -ne 0 ] ; do
 	case $1 in
@@ -26,6 +28,8 @@ while [ $# -ne 0 ] ; do
 			shift; db=$1; shift ;;
 		-o|--o*)
 			shift; other=$1; shift ;;
+		-p|--p*)
+			shift; paired='true';;
 		-*)
 			echo ; echo "Unexpected args from: ${*}"; usage ;;
 		*) 
@@ -48,6 +52,14 @@ while [ $# -ne 0 ] ; do
 #		--exclude=n[0000-0029] \
 #		--begin=23:00 \
 
+	if [ $paired != 'true' ] ; then
+		files="-U $1"
+	else
+		files="-1 $1 "
+		shift
+		files+="-2 $1"
+	fi
+
 	srun --nice --share --partition=bigmem \
 		--exclude=n[0000-0009] \
 		--job-name="bowtie2_${name}_${db}_${o}" \
@@ -56,7 +68,7 @@ while [ $# -ne 0 ] ; do
 		--output=$base.bowtie2.${db}.${o}.output.`date "+%Y%m%d%H%M%S"`.nobackup \
 		bowtie2 $filetype --threads 8 \
 			-x $db $other \
-			-U $1 -S $base.bowtie2.${db}.${o}.sam &
+			$files -S $base.bowtie2.${db}.${o}.sam &
 
 #	bowtie2 can use $BOWTIE2_INDEXES for path
 #			-x /my/home/ccls/indexes/bowtie2/herv_k113 \
