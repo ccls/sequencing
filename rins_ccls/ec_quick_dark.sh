@@ -27,19 +27,6 @@ if [ $# -ne 2 ]; then
 	exit
 fi
 
-function archive(){ 
-	if [ -f $1 ] ; then
-		chmod +w md5sums
-		chmod -w $1
-		md5sum $1 >> md5sums
-		gzip --best $1
-		md5sum ${1}.gz >> md5sums
-		chmod -w md5sums
-	fi
-}
-
-
-
 {
 echo "Starting at ..."
 date
@@ -139,7 +126,7 @@ fastq_to_fasta -Q33 -n \
 	-o $base.non_human.presed.fasta
 status=$?
 
-archive $base.non_human.fastq
+archive.sh $base.non_human.fastq
 
 
 
@@ -273,7 +260,7 @@ blastn -db viral_genomic -num_alignments 20 -num_descriptions 20 \
 	-query $base.non_human.uniq.fasta \
 	-num_threads 8 -task blastn \
 	-out $base.non_human.uniq.blastn_viral_genomic.txt
-archive $base.non_human.uniq.blastn_viral_genomic.txt
+archive.sh $base.non_human.uniq.blastn_viral_genomic.txt
 
 echo
 echo "Splitting input fasta file into 10000 read fasta files" \
@@ -285,7 +272,7 @@ ec_fasta_split_and_blast.sh --std_out_only --max_reads 10000 \
 	$base.non_human.uniq.fasta > \
 		blastn.$base.non_human.uniq.nt.nobackup
 
-archive $base.non_human.uniq.fasta
+archive.sh $base.non_human.uniq.fasta
 
 
 
@@ -366,7 +353,7 @@ blastn -db viral_genomic -num_alignments 20 -num_descriptions 20 \
 	-query $base.non_human.trinity.fasta \
 	-num_threads 8 -task blastn \
 	-out $base.non_human.trinity.blastn_viral_genomic.txt
-archive $base.non_human.trinity.blastn_viral_genomic.txt
+archive.sh $base.non_human.trinity.blastn_viral_genomic.txt
 
 #	#	This sleep is used to ensure that the directory created above
 #	#	does not have the same timestamp as the one below.
@@ -387,7 +374,7 @@ blastn -db nt -num_alignments 20 -num_descriptions 20 -evalue 0.05 -outfmt 0 \
 	-num_threads 8 \
 	-query $base.non_human.trinity.fasta \
 	-out $base.non_human.trinity.blastn_nt.txt
-archive $base.non_human.trinity.blastn_nt.txt
+archive.sh $base.non_human.trinity.blastn_nt.txt
 
 
 #	#	This sleep is used to ensure that the directory created above
@@ -411,9 +398,9 @@ tblastx -num_alignments 20 -num_descriptions 20 \
 	-evalue 0.05 -outfmt 0 -num_threads 8 \
 	-query $base.non_human.trinity.fasta \
 	-out $base.non_human.trinity.tblastx_viral_genomic.txt
-archive $base.non_human.trinity.tblastx_viral_genomic.txt
+archive.sh $base.non_human.trinity.tblastx_viral_genomic.txt
 
-archive $base.non_human.trinity.fasta
+archive.sh $base.non_human.trinity.fasta
 
 #	Dropping all things "paired"
 
@@ -422,7 +409,7 @@ archive $base.non_human.trinity.fasta
 #	bioruby_lane_fasta.rb $base.non_human.fasta
 #	#	=> trinity_input_single_1.fasta, trinity_input_single_2.fasta
 
-	archive $base.non_human.fasta
+	archive.sh $base.non_human.fasta
 
 #	mv $base.non_human_1.fasta $base.non_human.paired_1.fasta
 #	mv $base.non_human_2.fasta $base.non_human.paired_2.fasta
@@ -516,7 +503,7 @@ archive $base.non_human.trinity.fasta
 #		$base.non_human.paired.trinity.fasta > \
 #			tblastx.$base.non_human.paired.trinity.viral_genomic
 #
-#	archive $base.non_human.paired.trinity.fasta
+#	archive.sh $base.non_human.paired.trinity.fasta
 
 
 echo
