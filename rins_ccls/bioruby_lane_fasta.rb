@@ -10,7 +10,9 @@ require 'sequencing_lib'
 #	
 
 if ARGV.empty?
-	puts "#{$0} filename(s)\n\nAt least one input fasta file name is required.\n\n"
+	puts "#{$0} filename(s)"
+	puts "Outputs sequences in laned files if and only if they are paired."
+	puts "At least one input fasta file name is required."
 	exit
 end
 
@@ -22,8 +24,6 @@ ARGV.each do |filename|
 	root_filename = File.basename(filename,root_extname)
 	lanes = [1,2]	#[]
 
-	#command = "grep '^>' #{filename} | wc -l"
-	#	grep has a built-in counter which is faster
 	command = "grep -c '^>' #{filename}"
 	puts "Counting sequences with ..."
 	puts command
@@ -39,7 +39,6 @@ ARGV.each do |filename|
 	#	using +1 as log of 2-10 is 1, 11-100 is 2
 	max_digits = Math.log10( total_sequences + 1 ).ceil
 
-
 	#	This is blunt and effective, I think, but it all happens behind the scenes
 	#	It would be nice to make this more verbose.
 	#	It is substantially easier on memory though as it doesn't load
@@ -47,12 +46,13 @@ ARGV.each do |filename|
 	puts "Scanning #{filename} for paired sequences (this can take a while) with ..."
 
 
-#	this expects sequence names to end with /1 or /2
+	#	this expects sequence names to end with /1 or /2
+	#	The "sort | uniq -d" is what ensures the results are in pairs
 	command = "grep '^>' #{filename} | awk -F/ '{print $1}' | sort | uniq -d | sed 's/^>//'"
-#	this expects a space then lane-related and other irrelevant stuff
-#	command = "grep '^>' #{filename} | awk '{print $1}' | sort | uniq -d | sed 's/^>//'"
-#	As the purpose of this is to prep files for use with Trinity and
-#	Trinity requires the /1 or /2 laning, need to use the /1 or /2 laning.
+	#	this expects a space then lane-related and other irrelevant stuff
+	#	command = "grep '^>' #{filename} | awk '{print $1}' | sort | uniq -d | sed 's/^>//'"
+	#	As the purpose of this is to prep files for use with Trinity and
+	#	Trinity requires the /1 or /2 laning, need to use the /1 or /2 laning.
 
 
 	puts command
@@ -66,7 +66,7 @@ ARGV.each do |filename|
 	puts "Opening output files."
 	streams = {}
 	lanes.each do |lane|
-		streams[lane] = File.open("#{root_filename}_#{lane}#{root_extname}",'w')
+		streams[lane] = File.open("#{root_filename}_R#{lane}#{root_extname}",'w')
 	end
 
 	puts "Writing to output files."
@@ -76,7 +76,7 @@ ARGV.each do |filename|
 
 	index=0
 	inputfile.each do |entry|
-#	inputfile.each_with_index do |entry,index|
+	#inputfile.each_with_index do |entry,index|
 
 		printf "\rReading sequence %#{max_digits}d of %#{max_digits}d", index+1, total_sequences
 		#	WAY WAY WAY TOO SLOW.  OMG
@@ -90,14 +90,13 @@ ARGV.each do |filename|
 
 			#	if matches, write to the correct file
 			streams[entry.definition.lane.to_i].puts entry
-#	if 0/1 become actual possiblities, open 3 streams?
-#	should end up with 1 empty file at the end
-#			streams[entry.definition.lane.to_i].puts entry
+			#	if 0/1 become actual possiblities, open 3 streams?
+			#	should end up with 1 empty file at the end
+			#			streams[entry.definition.lane.to_i].puts entry
 		end
 
-
-		index+=1	#	manually increment
-		nil	#	reduce memory usage
+		index+=1	#	manually increment.  Why? 
+		nil	#	reduce memory usage.  Does it?
 	end
 	puts
 	puts "Closing output files."

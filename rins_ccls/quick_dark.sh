@@ -334,17 +334,17 @@ ec_fasta_split_and_blast.sh --max_reads 2000 \
 echo
 echo "Laning composite fasta file."
 bioruby_lane_fasta.rb trinity_input_single.fasta
-#	=> trinity_input_single_1.fasta, trinity_input_single_2.fasta
+#	=> trinity_input_single_R1.fasta, trinity_input_single_R2.fasta
 
-mv trinity_input_single_1.fasta trinity_input_paired_1.fasta
-mv trinity_input_single_2.fasta trinity_input_paired_2.fasta
+mv trinity_input_single_R1.fasta trinity_input_paired_R1.fasta
+mv trinity_input_single_R2.fasta trinity_input_paired_R2.fasta
 
 echo
 echo "de novo assembly of re-paired non-human using Trinity"
 Trinity --seqType fa --bflyHeapSpaceMax 5G --max_memory 2G \
 	--min_contig_length 100 \
-	--left  trinity_input_paired_1.fasta \
-	--right trinity_input_paired_2.fasta \
+	--left  trinity_input_paired_R1.fasta \
+	--right trinity_input_paired_R2.fasta \
 	--output trinity_output_paired
 date
 
