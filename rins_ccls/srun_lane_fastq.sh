@@ -24,7 +24,7 @@ while [ $# -ne 0 ] ; do
 		awk '{
 			if( ( (NR-1) % 4 ) == 0 ){
 				if( match($0,/\/[12]$/) ){
-					f=sprintf("%s.%i.fastq", 
+					f=sprintf("%s_R%i.fastq", 
 						substr(FILENAME,1,index(FILENAME,".fastq")-1), 
 						substr($0,RSTART+1,1))
 				}else{
