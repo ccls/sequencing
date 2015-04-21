@@ -34,6 +34,8 @@ Used GCC 421
 
 ( No longer including Trinity. Installation of it is straight forward. )
 ( No longer including Blast. Installation of it is straight forward. )
+( No longer including Blat. Now part of Kent Utils and installation of it is straight forward. )
+( No longer including Bowtie. Latest version is a MacPort. )
 
 
 [RINS Package](http://khavarilab.stanford.edu/resources.html) 

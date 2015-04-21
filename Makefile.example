@@ -5,12 +5,12 @@ BASE_BIN_DIR = ${BASE_DIR}/bin
 #	There is a difference between 34 and 35.  I don't know exactly what it is
 #	but 35 finds nothing and 34 finds a bunch.  Perhaps a change in parameters?
 #	34 also requires a few tweeks just to get it to compile? (34 is 5 years older than 35)
-BLAT    = blatSrc34
+#BLAT    = blatSrc34
 
 #	for some reason 2.2.25+ seems to be installed?
 #BLAST   = ncbi-blast-2.2.27+-src/c++
 
-BOWTIE  = bowtie-0.12.8
+#BOWTIE  = bowtie-0.12.8
 
 #	There are newer versions of bowtie2 out, but seg faults at runtime
 #	I just installed that latest binaries which do not.
@@ -40,7 +40,7 @@ MKDIR        = mkdir -p
 #	anymore, removing them from list to avoid accidents.
 #
 #TARGETS = blat bowtie bowtie2 blast bwa trinity price velvet ray
-#TARGETS = blat bowtie bowtie2 bwa price velvet ray
+#TARGETS = bowtie2 bwa price velvet ray
 TARGETS = 
 
 
@@ -54,7 +54,7 @@ TARGETS =
 
 #	all is the default target that is used when none are given
 #all: blat bowtie bowtie2 blast bwa trinity price
-#all: blat bowtie bowtie2 bwa price
+#all: bowtie2 bwa price
 all: make-all $(TARGETS)
 	@printf "\nDONE MAKING ALL\n\n"
 
@@ -133,31 +133,31 @@ clean-all:
 #	ccls nothing to clean
 
 
-blat:
-	@printf "\nMAKING BLAT\n\n"
-	cd $(BLAT) && $(MKDIR) bin && make C_INCLUDE_PATH=/opt/local/include/ PNGLIB=/opt/local/lib/libpng.a BINDIR=`pwd`/bin
+#blat:
+#	@printf "\nMAKING BLAT\n\n"
+#	cd $(BLAT) && $(MKDIR) bin && make C_INCLUDE_PATH=/opt/local/include/ PNGLIB=/opt/local/lib/libpng.a BINDIR=`pwd`/bin
+#
+#install-blat:
+#	@printf "\nINSTALLING BLAT\n\n"
+#	cp $(BLAT)/bin/* $(BASE_BIN_DIR)
+#
+#clean-blat:
+#	@printf "\nCLEANING BLAT\n\n"
+#	cd $(BLAT) && make clean && rm -f */*/*.a
 
-install-blat:
-	@printf "\nINSTALLING BLAT\n\n"
-	cp $(BLAT)/bin/* $(BASE_BIN_DIR)
-
-clean-blat:
-	@printf "\nCLEANING BLAT\n\n"
-	cd $(BLAT) && make clean && rm -f */*/*.a
 
 
-
-bowtie:
-	@printf "\nMAKING BOWTIE\n\n"
-	cd $(BOWTIE) && make
-
-install-bowtie:
-	@printf "\nINSTALLING BOWTIE\n\n"
-	cd $(BOWTIE) && cp bowtie bowtie-build bowtie-inspect $(BASE_BIN_DIR)
-
-clean-bowtie:
-	@printf "\nCLEANING BOWTIE\n\n"
-	cd $(BOWTIE) && make clean
+#bowtie:
+#	@printf "\nMAKING BOWTIE\n\n"
+#	cd $(BOWTIE) && make
+#
+#install-bowtie:
+#	@printf "\nINSTALLING BOWTIE\n\n"
+#	cd $(BOWTIE) && cp bowtie bowtie-build bowtie-inspect $(BASE_BIN_DIR)
+#
+#clean-bowtie:
+#	@printf "\nCLEANING BOWTIE\n\n"
+#	cd $(BOWTIE) && make clean
 
 
 
