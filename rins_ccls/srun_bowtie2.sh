@@ -46,7 +46,9 @@ while [ $# -ne 0 ] ; do
 
 	#	This better be a or q
 	#filetype=${1:(-1)}
-	[[ ${1:(-1)} -eq 'q' ]] && filetype='-q' || filetype='-f'
+	#[[ ${1:(-1)} -eq 'q' ]] && filetype='-q' || filetype='-f'
+	#	-eq is for numbers.  == is for strings.
+	[[ ${1:(-1)} == 'q' ]] && filetype='-q' || filetype='-f'
 
 	o=${other//[^[:alnum:]]/_}
 

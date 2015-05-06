@@ -24,7 +24,7 @@ function usage(){
 #	Basically, this is TRUE AND DO ...
 [ $# -eq 0 ] && usage
 
-outfmt=0
+outfmt='0'
 evalue=0.05
 command='blastn'
 db='nt'
@@ -46,7 +46,9 @@ while [ $# -ne 0 ] ; do
 	esac
 done
 
-[[ $outfmt -eq '10' ]] && ext='csv' || ext='txt'
+#[[ $outfmt -eq '10' ]] && ext='csv' || ext='txt'
+#	-eq is for numbers.  == is for strings.
+[[ $outfmt == '10' ]] && ext='csv' || ext='txt'
 
 #	Warning: The parameter -num_descriptions is ignored for output formats > 4 . Use -max_target_seqs to control output
 
