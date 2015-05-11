@@ -25,8 +25,8 @@ while [ $# -ne 0 ] ; do
 	#	${VARIABLE^^} converts to uppercase
 	#	${VARIABLE,,} converts to lowercase
 	[[ ${ext,,} =~ sam ]] && flag='-S' || flag=''
-	echo $ext
-	echo $flag
+	#echo $ext
+	#echo $flag
 
 	#    F4 = NOT unmapped = mapped
 	samtools view $flag -@ 8 -b -F 4 -o $name.mapped.bam $1
