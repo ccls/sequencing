@@ -25,13 +25,13 @@ while [ $# -ne 0 ] ; do
 #		--partition=bigmem \
 #		--exclude=n[0000-0029] \
 
-#	srun --nice --share \
-#		--partition=bigmem \
-#		--exclude=n[0000-0009] \
-#		--job-name="samtools_extract_${name}" \
-#		--cpus-per-task=8 \
-#		--error=$base.samtools_extract.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
-#		--output=$base.samtools_extract.output.`date "+%Y%m%d%H%M%S"`.nobackup \
+	srun --nice --share \
+		--partition=bigmem \
+		--exclude=n[0000-0009] \
+		--job-name="samtools_extract_${name}" \
+		--cpus-per-task=8 \
+		--error=$base.samtools_extract.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
+		--output=$base.samtools_extract.output.`date "+%Y%m%d%H%M%S"`.nobackup \
 		samtools_extract_half_mapped_pairs.sh $1 &
 
 	shift
