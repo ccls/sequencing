@@ -24,7 +24,15 @@ while [ $# -ne 0 ] ; do
 	#	requires bash >= 4.0
 	#	${VARIABLE^^} converts to uppercase
 	#	${VARIABLE,,} converts to lowercase
-	[[ ${ext,,} =~ sam ]] && flag='-S' || flag=''
+	if [[ ${ext,,} =~ sam ]] ; then
+		flag='-S'
+		samheader="-h $1"
+	else
+		echo "Input file is not a sam file so not including header in output."
+		flag=''
+		samheader=''
+	fi
+	#[[ ${ext,,} =~ sam ]] && flag='-S' || flag=''
 	#echo $ext
 	#echo $flag
 
@@ -35,12 +43,14 @@ while [ $# -ne 0 ] ; do
 	#    F8 = mate NOT unmapped
 	samtools view $flag -@ 8 -b -f 4 -F 8 -o $name.mappedmate.bam $1
 
-	[[ ${ext,,} =~ sam ]] && samheader="-h $1" || samheader=''
+	#[[ ${ext,,} =~ sam ]] && samheader="-h $1" || samheader=''
 
 	samtools merge -n -@ 8 $samheader \
 		$name.MERGEDANDSORTED.bam \
 		$name.mapped.bam \
 		$name.mappedmate.bam
+
+#	samtools bam2fq $name.MERGEDANDSORTED.bam > $name.MERGEDANDSORTED.fastq
 
 	shift
 done
