@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 if [ $# -ne 2 ]; then
 	echo "I need EXACTLY 2 filenames.  1 left lane (R1).  1 right lane (R2)."
