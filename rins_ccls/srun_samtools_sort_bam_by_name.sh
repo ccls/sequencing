@@ -31,7 +31,7 @@ while [ $# -ne 0 ] ; do
 		--cpus-per-task=8 \
 		--error=$base.samtools_sort.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
 		--output=$base.samtools_sort.output.`date "+%Y%m%d%H%M%S"`.nobackup \
-		samtools sort -n -m 5G -@ 8 $1 $base.sortedbyname &
+		samtools sort -n -m 3G -@ 8 $1 $base.sortedbyname &
 
 	shift
 done
