@@ -15,7 +15,7 @@ while [ $# -ne 0 ] ; do
 		echo "Sorting"
 		#	Usage: samtools sort [options...] [in.bam]
 		#	Legacy usage: samtools sort [options...] <in.bam> <out.prefix>
-		samtools sort $base.unsorted.bam $base
+		samtools sort -m 2G $base.unsorted.bam $base
 		chmod -w $base.bam
 
 		echo "Indexing"
