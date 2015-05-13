@@ -65,7 +65,11 @@ while [ $# -ne 0 ] ; do
 		base=${base%_R?}
 		name=${name%_R?}
 	fi
-	echo $files
+#	echo $files
+
+	cmd="bowtie2 $filetype --threads 8 -x $db $other $files -S $base.bowtie2.${db}.${o}.sam"
+
+	echo $cmd
 
 	srun --nice --share --partition=bigmem \
 		--exclude=n[0000-0009] \
@@ -73,9 +77,7 @@ while [ $# -ne 0 ] ; do
 		--cpus-per-task=8 \
 		--error=$base.bowtie2.${db}.${o}.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
 		--output=$base.bowtie2.${db}.${o}.output.`date "+%Y%m%d%H%M%S"`.nobackup \
-		bowtie2 $filetype --threads 8 \
-			-x $db $other \
-			$files -S $base.bowtie2.${db}.${o}.sam &
+		$cmd &
 
 #	bowtie2 can use $BOWTIE2_INDEXES for path
 #			-x /my/home/ccls/indexes/bowtie2/herv_k113 \
