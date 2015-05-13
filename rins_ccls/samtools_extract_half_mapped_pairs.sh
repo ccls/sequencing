@@ -4,7 +4,7 @@ function usage(){
 	echo
 	echo "Usage:"
 	echo
-	echo "`basename $0` bamfile(s)"
+	echo "`basename $0` <samfile(s) or bamfile(s)>"
 	echo
 	echo "Example:"
 	echo "  `basename $0` /my/path/*bam"
