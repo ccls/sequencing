@@ -45,10 +45,13 @@ while [ $# -ne 0 ] ; do
 
 	#[[ ${ext,,} =~ sam ]] && samheader="-h $1" || samheader=''
 
+	#	older versions don't seem to actually sort
 	samtools merge -n -@ 8 $samheader \
-		$name.MERGEDANDSORTED.bam \
+		$name.MERGED.bam \
 		$name.mapped.bam \
 		$name.mappedmate.bam
+
+	samtools sort -n $name.MERGED.bam $name.MERGEDANDSORTED
 
 #	samtools bam2fq $name.MERGEDANDSORTED.bam > $name.MERGEDANDSORTED.fastq
 
