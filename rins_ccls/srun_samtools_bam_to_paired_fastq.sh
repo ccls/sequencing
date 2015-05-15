@@ -26,7 +26,7 @@ while [ $# -ne 0 ] ; do
 #		--exclude=n[0000-0029] \
 
 	srun --nice --share \
-		--partition=bigmem \
+		--partition=all \
 		--exclude=n[0000-0009] \
 		--job-name="samtools_bam_to_paired_fastq_${name}" \
 		--cpus-per-task=8 \
