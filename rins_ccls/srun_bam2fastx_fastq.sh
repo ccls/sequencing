@@ -1,14 +1,40 @@
 #!/usr/bin/env bash
 
-if [ $# -eq 0 ]; then
-	echo "I need at least one filename"
-	exit
-fi
+function usage(){
+	echo
+	echo "Usage: (NO EQUALS SIGNS)"
+	echo
+	echo "`basename $0` [--other OTHER_BAM2FASTX_OPTIONS] <bamfile(s)>"
+	echo
+	echo "Example:"
+	echo "  `basename $0` --other '-Q --paired' /my/path/*bam"
+	echo
+	exit 1
+}
+#	Basically, this is TRUE AND DO ...
+[ $# -eq 0 ] && usage
+
+other=''
+
+while [ $# -ne 0 ] ; do
+	case $1 in
+		-o|--o*)
+			shift; other=$1; shift ;;
+		-*)
+			echo ; echo "Unexpected args from: ${*}"; usage ;;
+		*) 
+			break;;
+	esac
+done
+
 
 while [ $# -ne 0 ] ; do
 	echo $1
 	base=${1%.*}		#	drop the .bam extension
 	name=${base#*/}	#	just in case given path
+
+	cmd="bam2fastx $other --fastq --all -N -o $name.fastq $1"
+	echo $cmd
 
 #		--begin=23:00 \
 #		--partition=bigmem \
@@ -21,9 +47,9 @@ while [ $# -ne 0 ] ; do
 		--cpus-per-task=8 \
 		--error=$base.bam2fastx.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
 		--output=$base.bam2fastx.output.`date "+%Y%m%d%H%M%S"`.nobackup \
-		bam2fastx --fastq --all -N \
-			-o $name.fastq \
-			$1 &
+		$cmd &
+
+#	bam2fastx is from tophat
 
 	shift
 done
