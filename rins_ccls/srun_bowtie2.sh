@@ -5,7 +5,7 @@ function usage(){
 	echo "Usage: (NO EQUALS SIGNS)"
 	echo
 	echo "`basename $0` [--db BOWTIE2_INDEX] [--other OTHER_BOWTIE2_OPTIONS]"
-	echo "   --paired [NO VALUE!]"
+	echo "   --paired [NO VALUE!] <fasta file(s)>"
 	echo
 	echo "Defaults:"
 	echo "  db  ..... : hg19"
