@@ -15,6 +15,8 @@ function usage(){
 	echo "          1 db entry is the 'beginning' of the start of the ltr."
 	echo "          1 db entry is the 'ending' of the end of the ltr."
 	echo
+	echo "Output is currently just 2 fasta files containing the pre- and post-ltr chimeric reads."
+	echo
 	exit 1
 }
 #	Basically, this is TRUE AND DO ...
