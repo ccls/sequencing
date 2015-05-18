@@ -55,9 +55,14 @@ while [ $# -ne 0 ] ; do
 	# And doesn't create the fasta files.
 	# If I run the samtools command and dump a sam/bam file, then run this on that it works?
 
+	#	Has nothing to do with file size.  Old version of awk.
+	#	Older versions of awk do not directly support "interval expressions", 
+	#		ie ({4}, {4,}, {4,6])
+	#	Need a newer version or add the --posix option
+
 	cmd="samtools view $flag -h -F 4 $1"
 	echo $cmd
-	$cmd | awk '
+	$cmd | awk --posix '
 		( ( NR % 10000 ) == 0 ){ print "Read "NR" records" }
 
 		( /^@SQ/ ){ ref[substr($2,4)] = substr($3,4) }
