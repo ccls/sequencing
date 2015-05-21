@@ -67,14 +67,14 @@ while [ $# -ne 0 ] ; do
 
 		( /^@SQ/ ){ ref[substr($2,4)] = substr($3,4) }
 
-		( ( $6 ~ /^[0-9]{2,}S[0-9]{1,}M$/ ) && ( $4 <= 5 ) && ( $3 ~ /beginning/ ) ){
+		( ( $6 ~ /^[0-9]{2,}S[0-9]{2,}M$/ ) && ( $4 <= 5 ) && ( $3 ~ /beginning/ ) ){
 			split($6,a,"S")
 			clip=a[1]-$4+1
 			print ">"$1"_pre_ltr" >> "'$base.pre_ltr.fasta'"
 			print substr($10,1,clip) >> "'$base.pre_ltr.fasta'"
 		}
 
-		( ( $6 ~ /^[0-9]{1,}M[0-9]{2,}S$/ ) && ( $4 >= ( ref[$3] - (length($10)*0.8) ) && ( $3 ~ /ending/ ) )){
+		( ( $6 ~ /^[0-9]{2,}M[0-9]{2,}S$/ ) && ( $4 >= ( ref[$3] - (length($10)*0.8) ) && ( $3 ~ /ending/ ) )){
 			clip=ref[$3]-$4+2
 			print ">"$1"_post_ltr" >> "'$base.post_ltr.fasta'"
 			print substr($10,clip) >> "'$base.post_ltr.fasta'"
