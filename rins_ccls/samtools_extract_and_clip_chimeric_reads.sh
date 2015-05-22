@@ -74,12 +74,16 @@ while [ $# -ne 0 ] ; do
 			print substr($10,1,clip) >> "'$base.pre_ltr.fasta'"
 		}
 
-		( ( $6 ~ /^[0-9]{2,}M[0-9]{2,}S$/ ) && ( $4 >= ( ref[$3] - (length($10)*0.8) ) && ( $3 ~ /ending/ ) )){
+		( ( $6 ~ /^[0-9]{2,}M[0-9]{2,}S$/ ) && ( $4 >= ( ref[$3] - (length($10)*0.9) ) && ( $3 ~ /ending/ ) )){
 			clip=ref[$3]-$4+2
 			print ">"$1"_post_ltr" >> "'$base.post_ltr.fasta'"
 			print substr($10,clip) >> "'$base.post_ltr.fasta'"
 		}'
 
+	#	The 2-digit requirment allows reads as short as 10 to be clipped and pass.
+	#	However, the post_ltr requirement $4 >= ( ref[$3] - (length($10)*0.8)
+	#	effectively forces them to be at least 20. This makes the post files shorter.
+	#	Changing the 0.8 to 0.9.
 
 	#	bowtie2 -x hg19 -U $base.pre_ltr.fasta  -S $base.pre_ltr.bowtie2.hg19.sam
 	#	bowtie2 -x hg19 -U $base.post_ltr.fasta -S $base.post_ltr.bowtie2.hg19.sam
