@@ -9,9 +9,8 @@ function usage(){
 	echo "Example:"
 	echo "  `basename $0` /my/path/*bam"
 	echo
-	echo "Assuming ..."
-	echo "      ... Input bam or sam MUST sorted by name."
-	echo "      ... Input bam or sam MUST contain mate info in flags."
+	echo "Input bam or sam MUST be sorted by name."
+	echo "Input bam or sam MUST contain mate info in flags."
 	echo
 	echo "Output is currently 2 fastq files."
 	echo
@@ -61,6 +60,7 @@ while [ $# -ne 0 ] ; do
 				print $10 >> "'${base}_R2.fastq'"
 				print "+" >> "'${base}_R2.fastq'"
 				print $11 >> "'${base}_R2.fastq'"
+				b1=b10=b11=""
 			}
 		}'
 
