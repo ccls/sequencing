@@ -81,7 +81,7 @@ fi
 
 	samtools view -b -S -F 4 -o $base.aligned.bam $base.sam
 
-	#	rm $base.sam
+	rm $base.sam
 
 	base="$base.aligned"
 
@@ -97,7 +97,7 @@ fi
 	samtools view -S -F 4 -b -o $base.pre_ltr.bowtie2.hg19.bam \
 		$base.pre_ltr.bowtie2.hg19.sam
 
-#	rm $base.pre_ltr.bowtie2.hg19.sam
+	rm $base.pre_ltr.bowtie2.hg19.sam
 
 	bowtie2 -x hg19 --threads 8 -f $base.post_ltr.fasta \
 		-S $base.post_ltr.bowtie2.hg19.sam
@@ -105,7 +105,7 @@ fi
 	samtools view -S -F 4 -b -o $base.post_ltr.bowtie2.hg19.bam \
 		$base.post_ltr.bowtie2.hg19.sam
 
-#	rm $base.post_ltr.bowtie2.hg19.sam
+	rm $base.post_ltr.bowtie2.hg19.sam
 
 	#	find insertion points
 	#	then find those with the signature overlap
@@ -138,19 +138,19 @@ fi
 		#    f4F8 - Unmapped read whose mate did map
 		samtools view -S -f 4 -F 8 -b -o $base.unaligned.bam $base.sam
 
-#		rm $base.sam
+		rm $base.sam
 
 		samtools bam2fq $base.unaligned.bam > $base.unaligned.fastq
 
 		bowtie2 --threads 8 -x hg19 $filetype $base.unaligned.fastq \
 			-S $base.unaligned.bowtie2.hg19.sam
 
-#		rm $base.unaligned.fastq
+		rm $base.unaligned.fastq
 
 		samtools view -S -b -F 4 -o $base.unaligned.bowtie2.hg19.aligned.bam \
 			$base.unaligned.bowtie2.hg19.sam
 
-#		rm $base.unaligned.bowtie2.hg19.sam
+		rm $base.unaligned.bowtie2.hg19.sam
 
 	else
 		echo "Only given 1 input file so not seeking paired-end anchors."
