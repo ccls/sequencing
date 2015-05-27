@@ -51,6 +51,12 @@ while [ $# -ne 0 ] ; do
 		}
 		( and( $2 , 128 ) ){
 			if ( $1 == b1 ){
+				if ( length(b10) != length($10) ){
+					print $1 >> "'${base}.diff_length_reads'"
+				}
+				if ( length(b11) != length($11) ){
+					print $1 >> "'${base}.diff_length_quality'"
+				}
 				print "@"b1"/1" >> "'${base}_R1.fastq'"
 				print b10 >> "'${base}_R1.fastq'"
 				print "+" >> "'${base}_R1.fastq'"
