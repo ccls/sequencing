@@ -35,7 +35,7 @@ while [ $# -ne 0 ] ; do
 done
 
 while [ $# -ne 0 ] ; do
-	echo $1
+#	echo $1
 #	base=${1%.*}		#	drop the extension
 #	ext=${1##*.}		#	grab the extension
 #	name=${base#*/}	#	just in case given path, drop the path
