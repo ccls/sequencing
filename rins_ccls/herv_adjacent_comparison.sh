@@ -33,9 +33,10 @@ echo $cmd
 $cmd
 \rm *bt2
 
-cmd="samtools view -S -h -F 4 $base.sam"
+cmd="samtools view -S -h $base.sam"
 echo $cmd
 $cmd | awk -v out=$base.counts '
+	( /^@SQ/ ){ ref[substr($2,4)] = 0 }
 	( !/^@/ ){ ref[$3]++ }
 	END{
 		for ( key in ref ) {
