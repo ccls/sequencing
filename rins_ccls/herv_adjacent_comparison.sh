@@ -20,11 +20,17 @@ base=${1%.*}		#	drop the extension
 ext=${1##*.}		#	grab the extension
 #	name=${base#*/}	#	just in case given path, drop the path
 
-fastx_collapser -i $1 -o $base.collapsed.$ext
+cmd="fastx_collapser -i $1 -o $base.collapsed.$ext"
+echo $cmd
+$cmd
 
-bowtie2-build $base.collapsed.$ext $base
+cmd="bowtie2-build $base.collapsed.$ext $base"
+echo $cmd
+$cmd
 
-bowtie2 -f -x $base -U $2 -S $base.sam
+cmd="bowtie2 -f -x $base -U $2 -S $base.sam"
+echo $cmd
+$cmd
 \rm *bt2
 
 cmd="samtools view -S -h -F 4 $base.sam"
