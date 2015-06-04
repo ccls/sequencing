@@ -29,11 +29,11 @@ bowtie2 -f -x $base -U $2 -S $base.sam
 
 cmd="samtools view -S -h -F 4 $base.sam"
 echo $cmd
-$cmd | awk --posix '
+$cmd | awk --posix -v out=$base.counts '
 	( !/^@/ ){ ref[$3]++ }
 	END{
 		for ( key in ref ) {
-			print key, ref[key]
+			print key, ref[key] >> out
 		}
 	}'
 
