@@ -13,6 +13,8 @@ function usage(){
 	echo "  --length/-l ..... : 50"
 	echo "  --side/-s   ..... : l"
 	echo
+	echo "Output directed to file, similarly named."
+	echo
 	exit 1
 }
 #	Basically, this is TRUE AND DO ...
@@ -36,19 +38,19 @@ done
 
 while [ $# -ne 0 ] ; do
 #	echo $1
-#	base=${1%.*}		#	drop the extension
-#	ext=${1##*.}		#	grab the extension
+	base=${1%.*}		#	drop the extension
+	ext=${1##*.}		#	grab the extension
 #	name=${base#*/}	#	just in case given path, drop the path
 
-	awk -v l=$length -v s=$side 'BEGIN{ n=r="" }
+	awk -v l=$length -v s=$side -v out=$base.trim$length.$ext 'BEGIN{ n=r="" }
 		END{ o() }
 		function o(){
 			if( length(r) >= l ){
-				print n
+				print n >> out
 				if( s == "l") {
-					print substr(r,1,l)
+					print substr(r,1,l) >> out
 				} else {
-					print substr(r,length(r)-l+1,l)
+					print substr(r,length(r)-l+1,l) >> out
 				}
 			}
 		}
