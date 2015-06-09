@@ -4,15 +4,31 @@ function usage(){
 	echo
 	echo "Usage:"
 	echo
-	echo "`basename $0` FOLDER(s)_CONTAINING_TCGA_FASTAS"
+	echo "`basename $0` --length INTEGER FOLDER(s)_CONTAINING_TCGA_FASTAS"
 	echo
 	echo "Example:"
 	echo "  `basename $0` /Volumes/box/working/output/HERV_K113_fasta/"
+	echo
+	echo "Defaults:"
+	echo "  --length/-l ..... : 50"
 	echo
 	exit 1
 }
 #	Basically, this is TRUE AND DO ...
 [ $# -eq 0 ] && usage
+
+length=50
+
+while [ $# -ne 0 ] ; do
+	case $1 in
+		-l|--l*)
+			shift; length=$1; shift ;;
+		-*)
+			echo ; echo "Unexpected args from: ${*}"; usage ;;
+		*) 
+			break;;
+	esac
+done
 
 
 while [ $# -ne 0 ] ; do
