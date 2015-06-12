@@ -92,17 +92,25 @@ fi
 		-S $base.pre_ltr.bowtie2.hg19.sam
 	#rm $base.pre_ltr.fasta
 
-	samtools view -S -F 4 -b -o $base.pre_ltr.bowtie2.hg19.bam \
+	samtools view -S -F 4 -b -o $base.pre_ltr.bowtie2.hg19.unsorted.bam \
 		$base.pre_ltr.bowtie2.hg19.sam
 	rm $base.pre_ltr.bowtie2.hg19.sam
+
+	samtools sort $base.pre_ltr.bowtie2.hg19.unsorted.bam $base.pre_ltr.bowtie2.hg19
+	rm $base.pre_ltr.bowtie2.hg19.unsorted.bam
+	samtools index $base.pre_ltr.bowtie2.hg19.bam
 
 	bowtie2 -x hg19 --threads 8 -f $base.post_ltr.fasta \
 		-S $base.post_ltr.bowtie2.hg19.sam
 	#rm $base.post_ltr.fasta
 
-	samtools view -S -F 4 -b -o $base.post_ltr.bowtie2.hg19.bam \
+	samtools view -S -F 4 -b -o $base.post_ltr.bowtie2.hg19.unsorted.bam \
 		$base.post_ltr.bowtie2.hg19.sam
 	rm $base.post_ltr.bowtie2.hg19.sam
+
+	samtools sort $base.post_ltr.bowtie2.hg19.unsorted.bam $base.post_ltr.bowtie2.hg19
+	rm $base.post_ltr.bowtie2.hg19.unsorted.bam
+	samtools index $base.post_ltr.bowtie2.hg19.bam
 
 	#	find insertion points
 	#	then find those with the signature overlap
