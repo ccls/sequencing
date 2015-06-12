@@ -29,8 +29,8 @@ while [ $# -ne 0 ] ; do
 		--exclude=n[0000-0009] \
 		--job-name="samtools_sam_to_bam_${name}" \
 		--cpus-per-task=8 \
-		--error=$base.samtools_sam_to_bam_.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
-		--output=$base.samtools_sam_to_bam_.output.`date "+%Y%m%d%H%M%S"`.nobackup \
+		--error=$base.samtools_sam_to_bam.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
+		--output=$base.samtools_sam_to_bam.output.`date "+%Y%m%d%H%M%S"`.nobackup \
 		sam_to_bam.sh $1 &
 
 	shift
