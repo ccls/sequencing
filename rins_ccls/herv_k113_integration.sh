@@ -137,14 +137,14 @@ fi
 		base="$base.bowtie2.herv_k113"
 		bowtie2 --threads 8 -x herv_k113 $filetype -1 $1 -2 $2 -S $base.sam
 
-		#    F4 - Mapped read
+		#    F4 - NOT unmapped read
 		samtools view -S -F 4 -b -o $base.aligned.unsorted.bam $base.sam
 		rm $base.sam
 		samtools sort $base.aligned.unsorted.bam $base.aligned
 		rm $base.aligned.unsorted.bam
 		samtools index $base.aligned.bam
 
-		#    f4F8 - Unmapped read whose mate did not map
+		#    f4F8 - Unmapped read with NOT unmapped mate
 		samtools view -S -f 4 -F 8 -b -o $base.unaligned.bam $base.sam
 		rm $base.sam
 
