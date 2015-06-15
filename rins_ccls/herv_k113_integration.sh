@@ -155,8 +155,13 @@ fi
 			$base.unaligned.bowtie2.hg19.sam
 		rm $base.unaligned.bowtie2.hg19.sam
 
+		echo "Aligning all to hg19"
+		bowtie2 --threads 8 -x hg19 $filetype -1 $1 -2 $2 -S `basename $PWD`.bowtie2.hg19.sam
 	else
 		echo "Only given 1 input file so not seeking paired-end anchors."
+
+		echo "Aligning all to hg19"
+		bowtie2 --threads 8 -x hg19 $filetype -U $1 -S `basename $PWD`.bowtie2.hg19.sam
 	fi
 
 	base=`basename $PWD`
@@ -164,6 +169,13 @@ fi
 	samtools sort $base.herv_k113.hg19.aligned.unsorted.bam $base.herv_k113.hg19.aligned
 	rm $base.herv_k113.hg19.aligned.unsorted.bam
 	samtools index $base.herv_k113.hg19.aligned.bam
+
+	#	Do this AFTER the merging, so it doesn't get merged (or be more specific)
+	samtools view -S -b -o $base.bowtie2.hg19.unsorted.bam $base.bowtie2.hg19.sam
+	rm $base.bowtie2.hg19.sam
+	samtools sort $base.bowtie2.hg19.unsorted.bam $base.bowtie2.hg19
+	rm $base.bowtie2.hg19.unsorted.bam
+	samtools index $base.bowtie2.hg19.bam
 
 	echo
 	echo "Finished at ..."
