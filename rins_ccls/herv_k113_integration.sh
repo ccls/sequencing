@@ -75,12 +75,13 @@ fi
 	fi
 
 	base="$base.bowtie2.herv_k113_ltr_ends.__very_sensitive_local"
-
 	bowtie2 --very-sensitive-local --threads 8 -x herv_k113_ltr_ends \
 		$filetype $files -S $base.sam
-
-	samtools view -b -S -F 4 -o $base.aligned.bam $base.sam
+	samtools view -b -S -F 4 -o $base.aligned.unsorted.bam $base.sam
 	rm $base.sam
+	samtools sort $base.aligned.unsorted.bam $base.aligned
+	rm $base.aligned.unsorted.bam
+	samtools index $base.aligned.bam
 
 	base="$base.aligned"
 
@@ -91,11 +92,9 @@ fi
 	bowtie2 -x hg19 --threads 8 -f $base.pre_ltr.fasta \
 		-S $base.pre_ltr.bowtie2.hg19.sam
 	#rm $base.pre_ltr.fasta
-
 	samtools view -S -F 4 -b -o $base.pre_ltr.bowtie2.hg19.unsorted.bam \
 		$base.pre_ltr.bowtie2.hg19.sam
 	rm $base.pre_ltr.bowtie2.hg19.sam
-
 	samtools sort $base.pre_ltr.bowtie2.hg19.unsorted.bam $base.pre_ltr.bowtie2.hg19
 	rm $base.pre_ltr.bowtie2.hg19.unsorted.bam
 	samtools index $base.pre_ltr.bowtie2.hg19.bam
@@ -103,11 +102,9 @@ fi
 	bowtie2 -x hg19 --threads 8 -f $base.post_ltr.fasta \
 		-S $base.post_ltr.bowtie2.hg19.sam
 	#rm $base.post_ltr.fasta
-
 	samtools view -S -F 4 -b -o $base.post_ltr.bowtie2.hg19.unsorted.bam \
 		$base.post_ltr.bowtie2.hg19.sam
 	rm $base.post_ltr.bowtie2.hg19.sam
-
 	samtools sort $base.post_ltr.bowtie2.hg19.unsorted.bam $base.post_ltr.bowtie2.hg19
 	rm $base.post_ltr.bowtie2.hg19.unsorted.bam
 	samtools index $base.post_ltr.bowtie2.hg19.bam
@@ -140,7 +137,14 @@ fi
 		base="$base.bowtie2.herv_k113"
 		bowtie2 --threads 8 -x herv_k113 $filetype -1 $1 -2 $2 -S $base.sam
 
-		#    f4F8 - Unmapped read whose mate did map
+		#    F4 - Mapped read
+		samtools view -S -F 4 -b -o $base.aligned.unsorted.bam $base.sam
+		rm $base.sam
+		samtools sort $base.aligned.unsorted.bam $base.aligned
+		rm $base.aligned.unsorted.bam
+		samtools index $base.aligned.bam
+
+		#    f4F8 - Unmapped read whose mate did not map
 		samtools view -S -f 4 -F 8 -b -o $base.unaligned.bam $base.sam
 		rm $base.sam
 
