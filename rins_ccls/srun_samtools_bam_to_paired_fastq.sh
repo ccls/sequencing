@@ -28,7 +28,7 @@ while [ $# -ne 0 ] ; do
 	srun --nice --share \
 		--partition=all \
 		--exclude=n[0000-0009] \
-		--job-name="samtools_bam_to_paired_fastq_${name}" \
+		--job-name="bam_to_paired_fastq_${name}" \
 		--cpus-per-task=8 \
 		--error=$base.samtools_bam_to_paired_fastq.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
 		--output=$base.samtools_bam_to_paired_fastq.output.`date "+%Y%m%d%H%M%S"`.nobackup \

@@ -44,7 +44,7 @@ while [ $# -ne 0 ] ; do
 	srun --nice --share \
 		--partition=bigmem \
 		--exclude=n[0000-0009] \
-		--job-name="samtools_extract_aligned_${name}" \
+		--job-name="extract_aligned_${name}" \
 		--cpus-per-task=8 \
 		--error=$base.samtools_extract_aligned.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
 		--output=$base.samtools_extract_aligned.output.`date "+%Y%m%d%H%M%S"`.nobackup \

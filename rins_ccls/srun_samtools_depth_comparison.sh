@@ -33,7 +33,7 @@ while [ $# -ge 2 ] ; do
 	srun --nice --share \
 		--partition=all \
 		--exclude=n[0000-0009] \
-		--job-name="samtools_depth_comparison_${name}" \
+		--job-name="depth_comparison_${name}" \
 		--cpus-per-task=8 \
 		--error=$base.samtools_depth_comparison.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
 		--output=$base.samtools_depth_comparison.output.`date "+%Y%m%d%H%M%S"`.nobackup \
