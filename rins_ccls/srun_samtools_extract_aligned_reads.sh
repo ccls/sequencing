@@ -34,8 +34,8 @@ while [ $# -ne 0 ] ; do
 	#fi
 	[[ ${ext,,} =~ sam ]] && flag='-S' || flag=''
 
-	cmd="samtools view $flag -@ 8 -h -F 4 -b -o $base.aligned.bam $1"
-	echo $cmd
+#	cmd="samtools view $flag -@ 8 -h -F 4 -b -o $base.aligned.bam $1"
+#	echo $cmd
 
 #		--begin=23:00 \
 #		--partition=bigmem \
@@ -48,7 +48,7 @@ while [ $# -ne 0 ] ; do
 		--cpus-per-task=8 \
 		--error=$base.samtools_extract_aligned.errors.`date "+%Y%m%d%H%M%S"`.nobackup \
 		--output=$base.samtools_extract_aligned.output.`date "+%Y%m%d%H%M%S"`.nobackup \
-		$cmd &
+		samtools_extract_aligned_reads.sh $1 &
 
 	shift
 done
