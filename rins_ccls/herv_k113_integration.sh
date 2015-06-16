@@ -142,7 +142,6 @@ fi
 
 		#    F4 - NOT unmapped read
 		samtools view -S -F 4 -b -o $base.aligned.unsorted.bam $base.sam
-		rm $base.sam
 		samtools sort $base.aligned.unsorted.bam $base.aligned
 		rm $base.aligned.unsorted.bam
 		samtools index $base.aligned.bam
@@ -152,7 +151,7 @@ fi
 		rm $base.sam
 
 		samtools bam2fq $base.unaligned.bam > $base.unaligned.fastq
-		rm $base.unaligned.bam
+#		rm $base.unaligned.bam
 
 		bowtie2 --threads 8 -x hg19 $filetype $base.unaligned.fastq \
 			-S $base.unaligned.bowtie2.hg19.sam
