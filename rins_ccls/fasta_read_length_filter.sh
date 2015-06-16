@@ -40,7 +40,7 @@ while [ $# -ne 0 ] ; do
 #	echo $1
 	base=${1%.*}		#	drop the extension
 	ext=${1##*.}		#	grab the extension
-#	name=${base#*/}	#	just in case given path, drop the path
+#	name=${base##*/}	#	just in case given path, drop the path
 
 	awk -v l=$length -v s=$side -v out=$base.trim$length.$ext 'BEGIN{ n=r="" }
 		END{ o() }

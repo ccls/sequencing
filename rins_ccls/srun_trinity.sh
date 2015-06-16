@@ -8,7 +8,7 @@ fi
 while [ $# -ne 0 ] ; do
 	echo $1
 	base=${1%.*}		#	drop the .fasta extension
-	name=${base#*/}	#	just in case given path
+	name=${base##*/}	#	just in case given path
 
 #	grab first character of file 
 #		@ = fastq

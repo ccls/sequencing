@@ -42,7 +42,7 @@ done
 while [ $# -ne 0 ] ; do
 	echo $1
 	base=${1%.*}		#	drop the extension
-	name=${base#*/}	#	just in case given path
+	name=${base##*/}	#	just in case given path
 
 	#	This better be a or q
 	#filetype=${1:(-1)}

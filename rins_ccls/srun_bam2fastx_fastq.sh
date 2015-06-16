@@ -31,7 +31,7 @@ done
 while [ $# -ne 0 ] ; do
 	echo $1
 	base=${1%.*}		#	drop the .bam extension
-	name=${base#*/}	#	just in case given path
+	name=${base##*/}	#	just in case given path
 
 	cmd="bam2fastx $other --fastq --all -N -o $name.fastq $1"
 	echo $cmd

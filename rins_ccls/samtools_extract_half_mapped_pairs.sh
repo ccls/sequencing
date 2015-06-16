@@ -19,7 +19,7 @@ while [ $# -ne 0 ] ; do
 	echo $1
 	base=${1%.*}		#	drop the extension
 	ext=${1##*.}		#	grab the extension
-	name=${base#*/}	#	just in case given path
+	name=${base##*/}	#	just in case given path
 
 	#	requires bash >= 4.0
 	#	${VARIABLE^^} converts to uppercase

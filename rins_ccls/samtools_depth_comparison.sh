@@ -21,7 +21,7 @@ while [ $# -ge 2 ] ; do
 
 	base=${1%.*}		#	drop the extension
 #	ext=${1##*.}		#	grab the extension
-	name=${base#*/}	#	just in case given path
+	name=${base##*/}	#	just in case given path
 
 	cmd="samtools depth $1 $2"
 	echo $cmd

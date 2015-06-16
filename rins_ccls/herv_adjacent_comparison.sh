@@ -21,7 +21,7 @@ while [ $# -ne 0 ] ; do
 
 	base=${1%.*}		#	drop the extension
 	ext=${1##*.}		#	grab the extension
-	#	name=${base#*/}	#	just in case given path, drop the path
+	#	name=${base##*/}	#	just in case given path, drop the path
 
 	cmd="fastx_collapser -i $1 -o $base.collapsed.$ext"
 	echo $cmd

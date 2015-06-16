@@ -112,7 +112,10 @@ fi
 	#	find insertion points
 	#	then find those with the signature overlap
 
+	#	 f = ALL/YES
+	#	 F = NONE/NOT	(results in double negatives)
 	#	 4 = not aligned
+	#	 8 = mate not aligned
 	#	16 = reverse complement
 
 	echo "Seeking insertion points and overlaps"

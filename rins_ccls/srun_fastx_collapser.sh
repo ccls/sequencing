@@ -8,7 +8,7 @@ fi
 while [ $# -ne 0 ] ; do
 	echo $1
 	base=${1%.*}
-	name=${base#*/}
+	name=${base##*/}
 
 #		--begin=23:00 \
 #		--partition=bigmem \
