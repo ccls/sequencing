@@ -92,7 +92,7 @@ fi
 		base="$base.aligned"
 	
 		#	--posix NEEDS to be AFTER any -v settings!
-		samtools view $flag -h -F 4 $base.bam | awk -v base=$base -v out=$out --posix '
+		samtools view $flag -h -F 4 $base.bam | awk -v base=$base -v out=fastq --posix '
 			BEGIN {
 				pre_out=sprintf("%s.pre_ltr.%s",base,out)
 				post_out=sprintf("%s.post_ltr.%s",base,out)
