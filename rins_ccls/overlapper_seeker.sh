@@ -182,7 +182,7 @@ fi
 			sort | uniq -c > $base.both_ltr.bowtie2.hg19.rc_insertion_points.rc_overlappers
 	
 		base=`basename $PWD`
-		samtools merge $base.$fastabase.hg19.aligned.unsorted.bam $base*hg19*bam
+		samtools merge $base.$fastabase.hg19.aligned.unsorted.bam $base.$fastabase.*hg19*bam
 		samtools sort $base.$fastabase.hg19.aligned.unsorted.bam $base.$fastabase.hg19.aligned
 		rm $base.$fastabase.hg19.aligned.unsorted.bam
 		samtools index $base.$fastabase.hg19.aligned.bam
