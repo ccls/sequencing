@@ -8,8 +8,8 @@ while [ $# -ne 0 ] ; do
 		ext=${1##*.}		#	just the extension
 #		chmod -w $1
 		mv $1 $1.input
-		chmod +w $base.bam
-		chmod +w $base.bam.bai
+		[[ -f $base.bam ]] && chmod +w $base.bam
+		[[ -f $base.bam.bai ]] && chmod +w $base.bam.bai
 
 		[[ ${ext,,} =~ sam ]] && flag='-S' || flag=''
 
