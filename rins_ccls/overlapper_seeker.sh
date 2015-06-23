@@ -183,12 +183,12 @@ fi
 #		fi
 
 
-#		#	Do this AFTER the merging, so it doesn't get merged (or be more specific)
-#		samtools view -S -b -o $base.bowtie2.hg19.unsorted.bam $base.bowtie2.hg19.sam
-#		rm $base.bowtie2.hg19.sam
-#		samtools sort $base.bowtie2.hg19.unsorted.bam $base.bowtie2.hg19
-#		rm $base.bowtie2.hg19.unsorted.bam
-#		samtools index $base.bowtie2.hg19.bam
+##		#	Do this AFTER the merging, so it doesn't get merged (or be more specific)
+##		samtools view -S -b -o $base.bowtie2.hg19.unsorted.bam $base.bowtie2.hg19.sam
+##		rm $base.bowtie2.hg19.sam
+##		samtools sort $base.bowtie2.hg19.unsorted.bam $base.bowtie2.hg19
+##		rm $base.bowtie2.hg19.unsorted.bam
+##		samtools index $base.bowtie2.hg19.bam
 
 	done	#	for f in $BOWTIE2_INDEXES/overlappers/*.fasta ;
 
