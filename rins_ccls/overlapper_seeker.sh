@@ -91,10 +91,8 @@ fi
 	
 		base="$base.aligned"
 	
-		#	Code expecting FASTA in conditions
-
 		#	--posix NEEDS to be AFTER any -v settings!
-		samtools view $flag -h -F 4 $base.bam | awk -v base=$base -v out=fasta --posix '
+		samtools view $flag -h -F 4 $base.bam | awk -v base=$base --posix '
 			BEGIN {
 				pre_out=sprintf("%s.pre_ltr.%s",base,out)
 				post_out=sprintf("%s.post_ltr.%s",base,out)
@@ -106,27 +104,13 @@ fi
 			( ( $6 ~ /^[0-9]{2,}S[0-9IDM]*$/ ) && ( $4 <= 5 ) ){
 				split($6,a,"S")
 				clip=a[1]-$4+1
-				if( out == "fastq" ){
-					print "@"$1"_pre_ltr" >> pre_out
-					print substr($10,1,clip) >> pre_out
-					print "+" >> pre_out
-					print substr($11,1,clip) >> pre_out
-				} else {
-					print ">"$1"_pre_ltr" >> pre_out
-					print substr($10,1,clip) >> pre_out
-				}
+				print ">"$1"_pre_ltr" >> pre_out
+				print substr($10,1,clip) >> pre_out
 			}
 			( ( $6 ~ /^[0-9IDM]*[0-9]{2,}S$/ ) && ( $4 >= ( ref[$3] - (length($10)*0.9) ) ) ){
 				clip=ref[$3]-$4+2
-				if( out == "fastq" ){
-					print "@"$1"_post_ltr" >> post_out
-					print substr($10,clip) >> post_out
-					print "+" >> post_out
-					print substr($11,clip) >> post_out
-				} else {
-					print ">"$1"_post_ltr" >> post_out
-					print substr($10,clip) >> post_out
-				}
+				print ">"$1"_post_ltr" >> post_out
+				print substr($10,clip) >> post_out
 			}'
 		#	-> pre_ltr.fasta
 		#	-> post_ltr.fasta
