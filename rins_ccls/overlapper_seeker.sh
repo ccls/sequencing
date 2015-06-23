@@ -94,8 +94,8 @@ fi
 		#	--posix NEEDS to be AFTER any -v settings!
 		samtools view $flag -h -F 4 $base.bam | awk -v base=$base --posix '
 			BEGIN {
-				pre_out=sprintf("%s.pre_ltr.%s",base,out)
-				post_out=sprintf("%s.post_ltr.%s",base,out)
+				pre_out=sprintf("%s.pre_ltr.fasta",base)
+				post_out=sprintf("%s.post_ltr.fasta",base)
 			}
 			( ( NR % 10000 ) == 0 ){ print "Read "NR" records" }
 	
