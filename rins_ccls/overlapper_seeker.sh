@@ -47,7 +47,7 @@ fi
 	#	leading with the ": " stops execution
 	#	just ${BOWTIE2_INDEXES:"/Volumes/cube/working/indexes"}
 	#	would try to execute the result.  I just want the OR/EQUALS feature
-	: ${BOWTIE2_INDEXES:="/Volumes/cube/working/indexes"}
+	: ${BOWTIE2_INDEXES:="/Volumes/box/indexes"}
 
 
 	#	used with all of the ec_fasta_split_and_blast calls
@@ -81,7 +81,7 @@ fi
 #		continue
 	
 		base="$base.bowtie2.$fastabase.__very_sensitive_local"
-		bowtie2 --very-sensitive-local --threads 8 -x overlappers/$fastabase \
+		bowtie2 --very-sensitive-local --threads 2 -x overlappers/$fastabase \
 			$filetype $files -S $base.sam
 		samtools view -b -S -F 4 -o $base.aligned.unsorted.bam $base.sam
 		rm $base.sam
@@ -91,8 +91,10 @@ fi
 	
 		base="$base.aligned"
 	
+		#	Code expecting FASTA in conditions
+
 		#	--posix NEEDS to be AFTER any -v settings!
-		samtools view $flag -h -F 4 $base.bam | awk -v base=$base -v out=fastq --posix '
+		samtools view $flag -h -F 4 $base.bam | awk -v base=$base -v out=fasta --posix '
 			BEGIN {
 				pre_out=sprintf("%s.pre_ltr.%s",base,out)
 				post_out=sprintf("%s.post_ltr.%s",base,out)
@@ -129,25 +131,40 @@ fi
 		#	-> pre_ltr.fasta
 		#	-> post_ltr.fasta
 	
-		bowtie2 -x hg19 --threads 8 -f $base.pre_ltr.fasta \
-			-S $base.pre_ltr.bowtie2.hg19.sam
-		#rm $base.pre_ltr.fasta
-		samtools view -S -F 4 -b -o $base.pre_ltr.bowtie2.hg19.unsorted.bam \
-			$base.pre_ltr.bowtie2.hg19.sam
-		rm $base.pre_ltr.bowtie2.hg19.sam
-		samtools sort $base.pre_ltr.bowtie2.hg19.unsorted.bam $base.pre_ltr.bowtie2.hg19
-		rm $base.pre_ltr.bowtie2.hg19.unsorted.bam
-		samtools index $base.pre_ltr.bowtie2.hg19.bam
-	
-		bowtie2 -x hg19 --threads 8 -f $base.post_ltr.fasta \
-			-S $base.post_ltr.bowtie2.hg19.sam
-		#rm $base.post_ltr.fasta
-		samtools view -S -F 4 -b -o $base.post_ltr.bowtie2.hg19.unsorted.bam \
-			$base.post_ltr.bowtie2.hg19.sam
-		rm $base.post_ltr.bowtie2.hg19.sam
-		samtools sort $base.post_ltr.bowtie2.hg19.unsorted.bam $base.post_ltr.bowtie2.hg19
-		rm $base.post_ltr.bowtie2.hg19.unsorted.bam
-		samtools index $base.post_ltr.bowtie2.hg19.bam
+		if [ -f $base.pre_ltr.fasta ] ; then
+			bowtie2 -x hg19 --threads 2 -f $base.pre_ltr.fasta \
+				-S $base.pre_ltr.bowtie2.hg19.sam
+			#rm $base.pre_ltr.fasta
+			samtools view -S -F 4 -b -o $base.pre_ltr.bowtie2.hg19.unsorted.bam \
+				$base.pre_ltr.bowtie2.hg19.sam
+			rm $base.pre_ltr.bowtie2.hg19.sam
+			samtools sort $base.pre_ltr.bowtie2.hg19.unsorted.bam $base.pre_ltr.bowtie2.hg19
+			rm $base.pre_ltr.bowtie2.hg19.unsorted.bam
+			samtools index $base.pre_ltr.bowtie2.hg19.bam
+			samtools view -F 20 $base.pre_ltr.bowtie2.hg19.bam | \
+				awk '{print $3":"$4+length($10)}' | \
+				sort > $base.pre_ltr.bowtie2.hg19.insertion_points
+			samtools view -F 4 -f 16 $base.pre_ltr.bowtie2.hg19.bam | \
+				awk '{print $3":"$4}' | sort > $base.pre_ltr.bowtie2.hg19.rc_insertion_points
+		fi
+		
+		if [ -f $base.post_ltr.fasta ] ; then
+			bowtie2 -x hg19 --threads 2 -f $base.post_ltr.fasta \
+				-S $base.post_ltr.bowtie2.hg19.sam
+			#rm $base.post_ltr.fasta
+			samtools view -S -F 4 -b -o $base.post_ltr.bowtie2.hg19.unsorted.bam \
+				$base.post_ltr.bowtie2.hg19.sam
+			rm $base.post_ltr.bowtie2.hg19.sam
+			samtools sort $base.post_ltr.bowtie2.hg19.unsorted.bam $base.post_ltr.bowtie2.hg19
+			rm $base.post_ltr.bowtie2.hg19.unsorted.bam
+			samtools index $base.post_ltr.bowtie2.hg19.bam
+			samtools view -F 20 $base.post_ltr.bowtie2.hg19.bam | \
+				awk '{print $3":"$4}' | \
+				sort > $base.post_ltr.bowtie2.hg19.insertion_points
+			samtools view -F 4 -f 16 $base.post_ltr.bowtie2.hg19.bam | \
+				awk '{print $3":"$4+length($10)}' | \
+				sort > $base.post_ltr.bowtie2.hg19.rc_insertion_points
+		fi
 	
 		#	find insertion points
 		#	then find those with the signature overlap
@@ -157,35 +174,24 @@ fi
 		#	 4 = not aligned
 		#	 8 = mate not aligned
 		#	16 = reverse complement
-	
-		echo "Seeking insertion points and overlaps"
-	
-		samtools view -F 20 $base.pre_ltr.bowtie2.hg19.bam | \
-			awk '{print $3":"$4+length($10)}' | \
-			sort > $base.pre_ltr.bowtie2.hg19.insertion_points
-	
-		samtools view -F 20 $base.post_ltr.bowtie2.hg19.bam | \
-			awk '{print $3":"$4}' | \
-			sort > $base.post_ltr.bowtie2.hg19.insertion_points
+
 	
 		positions_within_10bp.sh $base.*.bowtie2.hg19.insertion_points | \
 			sort | uniq -c > $base.both_ltr.bowtie2.hg19.insertion_points.overlappers
 	
-		samtools view -F 4 -f 16 $base.pre_ltr.bowtie2.hg19.bam | \
-			awk '{print $3":"$4}' | sort > $base.pre_ltr.bowtie2.hg19.rc_insertion_points
-	
-		samtools view -F 4 -f 16 $base.post_ltr.bowtie2.hg19.bam | \
-			awk '{print $3":"$4+length($10)}' | \
-			sort > $base.post_ltr.bowtie2.hg19.rc_insertion_points
-	
 		positions_within_10bp.sh $base.*.bowtie2.hg19.rc_insertion_points | \
 			sort | uniq -c > $base.both_ltr.bowtie2.hg19.rc_insertion_points.rc_overlappers
 	
+		#		longbase="$base.bowtie2.$fastabase.__very_sensitive_local.aligned"
+		longbase=$base
 		base=`basename $PWD`
-		samtools merge $base.$fastabase.hg19.aligned.unsorted.bam $base.$fastabase.*hg19*bam
-		samtools sort $base.$fastabase.hg19.aligned.unsorted.bam $base.$fastabase.hg19.aligned
-		rm $base.$fastabase.hg19.aligned.unsorted.bam
-		samtools index $base.$fastabase.hg19.aligned.bam
+
+		if [ -f $longbase.pre_ltr.fasta && -f $longbase.post_ltr.fasta ] ; then
+			samtools merge $base.$fastabase.hg19.aligned.unsorted.bam $longbase.$fastabase*hg19*bam
+			samtools sort $base.$fastabase.hg19.aligned.unsorted.bam $base.$fastabase.hg19.aligned
+			rm $base.$fastabase.hg19.aligned.unsorted.bam
+			samtools index $base.$fastabase.hg19.aligned.bam
+		fi
 	
 #		#	Do this AFTER the merging, so it doesn't get merged (or be more specific)
 #		samtools view -S -b -o $base.bowtie2.hg19.unsorted.bam $base.bowtie2.hg19.sam
