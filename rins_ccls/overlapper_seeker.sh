@@ -171,17 +171,18 @@ fi
 				sort | uniq -c > $base.both_ltr.bowtie2.hg19.rc_insertion_points.rc_overlappers
 		fi
 
-		#		longbase="$base.bowtie2.$fastabase.__very_sensitive_local.aligned"
-		longbase=$base
-		base=`basename $PWD`
+#		#		longbase="$base.bowtie2.$fastabase.__very_sensitive_local.aligned"
+#		longbase=$base
+#		base=`basename $PWD`
+#
+#		if [ -f $longbase.pre_ltr.bowtie2.hg19.bam -a -f $longbase.post_ltr.bowtie2.hg19.bam ] ; then
+#			samtools merge $base.$fastabase.hg19.aligned.unsorted.bam $longbase.*hg19*bam
+#			samtools sort $base.$fastabase.hg19.aligned.unsorted.bam $base.$fastabase.hg19.aligned
+#			rm $base.$fastabase.hg19.aligned.unsorted.bam
+#			samtools index $base.$fastabase.hg19.aligned.bam
+#		fi
 
-		if [ -f $longbase.pre_ltr.bowtie2.hg19.bam -a -f $longbase.post_ltr.bowtie2.hg19.bam ] ; then
-			samtools merge $base.$fastabase.hg19.aligned.unsorted.bam $longbase.*hg19*bam
-			samtools sort $base.$fastabase.hg19.aligned.unsorted.bam $base.$fastabase.hg19.aligned
-			rm $base.$fastabase.hg19.aligned.unsorted.bam
-			samtools index $base.$fastabase.hg19.aligned.bam
-		fi
-	
+
 #		#	Do this AFTER the merging, so it doesn't get merged (or be more specific)
 #		samtools view -S -b -o $base.bowtie2.hg19.unsorted.bam $base.bowtie2.hg19.sam
 #		rm $base.bowtie2.hg19.sam
