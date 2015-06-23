@@ -81,7 +81,7 @@ fi
 #		continue
 	
 		base="$base.bowtie2.$fastabase.__very_sensitive_local"
-		bowtie2 --very-sensitive-local --threads 2 -x overlappers/$fastabase \
+		bowtie2 --very-sensitive-local --threads 8 -x overlappers/$fastabase \
 			$filetype $files -S $base.sam
 		samtools view -b -S -F 4 -o $base.aligned.unsorted.bam $base.sam
 		rm $base.sam
@@ -116,7 +116,7 @@ fi
 		#	-> post_ltr.fasta
 	
 		if [ -f $base.pre_ltr.fasta ] ; then
-			bowtie2 -x hg19 --threads 2 -f $base.pre_ltr.fasta \
+			bowtie2 -x hg19 --threads 8 -f $base.pre_ltr.fasta \
 				-S $base.pre_ltr.bowtie2.hg19.sam
 			#rm $base.pre_ltr.fasta
 			samtools view -S -F 4 -b -o $base.pre_ltr.bowtie2.hg19.unsorted.bam \
@@ -133,7 +133,7 @@ fi
 		fi
 		
 		if [ -f $base.post_ltr.fasta ] ; then
-			bowtie2 -x hg19 --threads 2 -f $base.post_ltr.fasta \
+			bowtie2 -x hg19 --threads 8 -f $base.post_ltr.fasta \
 				-S $base.post_ltr.bowtie2.hg19.sam
 			#rm $base.post_ltr.fasta
 			samtools view -S -F 4 -b -o $base.post_ltr.bowtie2.hg19.unsorted.bam \
