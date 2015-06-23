@@ -158,19 +158,18 @@ fi
 		#	 4 = not aligned
 		#	 8 = mate not aligned
 		#	16 = reverse complement
-
 	
-
-
-		positions_within_10bp.sh $base.*.bowtie2.hg19.insertion_points | \
-			sort | uniq -c > $base.both_ltr.bowtie2.hg19.insertion_points.overlappers
+		if [ -f $base.pre_ltr.bowtie2.hg19.insertion_points -a \
+			-f $base.post_ltr.bowtie2.hg19.insertion_points ] ; then
+			positions_within_10bp.sh $base.*.bowtie2.hg19.insertion_points | \
+				sort | uniq -c > $base.both_ltr.bowtie2.hg19.insertion_points.overlappers
+		fi
 	
-		positions_within_10bp.sh $base.*.bowtie2.hg19.rc_insertion_points | \
-			sort | uniq -c > $base.both_ltr.bowtie2.hg19.rc_insertion_points.rc_overlappers
-	
-
-
-
+		if [ -f $base.pre_ltr.bowtie2.hg19.rc_insertion_points -a \
+			-f $base.post_ltr.bowtie2.hg19.rc_insertion_points ] ; then
+			positions_within_10bp.sh $base.*.bowtie2.hg19.rc_insertion_points | \
+				sort | uniq -c > $base.both_ltr.bowtie2.hg19.rc_insertion_points.rc_overlappers
+		fi
 
 		#		longbase="$base.bowtie2.$fastabase.__very_sensitive_local.aligned"
 		longbase=$base
