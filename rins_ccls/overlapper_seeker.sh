@@ -160,17 +160,23 @@ fi
 		#	16 = reverse complement
 
 	
+
+
 		positions_within_10bp.sh $base.*.bowtie2.hg19.insertion_points | \
 			sort | uniq -c > $base.both_ltr.bowtie2.hg19.insertion_points.overlappers
 	
 		positions_within_10bp.sh $base.*.bowtie2.hg19.rc_insertion_points | \
 			sort | uniq -c > $base.both_ltr.bowtie2.hg19.rc_insertion_points.rc_overlappers
 	
+
+
+
+
 		#		longbase="$base.bowtie2.$fastabase.__very_sensitive_local.aligned"
 		longbase=$base
 		base=`basename $PWD`
 
-		if [ -f $longbase.pre_ltr.fasta && -f $longbase.post_ltr.fasta ] ; then
+		if [ -f $longbase.pre_ltr.fasta -a -f $longbase.post_ltr.fasta ] ; then
 			samtools merge $base.$fastabase.hg19.aligned.unsorted.bam $longbase.$fastabase*hg19*bam
 			samtools sort $base.$fastabase.hg19.aligned.unsorted.bam $base.$fastabase.hg19.aligned
 			rm $base.$fastabase.hg19.aligned.unsorted.bam
