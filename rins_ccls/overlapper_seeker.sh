@@ -176,7 +176,7 @@ fi
 		base=`basename $PWD`
 
 		if [ -f $longbase.pre_ltr.bowtie2.hg19.bam -a -f $longbase.post_ltr.bowtie2.hg19.bam ] ; then
-			samtools merge $base.$fastabase.hg19.aligned.unsorted.bam $longbase.$fastabase.*hg19*bam
+			samtools merge $base.$fastabase.hg19.aligned.unsorted.bam $longbase.*hg19*bam
 			samtools sort $base.$fastabase.hg19.aligned.unsorted.bam $base.$fastabase.hg19.aligned
 			rm $base.$fastabase.hg19.aligned.unsorted.bam
 			samtools index $base.$fastabase.hg19.aligned.bam
