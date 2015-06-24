@@ -25,7 +25,7 @@ while [ $# -ne 0 ] ; do
 #		--exclude=n[0000-0029] \
 
 	srun --nice --share \
-		--partition=bigmem \
+		--partition=all \
 		--exclude=n[0000-0009] \
 		--job-name="sam_to_bam_${name}" \
 		--cpus-per-task=8 \

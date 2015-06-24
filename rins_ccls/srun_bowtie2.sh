@@ -71,7 +71,7 @@ while [ $# -ne 0 ] ; do
 
 	echo $cmd
 
-	srun --nice --share --partition=bigmem \
+	srun --nice --share --partition=all \
 		--exclude=n[0000-0009] \
 		--job-name="bowtie2_${name}_${db}_${o}" \
 		--cpus-per-task=8 \

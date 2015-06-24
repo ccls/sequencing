@@ -14,7 +14,7 @@ while [ $# -ne 0 ] ; do
 #		--partition=bigmem \
 #		--exclude=n[0000-0029] \
 	srun --share --nice \
-		--partition=bigmem \
+		--partition=all \
 		--exclude=n[0000-0009] \
 		--job-name="fastx_collapser_${name}" \
 		--output=$base.fastx_collapser.output.`date "+%Y%m%d%H%M%S"`.nobackup  \
