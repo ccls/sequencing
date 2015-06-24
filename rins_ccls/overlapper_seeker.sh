@@ -52,7 +52,6 @@ fi
 
 	#	used with all of the ec_fasta_split_and_blast calls
 	#srun="srun --nice --share --exclude=n0000,n0001,n0002 --cpus-per-task=4"
-	base=`basename $PWD`
 
 
 	#	they MUST be exported, apparently, to be picked up by bowtie2
@@ -77,6 +76,9 @@ fi
 		echo $fastafile
 		fastabase=${fastafile%%.*}
 		echo $fastabase
+
+		#	THIS MUST BE INSIDE THE LOOP SO IT RESETS!
+		base=`basename $PWD`
 
 #		continue
 	
