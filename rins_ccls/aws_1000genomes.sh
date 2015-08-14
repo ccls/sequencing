@@ -40,15 +40,16 @@ fi
 		mkdir $sample
 		cd $sample
 
-	#	#	fastq stuff seems to be under phase3/
-	#	aws s3 cp s3://1000genomes/phase3/${line}_1.filt.fastq.gz ./
-	#	aws s3 cp s3://1000genomes/phase3/${line}_2.filt.fastq.gz ./
-	#	gunzip *gz
-	#	aws_fastq_to_herv_k113_overlappers.sh *fastq
-	#	mkdir $sample
-	#	mv *hg19.bam *insertion_points *overlappers *.out $sample/
-	#	tar cfvz $sample.tar.gz $sample
-	#	aws s3 cp $sample.tar.gz s3://sequers/1000genomes/
+		#	fastq stuff seems to be under phase3/
+		aws s3 cp s3://1000genomes/phase3/${line}_1.filt.fastq.gz ./
+		aws s3 cp s3://1000genomes/phase3/${line}_2.filt.fastq.gz ./
+		gunzip *gz
+		aws_fastq_to_herv_k113_overlappers.sh *fastq
+
+		mkdir $sample
+		mv *hg19.bam *insertion_points *overlappers *.out $sample/
+		tar cfvz $sample.tar.gz $sample
+		aws s3 cp $sample.tar.gz s3://sequers/1000genomes/
 
 		cd ..
 		/bin/rm -rf $sample
@@ -58,4 +59,4 @@ fi
 	echo
 	echo "Finished at ..."
 	date
-} #	1>>`basename $0`.out 2>&1
+} 1>>$HOME/`basename $0`.out 2>&1

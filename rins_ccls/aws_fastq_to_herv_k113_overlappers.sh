@@ -24,16 +24,36 @@
 #	If passed 1 fast[aq], check for chimeric reads.
 #	If passed 2 fast[aq], also check for anchors with paired read run.
 
-if [ $# -gt 2 -o $# -eq 0 ]; then
+function usage(){
 	echo
-	echo "Usage:"
+	echo "Usage: (NO EQUALS SIGNS)"
 	echo
-	echo "`basename $0` <fastq file(s)>"
+	echo "`basename $0` [--threads 4] <fastq file(s)>"
+	echo
+	echo "Defaults:"
+	echo "  threads ..... : 2"
 	echo
 	echo "Expecting sorted/synchronised reads."
 	echo
 	exit
-fi
+}
+
+threads=2
+
+while [ $# -ne 0 ] ; do
+	case $1 in
+		-t|--t*)
+			shift; threads=$1; shift ;;
+		-*)
+			echo ; echo "Unexpected args from: ${*}"; usage ;;
+		*)
+			break;;
+	esac
+done
+
+
+#       Basically, this is TRUE AND DO ...
+[ $# -gt 2 -o $# -eq 0 ] && usage
 
 
 #	base=`basename $PWD`
@@ -75,7 +95,6 @@ base=${base%%_1.*}
 	#	used with all of the ec_fasta_split_and_blast calls
 	#srun="srun --nice --share --exclude=n0000,n0001,n0002 --cpus-per-task=4"
 
-	threads=2
 
 	#	they MUST be exported, apparently, to be picked up by bowtie2
 	export BOWTIE2_INDEXES
