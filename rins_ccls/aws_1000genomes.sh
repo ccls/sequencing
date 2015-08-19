@@ -26,14 +26,26 @@ if [ $# -ne 1 ]; then
 	exit
 fi
 
+date=`date "+%Y%m%d%H%M%S"`
 
 {
 	echo "Starting at ..."
 	date
 
+
+
+#	Replace this for loop with a while loop reading the queue
+
 	for line in `cat $1` ; do
 		#	line ~ data/NA20505/sequence_read/ERR005686
+
+
+
+
 		echo $line
+		subject=${line#*/}
+		subject=${subject%%/*}
+		echo $subject
 		sample=${line##*/}
 		echo $sample
 
@@ -41,15 +53,24 @@ fi
 		cd $sample
 
 		#	fastq stuff seems to be under phase3/
+		date
+		aws s3 ls s3://1000genomes/phase3/${line}_1.filt.fastq.gz
+		aws s3 ls s3://1000genomes/phase3/${line}_2.filt.fastq.gz
 		aws s3 cp s3://1000genomes/phase3/${line}_1.filt.fastq.gz ./
 		aws s3 cp s3://1000genomes/phase3/${line}_2.filt.fastq.gz ./
+		date
+		ls -trail
 		gunzip *gz
+		ls -trail
+		date
 		aws_fastq_to_herv_k113_overlappers.sh *fastq
+		date
+		ls -trail
 
 		mkdir $sample
 		mv *hg19.bam *insertion_points *overlappers *.out $sample/
 		tar cfvz $sample.tar.gz $sample
-		aws s3 cp $sample.tar.gz s3://sequers/1000genomes/
+		aws s3 cp $sample.tar.gz s3://sequers/1000genomes/$subject/
 
 		cd ..
 		/bin/rm -rf $sample
@@ -59,4 +80,9 @@ fi
 	echo
 	echo "Finished at ..."
 	date
-} 1>>$HOME/`basename $0`.out 2>&1
+} 1>>$HOME/`basename $0`.$date.out 2>&1
+
+aws s3 cp $HOME/`basename $0`.$date.out s3://sequers/1000genomes/
+
+#	sudo shutdown -h now
+
