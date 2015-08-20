@@ -13,21 +13,39 @@
 #	Explicit redirection within the block will override this
 #
 
-
-if [ $# -ne 0 ]; then
+function usage(){
 	echo
-	echo "Usage:"
+	echo "Usage: (NO EQUALS SIGNS)"
 	echo
-	echo "`basename $0`"
+	echo "`basename $0` [--shutdown]"
+	echo
+	echo "--shutdown : shutdown after complete"
 	echo
 	exit
-fi
+}
+
+shutdown='false'
+
+while [ $# -ne 0 ] ; do
+	case $1 in
+		-s|--s*)
+			shift; shutdown='true';;
+		-*)
+			echo ; echo "Unexpected args from: ${*}"; usage ;;
+		*)
+			break;;
+	esac
+done
+
+#       Basically, this is TRUE AND DO ...
+[ $# -ne 0 ] && usage
 
 date=`date "+%Y%m%d%H%M%S"`
 
 pid_file=$HOME/`basename $0`.$date.pid
 echo $$ > $pid_file
 log_file=$HOME/`basename $0`.$date.out
+die_file=$HOME/`basename $0`.die
 
 {
 	echo "Starting at ..."
@@ -102,5 +120,7 @@ aws s3 cp $log_file s3://sequers/1000genomes/
 
 \rm $pid_file
 
-#	sudo shutdown -h now
+if [ -f $die_file -o $shutdown == 'true' ]; then
+	sudo shutdown -h now
+fi
 
