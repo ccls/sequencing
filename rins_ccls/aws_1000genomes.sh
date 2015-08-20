@@ -14,33 +14,45 @@
 #
 
 
-if [ $# -ne 1 ]; then
+if [ $# -ne 0 ]; then
 	echo
 	echo "Usage:"
 	echo
-	echo "`basename $0` <list file>"
-	echo
-	echo "list file lines like ..."
-	echo "data/NA20505/sequence_read/ERR005686"
+	echo "`basename $0`"
 	echo
 	exit
 fi
 
 date=`date "+%Y%m%d%H%M%S"`
 
+pid_file=$HOME/`basename $0`.$date.pid
+echo $$ > $pid_file
+log_file=$HOME/`basename $0`.$date.out
+
 {
 	echo "Starting at ..."
 	date
 
+	while [ -f $pid_file ]; do
 
+		queue_url="https://us-west-1.queue.amazonaws.com/156714443422/1000genomes"
 
-#	Replace this for loop with a while loop reading the queue
+		message=`aws sqs receive-message --queue-url $queue_url`
 
-	for line in `cat $1` ; do
+		if [ -z "$message" ] ; then
+			echo "Received message was blank.  I'm done."
+			break	#	from the while loop
+		fi
+
+		line=`echo $message | python -c \
+			'import sys, json; print json.load(sys.stdin)["Messages"][0]["Body"]'`
+		echo $line
+
+		handle=`echo $message | python -c \
+			'import sys, json; print json.load(sys.stdin)["Messages"][0]["ReceiptHandle"]'`
+		echo $handle
+
 		#	line ~ data/NA20505/sequence_read/ERR005686
-
-
-
 
 		echo $line
 		subject=${line#*/}
@@ -75,14 +87,20 @@ date=`date "+%Y%m%d%H%M%S"`
 		cd ..
 		/bin/rm -rf $sample
 
-	done
+		#	apparently there is a limit on the number of inflight messages
+		#	so delete them as soon as possible.
+		aws sqs delete-message --queue-url $queue_url --receipt-handle $handle
+
+	done	#	while [ -f $pid_file ]; do
 
 	echo
 	echo "Finished at ..."
 	date
-} 1>>$HOME/`basename $0`.$date.out 2>&1
+} 1>>$log_file 2>&1
 
-aws s3 cp $HOME/`basename $0`.$date.out s3://sequers/1000genomes/
+aws s3 cp $log_file s3://sequers/1000genomes/
+
+\rm $pid_file
 
 #	sudo shutdown -h now
 

@@ -137,14 +137,8 @@ base=${base%%_1.*}
 		exit $status
 	fi
 
-#	samtools view -b -S -F 4 -o $base.aligned.unsorted.bam $base.sam
-#	DO I NEED SORTED HERE?
 	samtools view -b -S -F 4 -o $base.aligned.bam $base.sam
 	rm $base.sam
-#	samtools sort $base.aligned.unsorted.bam $base.aligned
-#	rm $base.aligned.unsorted.bam
-#	DO I NEED AN INDEX?
-#	samtools index $base.aligned.bam
 
 	base="$base.aligned"
 
@@ -161,14 +155,6 @@ base=${base%%_1.*}
 		exit $status
 	fi
 
-	#rm $base.pre_ltr.fasta
-#	samtools view -S -F 4 -b -o $base.pre_ltr.bowtie2.hg19.unsorted.bam \
-#		$base.pre_ltr.bowtie2.hg19.sam
-#	rm $base.pre_ltr.bowtie2.hg19.sam
-#	samtools sort $base.pre_ltr.bowtie2.hg19.unsorted.bam $base.pre_ltr.bowtie2.hg19
-#	rm $base.pre_ltr.bowtie2.hg19.unsorted.bam
-#	samtools index $base.pre_ltr.bowtie2.hg19.bam
-
 	bowtie2 -x hg19 --threads $threads -f $base.post_ltr.fasta \
 		-S $base.post_ltr.bowtie2.hg19.sam
 	status=$?
@@ -177,14 +163,6 @@ base=${base%%_1.*}
 		echo "bowtie failed with $status"
 		exit $status
 	fi
-
-	#rm $base.post_ltr.fasta
-#	samtools view -S -F 4 -b -o $base.post_ltr.bowtie2.hg19.unsorted.bam \
-#		$base.post_ltr.bowtie2.hg19.sam
-#	rm $base.post_ltr.bowtie2.hg19.sam
-#	samtools sort $base.post_ltr.bowtie2.hg19.unsorted.bam $base.post_ltr.bowtie2.hg19
-#	rm $base.post_ltr.bowtie2.hg19.unsorted.bam
-#	samtools index $base.post_ltr.bowtie2.hg19.bam
 
 	#	find insertion points
 	#	then find those with the signature overlap
@@ -246,19 +224,4 @@ base=${base%%_1.*}
 	date
 
 } 1>>$base.`basename $0`.out 2>&1
-
-
-
-#	tar cfvz MYOUTFILE.tar.gz *insertion_points *overlappers $0.out
-
-#	can I make directories in my bucket?
-
-#	aws s3 cp $0.out s3://MYBUCKET/$0.out
-
-
-
-#	positions_within_10bp.sh
-#	samtools_extract_and_clip_chimeric_reads.sh
-#	aws_fastq_to_herv_k113_overlappers.sh
-#	samtools_bam_to_paired_fastq.sh
 
