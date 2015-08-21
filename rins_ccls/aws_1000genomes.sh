@@ -17,17 +17,24 @@ function usage(){
 	echo
 	echo "Usage: (NO EQUALS SIGNS)"
 	echo
-	echo "`basename $0` [--shutdown]"
+	echo "`basename $0` [--shutdown] [--threads INTEGER]"
 	echo
+	echo "--threads  : passed to bowtie2"
 	echo "--shutdown : shutdown after complete"
+	echo
+	echo "Defaults:"
+	echo "  threads ..... : 2"
 	echo
 	exit
 }
 
+threads=2
 shutdown='false'
 
 while [ $# -ne 0 ] ; do
 	case $1 in
+		-t|--t*)
+			shift; threads=$1; shift;;
 		-s|--s*)
 			shift; shutdown='true';;
 		-*)
@@ -73,37 +80,37 @@ die_file=$HOME/`basename $0`.die
 		#	line ~ data/NA20505/sequence_read/ERR005686
 
 		echo $line
-		subject=${line#*/}
-		subject=${subject%%/*}
-		echo $subject
-		sample=${line##*/}
+		sample=${line#*/}
+		sample=${sample%%/*}
 		echo $sample
+		submission=${line##*/}
+		echo $submission
 
-		mkdir $sample
-		cd $sample
+		mkdir $submission
+		cd $submission
 
 		#	fastq stuff seems to be under phase3/
 		date
 		aws s3 ls s3://1000genomes/phase3/${line}_1.filt.fastq.gz
 		aws s3 ls s3://1000genomes/phase3/${line}_2.filt.fastq.gz
-		aws s3 cp s3://1000genomes/phase3/${line}_1.filt.fastq.gz ./
-		aws s3 cp s3://1000genomes/phase3/${line}_2.filt.fastq.gz ./
+		aws s3 cp s3://1000genomes/phase3/${line}_1.filt.fastq.gz ./${sample}-${submission}_1.fastq.gz
+		aws s3 cp s3://1000genomes/phase3/${line}_2.filt.fastq.gz ./${sample}-${submission}_2.fastq.gz
 		date
 		ls -trail
 		gunzip *gz
 		ls -trail
 		date
-		aws_fastq_to_herv_k113_overlappers.sh *fastq
+		aws_fastq_to_herv_k113_overlappers.sh --threads $threads *fastq
 		date
 		ls -trail
 
-		mkdir $sample
-		mv *hg19.bam *insertion_points *overlappers *.out $sample/
-		tar cfvz $sample.tar.gz $sample
-		aws s3 cp $sample.tar.gz s3://sequers/1000genomes/$subject/
+		mkdir ${sample}-${submission}
+		mv *hg19.bam *insertion_points *overlappers *.out ${sample}-${submission}/
+		tar cfvz ${sample}-${submission}.tar.gz ${sample}-${submission}
+		aws s3 cp ${sample}-${submission}.tar.gz s3://sequers/1000genomes/
 
 		cd ..
-		/bin/rm -rf $sample
+		/bin/rm -rf $submission
 
 		#	apparently there is a limit on the number of inflight messages
 		#	so delete them as soon as possible.
@@ -120,7 +127,19 @@ aws s3 cp $log_file s3://sequers/1000genomes/
 
 \rm $pid_file
 
+#	sudo raises this error
+#	sudo: sorry, you must have a tty to run sudo
+#	adding -t, -tt, -ttt, -tttt to ssh doesn't change this but can get this instead....
+#	Pseudo-terminal will not be allocated because stdin is not a terminal.
+#	Only ...
+# sudo visudo 
+#   to comment out the following lines ...
+# Defaults    requiretty
+# Defaults   !visiblepw
+#	works.  Need to create yet another AMI with this change.
+#	http://unix.stackexchange.com/questions/49077
 if [ -f $die_file -o $shutdown == 'true' ]; then
 	sudo shutdown -h now
+	#	sudo halt
 fi
 
