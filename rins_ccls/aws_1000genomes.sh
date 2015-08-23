@@ -29,14 +29,20 @@ function usage(){
 }
 
 threads=2
-shutdown='false'
+#shutdown='false'
+
+date=`date "+%Y%m%d%H%M%S"`
+pid_file=$HOME/`basename $0`.$date.pid
+echo $$ > $pid_file
+log_file=$HOME/`basename $0`.$date.$$.out
+die_file=$HOME/`basename $0`.die
 
 while [ $# -ne 0 ] ; do
 	case $1 in
 		-t|--t*)
 			shift; threads=$1; shift;;
 		-s|--s*)
-			shift; shutdown='true';;
+			shift; touch $die_file;;
 		-*)
 			echo ; echo "Unexpected args from: ${*}"; usage ;;
 		*)
@@ -47,12 +53,6 @@ done
 #       Basically, this is TRUE AND DO ...
 [ $# -ne 0 ] && usage
 
-date=`date "+%Y%m%d%H%M%S"`
-
-pid_file=$HOME/`basename $0`.$date.pid
-echo $$ > $pid_file
-log_file=$HOME/`basename $0`.$date.out
-die_file=$HOME/`basename $0`.die
 
 {
 	echo "Starting at ..."
@@ -107,10 +107,24 @@ die_file=$HOME/`basename $0`.die
 		mkdir ${sample}-${submission}
 		mv *hg19.bam *insertion_points *overlappers *.out ${sample}-${submission}/
 		tar cfvz ${sample}-${submission}.tar.gz ${sample}-${submission}
+
+
+
+#fdate=`date "+%Y%m%d%H%M%S"`
+#		aws s3 ls s3://sequers/1000genomes/${sample}-${submission}.tar.gz
+
 		aws s3 cp ${sample}-${submission}.tar.gz s3://sequers/1000genomes/
+
+
+
+
 
 		cd ..
 		/bin/rm -rf $submission
+
+#
+#	I should really do some type of check to ensure it finished before deleting
+#
 
 		#	apparently there is a limit on the number of inflight messages
 		#	so delete them as soon as possible.
@@ -138,7 +152,8 @@ aws s3 cp $log_file s3://sequers/1000genomes/
 # Defaults   !visiblepw
 #	works.  Need to create yet another AMI with this change.
 #	http://unix.stackexchange.com/questions/49077
-if [ -f $die_file -o $shutdown == 'true' ]; then
+#if [ -f $die_file -o $shutdown == 'true' ]; then
+if [ -f $die_file ]; then
 	sudo shutdown -h now
 	#	sudo halt
 fi
