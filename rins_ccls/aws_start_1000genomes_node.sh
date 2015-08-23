@@ -15,23 +15,24 @@ instance_id=`aws ec2 run-instances --count 1 \
 	--security-groups devenv-sg \
 	--instance-initiated-shutdown-behavior terminate \
 	--user-data file://aws_start_1000genomes_processing.sh \
-	--query 'Instances[0].InstanceId'`
+	--query 'Instances[].InstanceId'`
+#	--query 'Instances[0].InstanceId'`
 #	--block-device-mappings '[{\"DeviceName\":\"/dev/xvda\",\"Ebs\":{\"VolumeSize\":$volume_size}}]'
 
 echo $instance_id
-instance_id=`echo $instance_id | sed 's/"//g'`
-echo $instance_id
-
-echo "Waiting a moment to get an ip address ..."
-sleep 5
-
-instance_ip=`aws ec2 describe-instances \
-	--instance-ids $instance_id \
-	--query 'Reservations[0].Instances[0].PublicIpAddress'`
-instance_ip=`echo $instance_ip | sed 's/"//g'`
-echo $instance_ip
-
-echo ssh -i devenv-key.pem ec2-user@$instance_ip
+#instance_id=`echo $instance_id | sed 's/"//g'`
+#echo $instance_id
+#
+#echo "Waiting a moment to get an ip address ..."
+#sleep 5
+#
+#instance_ip=`aws ec2 describe-instances \
+#	--instance-ids $instance_id \
+#	--query 'Reservations[0].Instances[0].PublicIpAddress'`
+#instance_ip=`echo $instance_ip | sed 's/"//g'`
+#echo $instance_ip
+#
+#echo ssh -i devenv-key.pem ec2-user@$instance_ip
 
 #echo "Waiting 120 seconds to for instance to start ..."
 #sleep 120
