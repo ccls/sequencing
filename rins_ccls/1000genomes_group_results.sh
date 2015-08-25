@@ -12,7 +12,7 @@ for sample in `find . -type d -name \*-\* -exec basename {} \; | awk -F- '{print
 
 	common="bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned"
 
-	outdir=$date/$sample
+	outdir="grouping-$date/$sample"
 	mkdir -p $outdir
 
 	for ltr in pre_ltr post_ltr ; do
