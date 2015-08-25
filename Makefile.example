@@ -74,6 +74,7 @@ install-all:
 
 #	Remove old stuff.  Need -f or get an error.
 install-scripts:
+	$(MKDIR) $(BASE_BIN_DIR)
 	@printf "\nINSTALLING SCRIPTS\n\n"
 	#	No longer using rins, so why keep installing
 	rm -f $(BASE_BIN_DIR)/blastn_cleanup.pl
