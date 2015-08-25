@@ -2,7 +2,7 @@
 
 date=`date "+%Y%m%d%H%M%S"`
 
-for sample in `find . -type d -name \*-\* -exec basename {} \; | awk -F- '{print $1}' | uniq`; do
+for sample in `find . -type d -name \*-\* -depth 1 -exec basename {} \; | awk -F- '{print $1}' | uniq`; do
 
 #for sample in `find . -type d -name HG000\*-\* -exec basename {} \; | awk -F- '{print $1}' | uniq`; do
 #for sample in HG00096 HG00097 HG00099 HG00100 HG00103 HG00104 HG00106 ; do
@@ -12,7 +12,8 @@ for sample in `find . -type d -name \*-\* -exec basename {} \; | awk -F- '{print
 
 	common="bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned"
 
-	outdir="grouping-$date/$sample"
+	#	don't match the above find
+	outdir="grouping.$date/$sample"
 	mkdir -p $outdir
 
 	for ltr in pre_ltr post_ltr ; do
