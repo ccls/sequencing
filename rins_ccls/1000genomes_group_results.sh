@@ -19,9 +19,14 @@ for sample in `find . -type d -name \*-\* -depth 1 -exec basename {} \; | awk -F
 	for ltr in pre_ltr post_ltr ; do
 		ls -l ${sample}-*/${sample}*.$common.$ltr.bowtie2.hg19.bam
 
-		samtools merge \
-			$outdir/$sample.$common.unsorted.$ltr.bowtie2.hg19.bam \
-			${sample}-*/${sample}*.$common.$ltr.bowtie2.hg19.bam
+		if [ `ls -1 ${sample}-*/${sample}*.$common.$ltr.bowtie2.hg19.bam | wc -l` -gt 1 ] ; then
+			samtools merge \
+				$outdir/$sample.$common.unsorted.$ltr.bowtie2.hg19.bam \
+				${sample}-*/${sample}*.$common.$ltr.bowtie2.hg19.bam
+		else
+			cp ${sample}-*/${sample}*.$common.$ltr.bowtie2.hg19.bam \
+				$outdir/$sample.$common.unsorted.$ltr.bowtie2.hg19.bam
+		fi
 		samtools sort \
 			$outdir/$sample.$common.unsorted.$ltr.bowtie2.hg19.bam \
 			$outdir/$sample.$common.$ltr.bowtie2.hg19	#	NOTE no .bam suffix
