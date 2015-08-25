@@ -44,11 +44,13 @@ for sample in `find . -type d -name \*-\* -depth 1 -exec basename {} \; | awk -F
 	done	#	for ltr
 
 	for q in ALL Q20 ; do
-		for ipt in insertion_points rc_insertion_points ; do
 
-			positions_within_10bp.sh $outdir/$sample.$common.*.bowtie2.hg19.$q.$ipt \
-				| sort | uniq -c > $outdir/$sample.$common.both_ltr.bowtie2.hg19.$q.$ipt.overlappers
+		positions_within_10bp.sh $outdir/$sample.$common.*.bowtie2.hg19.$q.insertion_points \
+			| sort | uniq -c > $outdir/$sample.$common.both_ltr.bowtie2.hg19.$q.insertion_points.overlappers
 
-		done	#	for ipt
+		#	yes, expecting rc_overlappers
+		positions_within_10bp.sh $outdir/$sample.$common.*.bowtie2.hg19.$q.rc_insertion_points \
+			| sort | uniq -c > $outdir/$sample.$common.both_ltr.bowtie2.hg19.$q.rc_insertion_points.rc_overlappers
+
 	done	#	for q
 done	#	for sample
