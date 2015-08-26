@@ -34,15 +34,15 @@ threads=2
 date=`date "+%Y%m%d%H%M%S"`
 pid_file=$HOME/`basename $0`.$date.pid
 echo $$ > $pid_file
-log_file=$HOME/`basename $0`.$date.$$.out
-die_file=$HOME/`basename $0`.die
+log_file=$HOME/`basename $0`.$date.`hostname`.$$.out
+shutdown_file=$HOME/`basename $0`.shutdown
 
 while [ $# -ne 0 ] ; do
 	case $1 in
 		-t|--t*)
 			shift; threads=$1; shift;;
 		-s|--s*)
-			shift; touch $die_file;;
+			shift; touch $shutdown_file;;
 		-*)
 			echo ; echo "Unexpected args from: ${*}"; usage ;;
 		*)
@@ -152,8 +152,8 @@ aws s3 cp $log_file s3://sequers/1000genomes/
 # Defaults   !visiblepw
 #	works.  Need to create yet another AMI with this change.
 #	http://unix.stackexchange.com/questions/49077
-#if [ -f $die_file -o $shutdown == 'true' ]; then
-if [ -f $die_file ]; then
+#if [ -f $shutdown_file -o $shutdown == 'true' ]; then
+if [ -f $shutdown_file ]; then
 	sudo shutdown -h now
 	#	sudo halt
 fi
