@@ -4,10 +4,11 @@ if [ $# -eq 0 ]; then
 	echo 
 	echo "Usage:"
 	echo
-	echo "`basename $0` OVERLAPPER_FILES"
+	echo "`basename $0` 'FIND PATTERN FOR OVERLAPPER_FILES'"
 	echo
 	echo "Example:"
-	echo "`basename $0` */*overlappers"
+	echo "`basename $0` '*ALL*overlappers'"
+	echo "`basename $0` '*Q20*overlappers'"
 	echo
 	exit
 fi
@@ -16,14 +17,25 @@ fi
 
 now=`date "+%Y%m%d%H%M%S"`
 
-while [ $# -ne 0 ] ; do
+
+
+
+#while [ $# -ne 0 ] ; do
+#	file=$1
+#	attempting to deal with 
+#		/bin/ls: Argument list too long.
+for file in `find ./ -type f -name $1` ; do
+
+
+
+
 #	echo
-#	echo $1
-	base=${1%.*}		#	drop the extension
+#	echo $file
+	base=${file%.*}		#	drop the extension
 #	echo $base
-	ext=${1##*.}		#	grab the extension	(overlappers or rc_overlappers)
+	ext=${file##*.}		#	grab the extension	(overlappers or rc_overlappers)
 #	echo $ext
-	filename=${1##*/}	#	just in case given path
+	filename=${file##*/}	#	just in case given path
 #	echo $filename
 	subject=${filename%%.*}	#	delete everything after the first .
 #	echo $subject
