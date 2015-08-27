@@ -2,7 +2,7 @@
 
 #	aws ec2 describe-images --image-ids ami-4335cc07
 
-image_id="ami-b14eb7f5"
+image_id="ami-ef2fd7ab"
 #instance_type="t2.micro"
 instance_type="t2.medium"
 #volume_size=10
