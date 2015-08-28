@@ -15,10 +15,12 @@ function usage(){
 #	Basically, this is TRUE AND DO ...
 [ $# -eq 0 ] && usage
 
-
+i=0
 for ip in `aws ec2 describe-instances \
 	--query 'Reservations[].Instances[].PublicIpAddress' --output text` ; do 
 
+	let i++
+	echo $i
 	echo $ip
   ssh -q -n -o UserKnownHostsFile=/dev/null \
 		-o StrictHostKeyChecking=no \
