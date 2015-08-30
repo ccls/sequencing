@@ -2,10 +2,10 @@
 
 #	aws ec2 describe-images --image-ids ami-4335cc07
 
-image_id="ami-ef2fd7ab"
+image_id="ami-4fa3580b"	#	ami-ef2fd7ab"
 #instance_type="t2.micro"
 instance_type="t2.medium"
-#volume_size=10
+volume_size=100
 
 
 instance_id=`aws ec2 run-instances --count 1 \
@@ -15,8 +15,14 @@ instance_id=`aws ec2 run-instances --count 1 \
 	--security-groups devenv-sg \
 	--instance-initiated-shutdown-behavior terminate \
 	--user-data file://aws_start_1000genomes_processing.sh \
+	--block-device-mappings '[{"DeviceName":"/dev/xvda","Ebs":{"VolumeSize":'${volume_size}',"VolumeType":"gp2"}}]' \
 	--query 'Instances[].InstanceId'`
+
+#	changing the volume size like this causes it to be "Magnetic" rather than "GP2" (SSD)
+#	UNLESS explicitly specified.
+
 #	--query 'Instances[0].InstanceId'`
+#	--block-device-mappings '[{"DeviceName":"/dev/xvda","Ebs":{"VolumeSize":${volume_size},"VolumeType":"gp2"}}]'
 #	--block-device-mappings '[{\"DeviceName\":\"/dev/xvda\",\"Ebs\":{\"VolumeSize\":$volume_size}}]'
 
 echo $instance_id
