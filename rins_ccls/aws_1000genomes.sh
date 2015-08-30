@@ -86,8 +86,8 @@ done
 		submission=${line##*/}
 		echo $submission
 
-		mkdir $submission
-		cd $submission
+		mkdir working	#	$submission
+		cd working	#	$submission
 
 		#	fastq stuff seems to be under phase3/
 		date
@@ -120,7 +120,7 @@ done
 
 
 		cd ..
-		/bin/rm -rf $submission
+		/bin/rm -rf working	#	$submission
 
 #
 #	I should really do some type of check to ensure it finished before deleting
