@@ -16,6 +16,8 @@ function usage(){
 [ $# -eq 0 ] && usage
 
 i=0
+#for ip in `aws ec2 describe-instances --filters Name=instance-state-name,Values=running \
+#	the above works, but "running" seems to be the default
 for ip in `aws ec2 describe-instances \
 	--query 'Reservations[].Instances[].PublicIpAddress' --output text` ; do 
 
