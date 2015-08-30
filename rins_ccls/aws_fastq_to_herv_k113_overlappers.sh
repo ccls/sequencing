@@ -137,6 +137,10 @@ base=${base%%_1.*}
 		exit $status
 	fi
 
+	#	For the HUGE files, delete the fastq files once the sam file is done.
+	rm $1
+	rm $2
+
 	samtools view -b -S -F 4 -o $base.aligned.bam $base.sam
 	rm $base.sam
 
