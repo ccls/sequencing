@@ -86,8 +86,10 @@ done
 		submission=${line##*/}
 		echo $submission
 
-		mkdir working	#	$submission
-		cd working	#	$submission
+		#	aws_fastq_to_herv_k113_overlappers.sh is expecting 
+		#	`basename $PWD` to be $submission
+		mkdir -p working/$submission
+		cd working/$submission
 
 		#	fastq stuff seems to be under phase3/
 		date
@@ -119,8 +121,8 @@ done
 
 
 
-		cd ..
-		/bin/rm -rf working	#	$submission
+		cd ../..
+		/bin/rm -rf working/$submission
 
 #
 #	I should really do some type of check to ensure it finished before deleting

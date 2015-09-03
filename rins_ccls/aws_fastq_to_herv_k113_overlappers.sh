@@ -35,6 +35,8 @@ function usage(){
 	echo
 	echo "Expecting sorted/synchronised reads."
 	echo
+	echo "Note: all files will be based on the working directory's name"
+	echo
 	exit
 }
 
@@ -56,9 +58,12 @@ done
 [ $# -gt 2 -o $# -eq 0 ] && usage
 
 
-#	base=`basename $PWD`
-base=`basename $1`
-base=${base%%_1.*}
+
+#	if no fastq files exist, base becomes "*fastq"
+#base=`basename $1`
+#base=${base%%_1.*}
+
+base=`basename $PWD`
 
 {
 	echo "Starting at ..."
