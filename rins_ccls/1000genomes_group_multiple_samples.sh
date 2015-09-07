@@ -37,7 +37,7 @@ for sample_w_pop in `cat /Volumes/box/1000genomes/select_samples_with_population
 		samples=${samples// /,}
 #		echo $samples
 		outname="$pop ${group_list[*]}"
-		outname=${outname// /.}
+		outname=${outname// /-}
 		echo $outname
 
 		#	make sure this name doesn't match the above find
