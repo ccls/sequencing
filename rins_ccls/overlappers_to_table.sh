@@ -24,7 +24,7 @@ now=`date "+%Y%m%d%H%M%S"`
 #	file=$1
 #	attempting to deal with 
 #		/bin/ls: Argument list too long.
-for file in `find ./ -type f -name $1` ; do
+for file in `find ./ -type f -depth 2 -name $1` ; do
 
 
 
@@ -37,7 +37,8 @@ for file in `find ./ -type f -name $1` ; do
 #	echo $ext
 	filename=${file##*/}	#	just in case given path
 #	echo $filename
-	subject=${filename%%.*}	#	delete everything after the first .
+	subject=${filename%%.*}	#	delete everything after the first .  
+# expecting filename like this ... TCGA-41-5651-10A.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.both_ltr.bowtie2.hg19.rc_insertion_points.rc_overlappers
 #	echo $subject
 
 	#	requires bash >= 4.0
@@ -55,7 +56,7 @@ for file in `find ./ -type f -name $1` ; do
 
 	awk -v subject=$subject -v direction=$direction --posix '{
 		printf "%s:%s,%d,%s\n",$2,direction,$1,subject
-	}' $1 >> tmpfile.$now
+	}' $file >> tmpfile.$now
 
 	shift
 done
