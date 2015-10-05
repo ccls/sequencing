@@ -58,20 +58,11 @@ for line in `awk -F, '{print $1}' overlappers_table.Q20.csv | tail -n +2` ; do
 
 #	if [[ $direction == 'F' ]] ; then
 
-#	perhaps capture, join and upcase these to make it look pretty.
-
-#	There is a command "rev" that reverses the order of a string
-#	that could be useful. "echo 1234 | rev" -> "4321"
-
-#	Create the reverse complement like so ...
-#echo "TGTGGGGAAAAGCAAGAGAGATCAGATTGTTACTGTGTCTGTGTAGAAAG" | rev | tr "ATCG" "TAGC"
-#CTTTCTACACAGACACAGTAACAATCTGATCTCTCTTGCTTTTCCCCACA
-
 #	using the ,, or ^^ requires bash > 4.0
 # requires bash >= 4.0
 # ${VARIABLE^^} converts to uppercase
 # ${VARIABLE,,} converts to lowercase
-#if [[ ${ext,,} =~ sam ]] ; then
+###if [[ ${ext,,} =~ sam ]] ; then
 
 
 		#	The insertion point is the first position of the ltr so DO NOT INCLUDE
@@ -90,6 +81,24 @@ for line in `awk -F, '{print $1}' overlappers_table.Q20.csv | tail -n +2` ; do
 		echo $ltr_end
 		hg=`samtools faidx FASTA/hg19.fa ${chromosome}:${from}-${to} | grep -vs "^>" | tr -d '\n'`
 		echo ${hg^^}
+
+#	else
+
+#	I must understand what it really means when a read matches as reverse complement
+#	I see a read that says it matches RC, but when I look at the raw read and compare
+#	it to whats in the bam file and the genome, they look normal.  Confused.
+#
+#	@ERR251139.54934541 FCD1LREACXX:6:2316:16546:77353/2
+#	TTCACCCTAGAGAAAAGCCTCCACGTTGGGCACCAGA TGTAGGGGTGGGTTGCCCCTACACACCTGTGGGTGTTTCTCGTAAGGTGGGACGAGAGGTTTG
+# |- Normal Match yet flagged RC???-->| |<--- Reverse Complement of HERV END LTR    <-------
+#                                       TGTAGGGGTGGGTTGCCCCTACACACCTGTGGGTGTTTCTCGTAAGGTGG
+#
+#	There is a command "rev" that reverses the order of a string
+#	that could be useful. "echo 1234 | rev" -> "4321"
+
+#	Create the reverse complement like so ...
+#echo "TGTGGGGAAAAGCAAGAGAGATCAGATTGTTACTGTGTCTGTGTAGAAAG" | rev | tr "ATCG" "TAGC"
+#CTTTCTACACAGACACAGTAACAATCTGATCTCTCTTGCTTTTCCCCACA
 
 #	fi
 
