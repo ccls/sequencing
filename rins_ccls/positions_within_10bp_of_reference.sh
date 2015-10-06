@@ -21,6 +21,8 @@ function usage(){
 	echo "Example:"
 	echo "  `basename $0` referencefile samplefilelist"
 	echo
+	echo "find . -type d -depth 1 -execdir sh -c 'cd {}; positions_within_10bp_of_reference.sh ../../overlapper_reference.Q20 *Q20*ts | sort | uniq -c > {}.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.both_ltr.bowtie2.hg19.Q20.overlappers_reference' \;"
+	echo
 	exit 1
 }
 #	Basically, this is TRUE AND DO ...
