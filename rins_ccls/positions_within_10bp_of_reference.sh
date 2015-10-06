@@ -58,8 +58,9 @@ while [ $# -ne 0 ] ; do
 
 		awk -F: -v chr="$chr" -v pos="$pos" -v line="$line" '
 			( ( $1 == chr ) && ( (pos-10) < $2 ) && ( (pos+10) > $2 ) ){
-				print line" - "$0
+				print line
 			}' $1
+#				print line" - "$0
 
 	done	#	for line in reference
 	shift	#	change sample input file
