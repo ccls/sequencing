@@ -10,11 +10,13 @@ function usage(){
 	echo "Expecting file content in the format of ..."
 	echo
 	echo "..."
-	echo "chr8:99063786"
-	echo "chr9:105365407"
-	echo "chrX:74554211"
-	echo "chrY:14564844"
+	echo "chr8:99063786:F"
+	echo "chr9:105365407:F"
+	echo "chrX:74554211:R"
+	echo "chrY:14564844:R"
 	echo "..."
+	echo
+	echo "With or without the direction is acceptable."
 	echo
 	echo "Example:"
 	echo "  `basename $0` referencefile samplefilelist"
@@ -46,8 +48,8 @@ while [ $# -ne 0 ] ; do
 		chr=${line%%:*}	#	remove everything after first colon (including colon)
 		line2=${line#*:}	#	remove everything before first colon (including colon)
 		pos=${line2%%:*}	#	remove everything after first colon (including colon)
-#		echo $chr
-#		echo $pos
+		echo $chr
+		echo $pos
 
 		#	Expecting file content format like so ...
 		#	chrY:6616930:
