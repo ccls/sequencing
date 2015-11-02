@@ -127,6 +127,36 @@ while [ $# -ne 0 ] ; do
 	#	However, the post_ltr requirement $4 >= ( ref[$3] - (length($10)*0.8)
 	#	effectively forces them to be at least 20. This makes the post files shorter.
 	#	Changing the 0.8 to 0.9.
+#
+#	Sam file columns
+#	1 QNAME String Query template NAME
+#	2 FLAG Int bitwise FLAG
+#	3 RNAME String Reference sequence NAME
+#	4 POS Int 1-based leftmost mapping POSition
+#	5 MAPQ Int MAPping Quality
+#	6 CIGAR String CIGAR string
+#	7 RNEXT String Ref.  name of the mate/next read
+#	8 PNEXT Int Position of the mate/next read
+#	9 TLEN Int observed Template LENgth
+#	10 SEQ String segment SEQuence
+#	11 QUAL String
+#
+#	20151102
+#	I used [0-9]{2,}S to select those that were solf clipped
+#	by at least 2 digits (10bp). I would have needed more
+#	complex logic to be more specific.
+#	When choosing pre, I used ( $4 <= 5 ) to select those that aligned 
+#	within 5bp of the beginning.
+#	I used ( $4 >= (ref[$3] - (length($10)*0.9)) for post to match at the end.
+#	Effective, but I don't like it.  I should've used a fixed number like pre.
+#	Perhaps, ( $4 >= ( ref[$3] - length($10) + 5 ))?
+#	I don't think that this would have changed anything
+#	in the outcome, but would be more clear.
+#
+#	Actually, with 100bp reads, this condition could double the post output,
+#	but the additional condition would effectively undo this as it requires
+#	a 10bp soft clip.  I could run some tests, but I don't expect any difference.
+#
 
 	#	bowtie2 -x hg19 -U $base.pre_ltr.fasta  -S $base.pre_ltr.bowtie2.hg19.sam
 	#	bowtie2 -x hg19 -U $base.post_ltr.fasta -S $base.post_ltr.bowtie2.hg19.sam
