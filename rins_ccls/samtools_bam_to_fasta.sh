@@ -67,7 +67,7 @@ while [ $# -ne 0 ] ; do
 		( xor( $2 , 4 ) &&  and( $2, 16 )  ){
 			print ">"$1
 			for(i=length($10);i>0;i--) printf substr($10,i,1);
-			print " X"
+			print ""
 		}' > $base.fasta
 
 #echo welcome | awk '{ for(i=length;i!=0;i--)x=x substr($0,i,1);}END{print x}'
