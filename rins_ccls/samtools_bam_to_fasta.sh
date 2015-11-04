@@ -11,7 +11,7 @@ function usage(){
 	echo
 	echo "Output is currently a fasta files."
 	echo
-	echo "Extraction will reverse reads that aligned reverse complemented."
+	echo "Extraction will reverse complement reads that aligned reverse complemented."
 	echo "Extraction will not include reads more that once."
 	echo
 	exit 1
@@ -59,16 +59,30 @@ while [ $# -ne 0 ] ; do
 	#	read file
 	#	MUST use gawk for the bitwise command "and"
 	#	xor() is the same as !and()
+	#	using toupper() just in case
 	samtools view $flag $1 | gawk '
 		(( and( $2 , 4 ) ) || ( xor( $2 , 4 ) && xor( $2, 16 )  )){
 			print ">"$1
-			print $10
+			print toupper($10)
 		}
 		( xor( $2 , 4 ) &&  and( $2, 16 )  ){
 			print ">"$1
-			for(i=length($10);i>0;i--) printf substr($10,i,1);
-			print ""
-		}' > $base.fasta
+			x=""
+			for(i=length($10);i>0;i--) x=x substr($10,i,1);
+			x=toupper(x)
+			gsub("A","X",x)
+			gsub("T","A",x)
+			gsub("X","T",x)
+			gsub("C","X",x)
+			gsub("G","C",x)
+			gsub("X","G",x)
+			print x
+		}'	> $base.fasta
+
+#			system("echo $10 | rev | tr \"ATCG\" \"TAGC\"")
+#			system("echo $10 | rev")
+
+#	If they are "reverse complemented" bowtie reverses AND complements so I need to as well
 
 #echo welcome | awk '{ for(i=length;i!=0;i--)x=x substr($0,i,1);}END{print x}'
 #echo welcome | awk '{ split($0,a,""); for(i=length(a);i>0;printf a[i--]){}}'
