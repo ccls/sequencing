@@ -54,6 +54,17 @@ for file in `find ./ -type f -depth 2 -name $1` ; do
 #	TCGA-41-5651-10A.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.both_ltr.bowtie2.hg19.rc_insertion_points.rc_overlappers
 #	TCGA-41-5651-10A
 
+
+	#	Expecting file content like ...
+	#     12 chr12:43919859
+	#     16 chr6:160849873
+	#      2 chrY:4527048
+	#      7 chr15:63082395
+	#      3 chr4:165228147
+	#      1 chr9:40085319
+	#     12 chr12:43919859
+	#     16 chr6:160849873
+
 	awk -v subject=$subject -v direction=$direction --posix '{
 		printf "%s:%s,%d,%s\n",$2,direction,$1,subject
 	}' $file >> tmpfile.$now
