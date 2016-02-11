@@ -19,6 +19,7 @@ fi
 
 now=`date "+%Y%m%d%H%M%S"`
 
+tmpfile="tmpfile.$1.$now"
 
 
 
@@ -59,7 +60,7 @@ for file in `find . -type f -depth 2 -name $1` ; do
 	#	what's --posix for? can't remember
 	awk -v subject=$subject --posix '{
 		printf "%s,%d,%s\n",$2,$1,subject
-	}' $file >> tmpfile.$now
+	}' $file >> $tmpfile
 
 	shift
 done
@@ -72,27 +73,31 @@ done
 #chr9:42230337:R,16,TCGA-41-5651-10A
 
 
-#	awk does not do multidimensional arrays
-gawk -F, '{
-	p[$1]++
-	s[$3]++
-	b[$1][$3]=$2
-}
-END{
-	asorti(p)
-	asorti(s)
-	printf "position"
-	for(subj in s)
-		printf ",%s",s[subj]
-	printf "\n"
+dir=`dirname $0`
+gawk -f "$dir/to_table.gawk" $tmpfile
 
-	for(pos in p){
-		printf p[pos]
-		for(subj in s)
-			printf ",%s",b[p[pos]][s[subj]]
-		printf "\n"
-	}
-}' tmpfile.$now
+
+#	#	awk does not do multidimensional arrays
+#	gawk -F, '{
+#		p[$1]++
+#		s[$3]++
+#		b[$1][$3]=$2
+#	}
+#	END{
+#		asorti(p)
+#		asorti(s)
+#		printf "position"
+#		for(subj in s)
+#			printf ",%s",s[subj]
+#		printf "\n"
+#	
+#		for(pos in p){
+#			printf p[pos]
+#			for(subj in s)
+#				printf ",%s",b[p[pos]][s[subj]]
+#			printf "\n"
+#		}
+#	}' tmpfile.$now
 
 #chr5:64388446:F TCGA-06-0125-10A 126
 #chr5:64388446:F TCGA-06-0185-01A 48

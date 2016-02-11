@@ -7,6 +7,11 @@ function usage(){
 	echo
 	echo "`basename $0` referencefile samplefilelist"
 	echo
+	echo "Insertion points or Overlappers?"
+	echo "The file content looks like it is expecting insertion points!"
+	echo "This makes the example output filename confusing!"
+	echo "Should be insertion_points_reference"
+	echo
 	echo "Expecting file content in the format of ..."
 	echo
 	echo "..."
@@ -17,6 +22,14 @@ function usage(){
 	echo "..."
 	echo
 	echo "With or without the direction is acceptable."
+	echo
+	echo "Looks like this could also be run on the insertion_points_to_table tmpfile!"
+	echo "chr10:102392397:F:POST,1,HG00096"
+	echo "chr10:2675705:F:POST,1,HG00096"
+	echo "chr10:26894438:F:POST,4,HG00096"
+	echo "chr10:41714154:F:POST,9,HG00096"
+	echo "chr10:43338170:F:POST,1,HG00096"
+	echo "chr10:43338171:F:POST,1,HG00096"
 	echo
 	echo "Example:"
 	echo "  `basename $0` referencefile samplefilelist"
