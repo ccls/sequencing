@@ -13,13 +13,12 @@ sort -u pre_ltr.bowtie2.hg19.Q20.rc_insertion_points > pre_ltr.bowtie2.hg19.Q20.
 sort -u post_ltr.bowtie2.hg19.Q20.insertion_points > post_ltr.bowtie2.hg19.Q20.insertion_points.sort.uniq &
 sort -u post_ltr.bowtie2.hg19.Q20.rc_insertion_points > post_ltr.bowtie2.hg19.Q20.rc_insertion_points.sort.uniq &
 
-positions_within_10bp.sh {pre,post}_ltr.bowtie2.hg19.Q20.insertion_points | sort | uniq -c > overlapper_reference.Q20.test.F &
-positions_within_10bp.sh {pre,post}_ltr.bowtie2.hg19.Q20.rc_insertion_points | sort | uniq -c > overlapper_reference.Q20.test.R &
+positions_within_10bp.sh {pre,post}_ltr.bowtie2.hg19.Q20.insertion_points | sort -u > overlapper_reference.Q20.test.F &
+positions_within_10bp.sh {pre,post}_ltr.bowtie2.hg19.Q20.rc_insertion_points | sort -u > overlapper_reference.Q20.test.R &
 
-awk '{print $0":F"}' overlapper_reference.Q20.test.F > overlapper_reference.Q20.test.with_counts
-awk '{print $0":R"}' overlapper_reference.Q20.test.R >> overlapper_reference.Q20.test.with_counts
+awk '{print $0":F"}' overlapper_reference.Q20.test.F > overlapper_reference.Q20.test
+awk '{print $0":R"}' overlapper_reference.Q20.test.R >> overlapper_reference.Q20.test
 
-awk '{print $2}' overlapper_reference.Q20.test.with_counts | sort > overlapper_reference.Q20.test
 
 
 
