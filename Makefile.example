@@ -1,6 +1,11 @@
 
-BASE_DIR     = ${HOME}/RINS_BASE
+BASE_DIR     = ${HOME}/local
 BASE_BIN_DIR = ${BASE_DIR}/bin
+
+#	All scripts will be installed in this subdir
+#	and linked from the parent. This will allow 
+#	for the uninstallation of everything!
+APPS_SUBDIR  = ccls_sequencing
 
 #	There is a difference between 34 and 35.  I don't know exactly what it is
 #	but 35 finds nothing and 34 finds a bunch.  Perhaps a change in parameters?
@@ -70,52 +75,157 @@ install: install-all $(TARGETS:%=install-%) install-scripts
 
 install-all:
 	@printf "\nINSTALLING ALL\n\n"
-	$(MKDIR) $(BASE_BIN_DIR)
+	$(MKDIR) $(BASE_BIN_DIR)/$(APPS_SUBDIR)
 
-#	Remove old stuff.  Need -f or get an error.
-install-scripts:
-	$(MKDIR) $(BASE_BIN_DIR)
-	@printf "\nINSTALLING SCRIPTS\n\n"
-	#	No longer using rins, so why keep installing
-	rm -f $(BASE_BIN_DIR)/blastn_cleanup.pl
-	rm -f $(BASE_BIN_DIR)/blatoutcandidate.pl
-	rm -f $(BASE_BIN_DIR)/candidate_non_human.pl
-	rm -f $(BASE_BIN_DIR)/chopreads.pl
-	rm -f $(BASE_BIN_DIR)/compress.pl
-	rm -f $(BASE_BIN_DIR)/fastq2fasta.pl
-	rm -f $(BASE_BIN_DIR)/modify_trinity_output.pl
-	rm -f $(BASE_BIN_DIR)/pull_reads_fasta.pl
-	rm -f $(BASE_BIN_DIR)/rins.pl
-	rm -f $(BASE_BIN_DIR)/sam2names.pl
-	rm -f $(BASE_BIN_DIR)/write_result.pl
-	#	remove old, deprecated scripts
-	rm -f $(BASE_BIN_DIR)/ec_fasta_split_and_blastn.sh
-	rm -f $(BASE_BIN_DIR)/blastn_check.sh
-	rm -f $(BASE_BIN_DIR)/blastn_check.gawk
-	rm -f $(BASE_BIN_DIR)/fasta_read_split.awk
-	rm -f $(BASE_BIN_DIR)/fasta_size_split.awk
-	rm -f $(BASE_BIN_DIR)/remove_N_reads_from_fasta.awk
-	rm -f $(BASE_BIN_DIR)/rins_ccls_lib.rb
-	rm -f $(BASE_BIN_DIR)/srun_blastn_to_nt.sh
-	#	No longer using rins, so why keep installing
-	#	cp rins_core/*pl $(BASE_BIN_DIR)
-	cp rins_ccls/*awk $(BASE_BIN_DIR)
-	cp rins_ccls/*pl $(BASE_BIN_DIR)
-	cp rins_ccls/*rb $(BASE_BIN_DIR)
-	cp rins_ccls/*sh $(BASE_BIN_DIR)
-	#	remove old, no longer used scripts (there are others, just not sure which)
-	rm -f $(BASE_BIN_DIR)/rins.rb
-	rm -f $(BASE_BIN_DIR)/blastn_cleanup.rb
-	rm -f $(BASE_BIN_DIR)/blatoutcandidate.rb
-	rm -f $(BASE_BIN_DIR)/candidate_non_human.rb
-	rm -f $(BASE_BIN_DIR)/file_format_detector.rb
-	rm -f $(BASE_BIN_DIR)/pull_reads_fasta.rb
-	rm -f $(BASE_BIN_DIR)/sam2names.rb
-	rm -f $(BASE_BIN_DIR)/write_result.rb
+
+ultra-clean-scripts:
+	@printf "\nDELETING ALL PREVIOUS CCLS SCRIPTS\n\n"
+	rm -f $(BASE_BIN_DIR)/1000genomes_group_multiple_samples.sh
+	rm -f $(BASE_BIN_DIR)/1000genomes_group_results.sh
 	rm -f $(BASE_BIN_DIR)/add_descriptions_to_results.rb
-	rm -f $(BASE_BIN_DIR)/just_first_contig_match_results.rb
+	rm -f $(BASE_BIN_DIR)/align_herv_k113_chimerics_to_index.sh
+	rm -f $(BASE_BIN_DIR)/archive.sh
+	rm -f $(BASE_BIN_DIR)/aws_1000genomes.sh
+	rm -f $(BASE_BIN_DIR)/aws_exec_on_all.sh
+	rm -f $(BASE_BIN_DIR)/aws_fastq_to_herv_k113_overlappers.sh
+	rm -f $(BASE_BIN_DIR)/aws_remove_1000genomes_pid_files.sh
+	rm -f $(BASE_BIN_DIR)/aws_sqs_demo.sh
+	rm -f $(BASE_BIN_DIR)/aws_start_1000genomes_node.sh
+	rm -f $(BASE_BIN_DIR)/aws_start_1000genomes_processing.sh
+	rm -f $(BASE_BIN_DIR)/bioruby_extract_sequences_from_fasta.rb
+	rm -f $(BASE_BIN_DIR)/bioruby_extract_uniq_sequences_from_fasta.rb
+	rm -f $(BASE_BIN_DIR)/bioruby_fasta_extractor.rb
+	rm -f $(BASE_BIN_DIR)/bioruby_fastq_2_fasta.rb
+	rm -f $(BASE_BIN_DIR)/bioruby_file_format_detector.rb
+	rm -f $(BASE_BIN_DIR)/bioruby_lane_fasta.rb
+	rm -f $(BASE_BIN_DIR)/bioruby_lane_fastq.rb
+	rm -f $(BASE_BIN_DIR)/bioruby_random_fasta_generator.rb
+	rm -f $(BASE_BIN_DIR)/bioruby_select_random_sequences_from_fasta.rb
+	rm -f $(BASE_BIN_DIR)/bioruby_split_fasta_file.rb
+	rm -f $(BASE_BIN_DIR)/blast_check.gawk
+	rm -f $(BASE_BIN_DIR)/blast_check.sh
+	rm -f $(BASE_BIN_DIR)/blastn_check.gawk
+	rm -f $(BASE_BIN_DIR)/blastn_check.sh
+	rm -f $(BASE_BIN_DIR)/blastn_cleanup.pl
+	rm -f $(BASE_BIN_DIR)/blastn_cleanup.rb
+	rm -f $(BASE_BIN_DIR)/blastn_nt.sh
+	rm -f $(BASE_BIN_DIR)/blastn_to_sqlite_db.sh
+	rm -f $(BASE_BIN_DIR)/blastn_wrapper.sh
+	rm -f $(BASE_BIN_DIR)/blatoutcandidate.pl
+	rm -f $(BASE_BIN_DIR)/blatoutcandidate.rb
+	rm -f $(BASE_BIN_DIR)/bowtie_human_genomic.sh
+	rm -f $(BASE_BIN_DIR)/candidate_non_human.pl
+	rm -f $(BASE_BIN_DIR)/candidate_non_human.rb
+	rm -f $(BASE_BIN_DIR)/check_sequence_names.rb
+	rm -f $(BASE_BIN_DIR)/chopreads.pl
+	rm -f $(BASE_BIN_DIR)/clean_fasta_file.rb
+	rm -f $(BASE_BIN_DIR)/compress.pl
 	rm -f $(BASE_BIN_DIR)/dark.rb
 	rm -f $(BASE_BIN_DIR)/dark_OLD.rb
+	rm -f $(BASE_BIN_DIR)/ec_blastn_merge.sh
+	rm -f $(BASE_BIN_DIR)/ec_fasta_split_and_blast.sh
+	rm -f $(BASE_BIN_DIR)/ec_fasta_split_and_blastn.sh
+	rm -f $(BASE_BIN_DIR)/ec_fasta_split_and_bowtie.sh
+	rm -f $(BASE_BIN_DIR)/ec_quick_dark.sh
+	rm -f $(BASE_BIN_DIR)/fasta_read_length_filter.sh
+	rm -f $(BASE_BIN_DIR)/fasta_read_split.awk
+	rm -f $(BASE_BIN_DIR)/fasta_read_split.sh
+	rm -f $(BASE_BIN_DIR)/fasta_size_split.awk
+	rm -f $(BASE_BIN_DIR)/fasta_size_split.sh
+	rm -f $(BASE_BIN_DIR)/fastq2fasta.pl
+	rm -f $(BASE_BIN_DIR)/file_format_detector.rb
+	rm -f $(BASE_BIN_DIR)/herv_adjacent_comparison.sh
+	rm -f $(BASE_BIN_DIR)/herv_k113_integration.sh
+	rm -f $(BASE_BIN_DIR)/herv_trim_comparison.sh
+	rm -f $(BASE_BIN_DIR)/human_genomic_fasta_to_bowtie_index.sh
+	rm -f $(BASE_BIN_DIR)/insertion_points_to_table.sh
+	rm -f $(BASE_BIN_DIR)/just_first_contig_match_results.rb
+	rm -f $(BASE_BIN_DIR)/lines_not_in_reference_list.sh
+	rm -f $(BASE_BIN_DIR)/modify_trinity_output.pl
+	rm -f $(BASE_BIN_DIR)/overlapper_insertion_points_to_fasta.sh
+	rm -f $(BASE_BIN_DIR)/overlapper_seeker.sh
+	rm -f $(BASE_BIN_DIR)/overlappers_reference_to_table.sh
+	rm -f $(BASE_BIN_DIR)/overlappers_to_table.sh
+	rm -f $(BASE_BIN_DIR)/pieces_check.sh
+	rm -f $(BASE_BIN_DIR)/pieces_merge.sh
+	rm -f $(BASE_BIN_DIR)/positions_within_10bp.sh
+	rm -f $(BASE_BIN_DIR)/positions_within_10bp_of_reference.sh
+	rm -f $(BASE_BIN_DIR)/pull_reads_fasta.pl
+	rm -f $(BASE_BIN_DIR)/pull_reads_fasta.rb
+	rm -f $(BASE_BIN_DIR)/quick_dark.sh
+	rm -f $(BASE_BIN_DIR)/remove_N_reads_from_fasta.awk
+	rm -f $(BASE_BIN_DIR)/remove_N_reads_from_fasta.sh
+	rm -f $(BASE_BIN_DIR)/remove_human_with_bowtie2.sh
+	rm -f $(BASE_BIN_DIR)/rins.pl
+	rm -f $(BASE_BIN_DIR)/rins.rb
+	rm -f $(BASE_BIN_DIR)/rins_ccls_lib.rb
+	rm -f $(BASE_BIN_DIR)/sam2names.pl
+	rm -f $(BASE_BIN_DIR)/sam2names.rb
+	rm -f $(BASE_BIN_DIR)/sam_to_bam.sh
+	rm -f $(BASE_BIN_DIR)/samtools_bam_to_fasta.sh
+	rm -f $(BASE_BIN_DIR)/samtools_bam_to_paired_fastq.sh
+	rm -f $(BASE_BIN_DIR)/samtools_depth_comparison.sh
+	rm -f $(BASE_BIN_DIR)/samtools_extract_aligned_reads.sh
+	rm -f $(BASE_BIN_DIR)/samtools_extract_and_clip_chimeric_reads.sh
+	rm -f $(BASE_BIN_DIR)/samtools_extract_half_mapped_pairs.sh
+	rm -f $(BASE_BIN_DIR)/select_no_hits_from_blast.awk
+	rm -f $(BASE_BIN_DIR)/select_no_hits_from_blast.sh
+	rm -f $(BASE_BIN_DIR)/sequencing_lib.rb
+	rm -f $(BASE_BIN_DIR)/simple_queue.sh
+	rm -f $(BASE_BIN_DIR)/simple_queue_cron.sh
+	rm -f $(BASE_BIN_DIR)/simple_queue_eval.sh
+	rm -f $(BASE_BIN_DIR)/simple_queue_pop_to_script.sh
+	rm -f $(BASE_BIN_DIR)/spacify_sequence_names.rb
+	rm -f $(BASE_BIN_DIR)/srun_bam2fastx_fastq.sh
+	rm -f $(BASE_BIN_DIR)/srun_blast.sh
+	rm -f $(BASE_BIN_DIR)/srun_blastn_to_nt.sh
+	rm -f $(BASE_BIN_DIR)/srun_bowtie2.sh
+	rm -f $(BASE_BIN_DIR)/srun_ec_quick_dark.sh
+	rm -f $(BASE_BIN_DIR)/srun_fastq_to_fasta.sh
+	rm -f $(BASE_BIN_DIR)/srun_fastx_collapser.sh
+	rm -f $(BASE_BIN_DIR)/srun_gunzip.sh
+	rm -f $(BASE_BIN_DIR)/srun_herv_k113_integration.sh
+	rm -f $(BASE_BIN_DIR)/srun_lane_fastq.sh
+	rm -f $(BASE_BIN_DIR)/srun_overlapper_seeker.sh
+	rm -f $(BASE_BIN_DIR)/srun_samtools_bam2fq.sh
+	rm -f $(BASE_BIN_DIR)/srun_samtools_bam_to_paired_fastq.sh
+	rm -f $(BASE_BIN_DIR)/srun_samtools_depth_comparison.sh
+	rm -f $(BASE_BIN_DIR)/srun_samtools_extract_aligned_reads.sh
+	rm -f $(BASE_BIN_DIR)/srun_samtools_extract_and_clip_chimeric_reads.sh
+	rm -f $(BASE_BIN_DIR)/srun_samtools_extract_half_mapped_pairs.sh
+	rm -f $(BASE_BIN_DIR)/srun_samtools_sam_to_bam.sh
+	rm -f $(BASE_BIN_DIR)/srun_samtools_sort_bam_by_name.sh
+	rm -f $(BASE_BIN_DIR)/srun_trinity.sh
+	rm -f $(BASE_BIN_DIR)/to_table.gawk
+	rm -f $(BASE_BIN_DIR)/trim_alignments_and_descriptions.awk
+	rm -f $(BASE_BIN_DIR)/trim_alignments_and_descriptions.sh
+	rm -f $(BASE_BIN_DIR)/underscore_sequence_names.rb
+	rm -f $(BASE_BIN_DIR)/uniquify_sequence_names.rb
+	rm -f $(BASE_BIN_DIR)/write_result.pl
+	rm -f $(BASE_BIN_DIR)/write_result.rb
+
+uninstall-scripts:
+	@printf "\nUNINSTALLING SCRIPTS\n\n"
+	cd $(BASE_BIN_DIR); \
+		find . -lname $(APPS_SUBDIR)/\* -exec rm {} \;
+	rm -rf $(BASE_BIN_DIR)/$(APPS_SUBDIR)
+
+
+#	Remove old stuff.  Need -f or get an error.
+install-scripts: uninstall-scripts
+	$(MKDIR) $(BASE_BIN_DIR)/$(APPS_SUBDIR)
+	@printf "\nINSTALLING SCRIPTS\n\n"
+	cp rins_ccls/*.gawk $(BASE_BIN_DIR)/$(APPS_SUBDIR)/
+	cp rins_ccls/*.awk $(BASE_BIN_DIR)/$(APPS_SUBDIR)/
+	cp rins_ccls/*.pl $(BASE_BIN_DIR)/$(APPS_SUBDIR)/
+	cp rins_ccls/*.rb $(BASE_BIN_DIR)/$(APPS_SUBDIR)/
+	cp rins_ccls/*.sh $(BASE_BIN_DIR)/$(APPS_SUBDIR)/
+
+	cd $(BASE_BIN_DIR); \
+	for file in `find $(APPS_SUBDIR) -type f` ; do \
+		echo $$file; \
+		ln -s $$file; \
+	done
 
 #	cp rins_ccls/*awk $(BASE_BIN_DIR)
 #	*awk would include *.awk and *.gawk
