@@ -36,6 +36,12 @@ function usage(){
 	echo
 	echo "find . -type d -depth 1 \( -name HG\* -o -name NG\* \) -execdir sh -c 'echo {}; cd {}; positions_within_10bp_of_reference.sh ../../overlapper_reference.Q20 *Q20*ts | sort | uniq -c > {}.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.both_ltr.bowtie2.hg19.Q20.overlappers_reference' \;"
 	echo
+	echo
+	echo
+	echo "OUTPUTS the samplefilelist lines, NOT the referencefile lines."
+	echo "( same as positions_within_10bp.sh )"
+	echo
+	echo
 	exit 1
 }
 #	Basically, this is TRUE AND DO ...
@@ -73,8 +79,9 @@ while [ $# -ne 0 ] ; do
 
 		awk -F: -v chr="$chr" -v pos="$pos" -v line="$line" '
 			( ( $1 == chr ) && ( (pos-10) < $2 ) && ( (pos+10) > $2 ) ){
-				print line
+				print $0
 			}' $1
+#				print line
 #				print line" - "$0
 
 	done	#	for line in reference
