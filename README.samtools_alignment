@@ -1,0 +1,47 @@
+
+Where does my read ACTCTCTG actually align?
+
+
+If it aligns like so ...
+
+         ACTCTCTG
+         ||||||||
+---------ACTCTCTG---
+12345678901234567890
+
+
+And you want to know the FIRST position of your read (say the beginning of an insertion)
+
+samtools will say it aligned FORWARD at position 10 and this is the actual position.
+
+
+
+If you wanted to know the LAST position of your read (say the ending of an insertion)
+
+samtools will still say it aligned forward at position 10
+but you would need to add the length minus 1 to get the location of G.
+
+
+
+If it aligns REVERSE COMPLEMENTED like so ...
+
+         CAGAGAGT
+         ||||||||
+---------CAGAGAGT---
+12345678901234567890
+
+
+And you want to know the FIRST position of your read (say the beginning of an insertion)
+
+samtools will say it aligned REVERSE COMPLEMENTED at position 10
+
+The actual position of the beginning of your read is
+this position plus the length minus 1.
+
+
+
+If you wanted to know the LAST position of your read (say the ending of an insertion)
+
+samtools will still say it aligned REVERSE COMPLEMENTED at position 10
+and this is the actual position of the end of your read.
+
