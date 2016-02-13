@@ -90,6 +90,7 @@ ultra-clean-scripts:
 	mv $(BASE_BIN_DIR)/align_herv_k113_chimerics_to_index.sh $(BASE_BIN_DIR)/$(APPS_SUBDIR)_make_ultra-clean-scripts/; true
 	mv $(BASE_BIN_DIR)/archive.sh $(BASE_BIN_DIR)/$(APPS_SUBDIR)_make_ultra-clean-scripts/; true
 	mv $(BASE_BIN_DIR)/aws_1000genomes.sh $(BASE_BIN_DIR)/$(APPS_SUBDIR)_make_ultra-clean-scripts/; true
+	mv $(BASE_BIN_DIR)/aws_bam_to_herv_k113_overlappers.sh $(BASE_BIN_DIR)/$(APPS_SUBDIR)_make_ultra-clean-scripts/; true
 	mv $(BASE_BIN_DIR)/aws_exec_on_all.sh $(BASE_BIN_DIR)/$(APPS_SUBDIR)_make_ultra-clean-scripts/; true
 	mv $(BASE_BIN_DIR)/aws_fastq_to_herv_k113_overlappers.sh $(BASE_BIN_DIR)/$(APPS_SUBDIR)_make_ultra-clean-scripts/; true
 	mv $(BASE_BIN_DIR)/aws_remove_1000genomes_pid_files.sh $(BASE_BIN_DIR)/$(APPS_SUBDIR)_make_ultra-clean-scripts/; true
@@ -213,6 +214,7 @@ ultra-clean-scripts:
 #	rm -f $(BASE_BIN_DIR)/align_herv_k113_chimerics_to_index.sh
 #	rm -f $(BASE_BIN_DIR)/archive.sh
 #	rm -f $(BASE_BIN_DIR)/aws_1000genomes.sh
+#	rm -f $(BASE_BIN_DIR)/aws_bam_to_herv_k113_overlappers.sh
 #	rm -f $(BASE_BIN_DIR)/aws_exec_on_all.sh
 #	rm -f $(BASE_BIN_DIR)/aws_fastq_to_herv_k113_overlappers.sh
 #	rm -f $(BASE_BIN_DIR)/aws_remove_1000genomes_pid_files.sh
