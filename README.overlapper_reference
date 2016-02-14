@@ -1,6 +1,11 @@
 
 
 I think this works.
+...
+Kinda, but not really.
+The existing references for Q20 and Q10 are just a compilation of
+all of the existing overlappers.
+The existing ALL reference is missing a bunch.  Not sure why.
 
 
 find . -name \*.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.pre_ltr.bowtie2.hg19.Q20.insertion_points -exec cat {} \; > pre_ltr.bowtie2.hg19.Q20.insertion_points &
