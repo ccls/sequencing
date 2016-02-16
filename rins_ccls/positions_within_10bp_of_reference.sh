@@ -32,7 +32,7 @@ function usage(){
 	echo "chr10:43338171:F:POST,1,HG00096"
 	echo
 	echo "Example:"
-	echo "  `basename $0` referencefile samplefilelist"
+	echo "  `basename $0` [--print 'reference' or 'sample'] referencefile samplefilelist"
 	echo
 	echo "find . -type d -depth 1 \( -name HG\* -o -name NG\* \) -execdir sh -c 'echo {}; cd {}; positions_within_10bp_of_reference.sh ../../overlapper_reference.Q20 *Q20*ts | sort | uniq -c > {}.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.both_ltr.bowtie2.hg19.Q20.overlappers_reference' \;"
 	echo
@@ -44,6 +44,22 @@ function usage(){
 	echo
 	exit 1
 }
+
+#	Basically, its either 'sample' or its not. 
+printwhat='sample'
+
+while [ $# -ne 0 ] ; do
+	case $1 in
+		-p|--p*)
+			shift; printwhat=$1; shift ;;
+		-*)
+			echo ; echo "Unexpected args from: ${*}"; usage ;;
+		*)
+			break;;
+	esac
+done
+
+
 #	Basically, this is TRUE AND DO ...
 #[ $# -ne 2 ] && usage
 [ $# -lt 2 ] && usage
@@ -77,9 +93,13 @@ while [ $# -ne 0 ] ; do
 
 #	print the reference insertion point or the point found?
 
-		awk -F: -v chr="$chr" -v pos="$pos" -v line="$line" '
+		awk -F: -v chr="$chr" -v pos="$pos" -v line="$line" -v printwhat="$printwhat" '
 			( ( $1 == chr ) && ( (pos-10) < $2 ) && ( (pos+10) > $2 ) ){
-				print $0
+				if( printwhat=="sample" ){
+					print $0
+				}else{
+					print line
+				}
 			}' $1
 #				print line
 #				print line" - "$0
