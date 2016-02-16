@@ -101,7 +101,7 @@ while [ $# -ne 0 ] ; do
 		awk -F: -v chr="$chr" -v pos="$pos" -v line="$line" -v printwhat="$printwhat" '
 			( ( $1 == chr ) && ( (pos-10) < $2 ) && ( (pos+10) > $2 ) ){
 				if( printwhat=="sample" ){
-					print $0",
+					print $0
 				}else{
 					split($0,a,",")
 					print line","a[2]","a[3]
