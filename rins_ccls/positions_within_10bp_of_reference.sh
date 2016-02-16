@@ -93,12 +93,18 @@ while [ $# -ne 0 ] ; do
 
 #	print the reference insertion point or the point found?
 
+#	print the POSITION from what.
+
+#	the reference line DOES NOT INCLUDE THE SAMPLE NAME
+#	the sample line contains the sample name and count.  NEED TO EXTRACT IT
+
 		awk -F: -v chr="$chr" -v pos="$pos" -v line="$line" -v printwhat="$printwhat" '
 			( ( $1 == chr ) && ( (pos-10) < $2 ) && ( (pos+10) > $2 ) ){
 				if( printwhat=="sample" ){
-					print $0
+					print $0",
 				}else{
-					print line
+					split($0,a,",")
+					print line","a[2]","a[3]
 				}
 			}' $1
 #				print line
