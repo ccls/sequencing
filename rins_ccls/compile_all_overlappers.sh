@@ -1,4 +1,13 @@
-#!/bin/sh -x
+#!/usr/bin/env bash
+
+
+echo
+echo
+echo "FYI. THIS IS STILL IN DEVELOPMENT!"
+echo
+echo
+
+##!/bin/sh -x
 
 QUALITY=${1:-Q20}
 INDEX=${2:-hg19}
@@ -23,7 +32,9 @@ awk '{print $0":R"}' $INDEX.$QUALITY.rc_insertion_points.rc_overlappers.sort.uni
 
 sort overlapper_reference.$INDEX.$QUALITY > overlapper_reference.$INDEX.$QUALITY.sorted
 
-} 1>>$log_file 2>&1
+} 1>> $log_file 2>&1
+
+#	not sure what was happening here, but works fine for me on my work laptop?
+#	TYPO!  missed an underscore.  empty variable name.  "1>> 2>&1" is bad. 
+#	./extract_insertion_points_and_overlappers.sh: line 116: $logfile: ambiguous redirect
 #	the {} logfile doesn't seem to work with bash
-
-
