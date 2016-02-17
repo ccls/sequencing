@@ -20,15 +20,12 @@ now=`date "+%Y%m%d%H%M%S"`
 tmpfile="tmpfile.$1.$now"
 
 
-
-
 #while [ $# -ne 0 ] ; do
 #	file=$1
 #	attempting to deal with 
 #		/bin/ls: Argument list too long.
+#	Use find instead of expanding argument list (so will need quoted)
 for file in `find ./ -type f -depth 2 -name $1` ; do
-
-
 
 
 #	echo
@@ -83,43 +80,4 @@ done
 
 dir=`dirname $0`
 gawk -f "$dir/to_table.gawk" $tmpfile
-
-
-#	#	awk does not do multidimensional arrays
-#	gawk -F, '{
-#		p[$1]++
-#		s[$3]++
-#		b[$1][$3]=$2
-#	}
-#	END{
-#		asorti(p)
-#		asorti(s)
-#		printf "position"
-#		for(subj in s)
-#			printf ",%s",s[subj]
-#		printf "\n"
-#	
-#		for(pos in p){
-#			printf p[pos]
-#			for(subj in s)
-#				printf ",%s",b[p[pos]][s[subj]]
-#			printf "\n"
-#		}
-#	}' tmpfile.$now
-
-#chr5:64388446:F TCGA-06-0125-10A 126
-#chr5:64388446:F TCGA-06-0185-01A 48
-#chr5:64388446:F TCGA-06-0211-10A 340
-#chr5:64388446:F TCGA-06-0152-10A 128
-#chr5:64388446:F TCGA-06-0185-10B 40
-
-#		( /^@SQ/ ){ ref[substr($2,4)] = 0 }
-#		( !/^@/ ){ ref[$3]++ }
-#		END{
-#			for ( key in ref ) {
-#				print key, ref[key] >> out
-#			}
-#		}'
-#
-
 
