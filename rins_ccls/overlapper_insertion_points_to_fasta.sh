@@ -20,8 +20,8 @@ ltr_end="ACTTTGTCTCTGTGTCTTTTTCTTTTCCAAATCTCTCGTCCCACCTTACGAGAAACACCCACAGGTGTGTA
 
 #for line in `awk -F, '{print $1}' overlappers_table.Q20.csv | tail +2` ; do
 #	different versions of tail.  gnu tail requires a -n
-#for line in `awk -F, '{print $1}' overlappers_table.ALL.csv | tail -n +2` ; do
-#for line in `awk -F, '{print $1}' grouping.overlappers_table.ALL.csv | tail -n +2` ; do
+#for line in `awk -F, '{print $1}' overlappers_table.Q00.csv | tail -n +2` ; do
+#for line in `awk -F, '{print $1}' grouping.overlappers_table.Q00.csv | tail -n +2` ; do
 for line in `awk -F, '{print $1}' overlappers_table.Q20.csv | tail -n +2` ; do
 
 #       ${parameter#word}

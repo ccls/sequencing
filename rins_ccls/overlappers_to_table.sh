@@ -7,7 +7,7 @@ if [ $# -eq 0 ]; then
 	echo "`basename $0` 'FIND PATTERN FOR OVERLAPPER_FILES'"
 	echo
 	echo "Example:"
-	echo "`basename $0` '*ALL*overlappers'"
+	echo "`basename $0` '*Q00*overlappers'"
 	echo "`basename $0` '*Q20*overlappers'"
 	echo
 	exit

@@ -33,7 +33,7 @@ for sample in `find . -type d -name \*-\* -depth 1 -exec basename {} \; | awk -F
 		\rm $outdir/$sample.$common.unsorted.$ltr.bowtie2.hg19.bam
 		samtools index $outdir/$sample.$common.$ltr.bowtie2.hg19.bam
 
-		for q in ALL Q20 ; do
+		for q in Q00 Q20 ; do
 			for ipt in insertion_points rc_insertion_points ; do
 
 				cat ${sample}-*/${sample}-*.$common.$ltr.bowtie2.hg19.$q.$ipt \
@@ -43,7 +43,7 @@ for sample in `find . -type d -name \*-\* -depth 1 -exec basename {} \; | awk -F
 		done	#	for q
 	done	#	for ltr
 
-	for q in ALL Q20 ; do
+	for q in Q00 Q20 ; do
 
 		positions_within_10bp.sh $outdir/$sample.$common.*.bowtie2.hg19.$q.insertion_points \
 			| sort | uniq -c > $outdir/$sample.$common.both_ltr.bowtie2.hg19.$q.insertion_points.overlappers

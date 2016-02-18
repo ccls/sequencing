@@ -13,7 +13,7 @@ QUALITY=${1:-Q20}
 INDEX=${2:-hg19}
 SOURCE=${3:-/Volumes/box/1000genomes/sequers/1000genomes/untarred/grouping/}
 
-#	This script duplicates the existing references for hg19's Q10 and Q20, but not ALL?
+#	This script duplicates the existing references for hg19's Q10 and Q20, but not Q00?
 
 date=`date "+%Y%m%d%H%M%S"`
 log_file=`basename $0`.$QUALITY.$INDEX.$date.out

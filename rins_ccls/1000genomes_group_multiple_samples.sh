@@ -64,7 +64,7 @@ for sample_w_pop in `cat /Volumes/box/1000genomes/select_samples_with_population
 			\rm $outdir/$outname.$common.unsorted.$ltr.bowtie2.hg19.bam
 			samtools index $outdir/$outname.$common.$ltr.bowtie2.hg19.bam
 	
-			for q in ALL Q10 Q20 ; do
+			for q in Q00 Q10 Q20 ; do
 				for ipt in insertion_points rc_insertion_points ; do
 	
 					ipts=${group_list[*]/%//*.$common.$ltr.bowtie2.hg19.$q.$ipt}
@@ -75,7 +75,7 @@ for sample_w_pop in `cat /Volumes/box/1000genomes/select_samples_with_population
 			done	#	for q
 		done	#	for ltr
 
-		for q in ALL Q10 Q20 ; do
+		for q in Q00 Q10 Q20 ; do
 	
 			ls -l $outdir/$outname.$common.*.bowtie2.hg19.$q.insertion_points
 			positions_within_10bp.sh $outdir/$outname.$common.*.bowtie2.hg19.$q.insertion_points \

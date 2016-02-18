@@ -7,7 +7,7 @@ if [ $# -eq 0 ]; then
 	echo "`basename $0` 'FIND PATTERN FOR INSERTION POINT FILES'"
 	echo
 	echo "Example:"
-	echo "`basename $0` '*ALL*points'"
+	echo "`basename $0` '*Q00*points'"
 	echo "`basename $0` '*Q20*points'"
 	echo
 	exit

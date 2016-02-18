@@ -9,7 +9,7 @@ if [ $# -eq 0 ]; then
 	echo "Note: execute from 1 directory above sample directory."
 	echo
 	echo "Example:"
-	echo "`basename $0` '*ALL*overlappers_reference'"
+	echo "`basename $0` '*Q00*overlappers_reference'"
 	echo "`basename $0` '*Q20*overlappers_reference'"
 	echo
 	exit
