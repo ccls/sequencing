@@ -1,5 +1,5 @@
 
-BASE_DIR     = ${HOME}/local
+BASE_DIR     = ${HOME}/.local
 BASE_BIN_DIR = ${BASE_DIR}/bin
 
 #	All scripts will be installed in this subdir
