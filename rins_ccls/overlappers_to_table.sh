@@ -78,6 +78,7 @@ done
 #chr7:2428996:R,1,TCGA-41-5651-10A
 #chr9:42230337:R,16,TCGA-41-5651-10A
 
-dir=`dirname $0`
-gawk -f "$dir/to_table.gawk" $tmpfile
+#dir=`dirname $0`
+#gawk -f "$dir/to_table.gawk" $tmpfile
+to_table.sh $tmpfile
 

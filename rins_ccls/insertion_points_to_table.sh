@@ -1,17 +1,45 @@
 #!/usr/bin/env bash
 
-if [ $# -eq 0 ]; then
-	echo 
+
+#	If passed 1 fast[aq], check for chimeric reads.
+#	If passed 2 fast[aq], also check for anchors with paired read run.
+
+function usage(){
+	echo
 	echo "Usage:"
 	echo
-	echo "`basename $0` 'FIND PATTERN FOR INSERTION POINT FILES'"
+	echo "`basename $0` [--skip-table] 'FIND PATTERN FOR INSERTION POINT FILES'"
 	echo
 	echo "Example:"
 	echo "`basename $0` '*Q00*points'"
 	echo "`basename $0` '*Q20*points'"
 	echo
 	exit
-fi
+}
+
+skip_table='false'
+
+while [ $# -ne 0 ] ; do
+	case $1 in
+		-s|--s*)
+			skip_table='true'; shift ;;
+		-*)
+			echo ; echo "Unexpected args from: ${*}"; usage ;;
+		*)
+			break;;
+	esac
+done
+
+
+#       Basically, this is TRUE AND DO ...
+[ $# -eq 0 ] && usage
+
+
+
+
+
+
+
 
 #TCGA-41-5651-10A/TCGA-41-5651-10A.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.pre_ltr.bowtie2.hg19.rc_insertion_points
 
@@ -96,6 +124,7 @@ done
 #chr9:42230337:R,16,TCGA-41-5651-10A
 
 
-dir=`dirname $0`
-gawk -f "$dir/to_table.gawk" $tmpfile
+#dir=`dirname $0`
+#gawk -f "$dir/to_table.gawk" $tmpfile
+[[ $skip_table == 'false' ]] && to_table.sh $tmpfile
 
