@@ -1,4 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/sh -x
+
+#	I WANT THE OUTPUT SO KEEP sh -x
+##!/usr/bin/env bash
 
 
 echo
@@ -7,7 +10,6 @@ echo "FYI. THIS IS STILL IN DEVELOPMENT!"
 echo
 echo
 
-##!/bin/sh -x
 
 QUALITY=${1:-Q20}
 INDEX=${2:-hg19}
