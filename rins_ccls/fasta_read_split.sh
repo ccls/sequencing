@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
 # split fasta files into smaller fasta files with no more than 200 reads
 #

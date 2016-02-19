@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 if [ `uname -n` = "fxdgroup-169-229-196-225.sph.berkeley.edu" ] ; then
 	#	echo "on dev"

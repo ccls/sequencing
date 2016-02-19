@@ -1,4 +1,8 @@
-#!/bin/sh -x
+#!/usr/bin/env bash
+#	manually set -x as can't pass through env
+set -x
+
+###!/bin/sh -x
 
 #	I WANT THE OUTPUT SO KEEP sh -x
 ##!/usr/bin/env bash

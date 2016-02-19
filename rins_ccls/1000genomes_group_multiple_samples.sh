@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 date=`date "+%Y%m%d%H%M%S"`
 common="bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned"

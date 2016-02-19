@@ -1,4 +1,9 @@
-#!/bin/sh -x
+#!/usr/bin/env bash
+#	manually set -x as can't pass through env
+set -x
+
+
+###!/bin/sh -x
 #
 #	with the -x the commands are sent to STDERR before execution
 #

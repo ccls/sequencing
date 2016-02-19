@@ -1,4 +1,8 @@
-#!/bin/sh -x
+#!/usr/bin/env bash
+#	manually set -x as can't pass through env
+set -x
+
+###!/bin/sh -x
 
 #
 #	pieces_merge.sh  dna/output/fallon_SFPB001A_filtered_20130722/trinity_input_single.fasta.20130725154032.pieces

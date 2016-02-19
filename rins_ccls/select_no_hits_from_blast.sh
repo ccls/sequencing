@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 #	Select the sequence name / line from the blast output file
 #	where there are "No hits found"

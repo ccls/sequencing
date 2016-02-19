@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 for ip in `aws ec2 describe-instances \
 	--query 'Reservations[].Instances[].PublicIpAddress' --output text` ; do 

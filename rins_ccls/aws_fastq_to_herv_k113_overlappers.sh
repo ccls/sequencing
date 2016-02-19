@@ -1,4 +1,8 @@
-#!/bin/bash -x
+#!/usr/bin/env bash
+#	manually set -x as can't pass through env
+set -x
+
+###!/bin/bash -x
 ##!/usr/bin/env bash -x
 #
 #	Can't pass options when using env

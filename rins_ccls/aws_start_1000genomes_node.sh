@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #	aws ec2 describe-images --image-ids ami-4335cc07
 

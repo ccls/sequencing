@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 while [ $# -ne 0 ] ; do
 	if [ -f "$1" ] ; then

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 #
 #	exec or no exec.  Here, really makes no difference.
