@@ -24,6 +24,8 @@ set -x
 #	execs can use the same number.
 
 
+threads=2
+index="hg19"
 
 #	If passed 1 fast[aq], check for chimeric reads.
 #	If passed 2 fast[aq], also check for anchors with paired read run.
@@ -32,10 +34,11 @@ function usage(){
 	echo
 	echo "Usage: (NO EQUALS SIGNS)"
 	echo
-	echo "`basename $0` [--threads 4]"
+	echo "`basename $0` [--threads 4] [--index hg19]"
 	echo
 	echo "Defaults:"
-	echo "  threads ..... : 2"
+	echo "  threads ..... : $threads"
+	echo "  index   ..... : $index"
 	echo
 	echo "Expecting pre and post ltr fasta files in PWD"
 	echo
@@ -44,12 +47,13 @@ function usage(){
 	exit
 }
 
-threads=2
 
 while [ $# -ne 0 ] ; do
 	case $1 in
 		-t|--t*)
 			shift; threads=$1; shift ;;
+		-i|--i*)
+			shift; index=$1; shift ;;
 		-*)
 			echo ; echo "Unexpected args from: ${*}"; usage ;;
 		*)
@@ -89,7 +93,6 @@ base=`basename $PWD`
 	#	-> pre_ltr.fasta
 	#	-> post_ltr.fasta
 
-	index="hg38"
 
 	bowtie2 -x $index --threads $threads -f $base.pre_ltr.fasta \
 		-S $base.pre_ltr.bowtie2.$index.sam
