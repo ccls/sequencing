@@ -26,6 +26,7 @@ set -x
 
 threads=2
 index="hg19"
+core="bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned"
 
 #	If passed 1 fast[aq], check for chimeric reads.
 #	If passed 2 fast[aq], also check for anchors with paired read run.
@@ -34,13 +35,17 @@ function usage(){
 	echo
 	echo "Usage: (NO EQUALS SIGNS)"
 	echo
-	echo "`basename $0` [--threads 4] [--index hg19]"
+	echo "`basename $0` [--threads 4] [--index hg19]" 
+	echo "[--core bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.bowtie2.herv_k113.unaligned]"
 	echo
 	echo "Defaults:"
 	echo "  threads ..... : $threads"
 	echo "  index   ..... : $index"
+	echo "  core    ..... : $core"
 	echo
 	echo "Expecting pre and post ltr fasta files in PWD"
+	echo
+	echo "core is what is between \$PWD. and .pre_ltr.fasta"
 	echo
 	echo "Note: all files will be based on the working directory's name"
 	echo
@@ -54,6 +59,8 @@ while [ $# -ne 0 ] ; do
 			shift; threads=$1; shift ;;
 		-i|--i*)
 			shift; index=$1; shift ;;
+		-c|--c*)
+			shift; core=$1; shift ;;
 		-*)
 			echo ; echo "Unexpected args from: ${*}"; usage ;;
 		*)
@@ -86,8 +93,11 @@ base=`basename $PWD`
 	#	they MUST be exported, apparently, to be picked up by bowtie2
 	export BOWTIE2_INDEXES
 
-	base="$base.bowtie2.herv_k113_ltr_ends.__very_sensitive_local"
-	base="$base.aligned"
+#	base="$base.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned"
+	base="$base.$core"
+
+#	base="$base.bowtie2.herv_k113_ltr_ends.__very_sensitive_local"
+#	base="$base.aligned"
 
 #	samtools_extract_and_clip_chimeric_reads.sh $base.bam
 	#	-> pre_ltr.fasta
