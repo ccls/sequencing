@@ -1,42 +1,80 @@
 #!/usr/bin/env bash
-#	manually set -x as can't pass through env
 set -x
 
-###!/bin/sh -x
 
-#	I WANT THE OUTPUT SO KEEP sh -x
-##!/usr/bin/env bash
+mapq=20
+index="hg19"
+core="bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned"
+basedir=`pwd`
+
+#	If passed 1 fast[aq], check for chimeric reads.
+#	If passed 2 fast[aq], also check for anchors with paired read run.
+
+function usage(){
+	echo
+	echo "Usage: (NO EQUALS SIGNS)"
+	echo
+	echo "`basename $0` [--mapq 20] [--index hg19]" 
+	echo "[--core bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.bowtie2.herv_k113.unaligned]"
+	echo
+	echo "Defaults:"
+	echo "  mapq  ..... : $mapq"
+	echo "  index ..... : $index"
+	echo "  core  ..... : $core"
+	echo
+	echo "core is what is between \$PWD. and .pre_ltr.fasta"
+	echo
+	echo "Note: all files will be based on the working directory's name"
+	echo
+	exit
+}
 
 
-echo
-echo
-echo "FYI. THIS IS STILL IN DEVELOPMENT!"
-echo
-echo
+while [ $# -ne 0 ] ; do
+	case $1 in
+		-q|--q*|-m|--m*)
+			shift; mapq=$1; shift ;;
+		-i|--i*)
+			shift; index=$1; shift ;;
+		-c|--c*)
+			shift; core=$1; shift ;;
+		-*)
+			echo ; echo "Unexpected args from: ${*}"; usage ;;
+		*)
+			break;;
+	esac
+done
 
+#       Basically, this is TRUE AND DO ...
+[ $# -gt 0 ] && usage
 
-QUALITY=${1:-Q20}
-INDEX=${2:-hg19}
-SOURCE=${3:-/Volumes/box/1000genomes/sequers/1000genomes/untarred/grouping/}
-
-#	This script duplicates the existing references for hg19's Q10 and Q20, but not Q00?
+quality=`printf "Q%02d" $mapq`
 
 date=`date "+%Y%m%d%H%M%S"`
-log_file=`basename $0`.$QUALITY.$INDEX.$date.out
+log_file=`basename $0`.$quality.$index.$date.out
 
 {
 
-find $SOURCE -name \*.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.both_ltr.bowtie2.$INDEX.$QUALITY.insertion_points.overlappers -depth 2 -exec cat {} \; > $INDEX.$QUALITY.insertion_points.overlappers
-find $SOURCE -name \*.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.both_ltr.bowtie2.$INDEX.$QUALITY.rc_insertion_points.rc_overlappers -depth 2 -exec cat {} \; > $INDEX.$QUALITY.rc_insertion_points.rc_overlappers
+	find $basedir \
+		-name \*.$core.both_ltr.bowtie2.$index.$quality.insertion_points.overlappers \
+		-depth 2 -exec cat {} \; > $index.$quality.insertion_points.overlappers
 
-awk '{print $2}' $INDEX.$QUALITY.insertion_points.overlappers | sort -u > $INDEX.$QUALITY.insertion_points.overlappers.sort.uniq
-awk '{print $2}' $INDEX.$QUALITY.rc_insertion_points.rc_overlappers | sort -u > $INDEX.$QUALITY.rc_insertion_points.rc_overlappers.sort.uniq
+	find $basedir \
+		-name \*.$core.both_ltr.bowtie2.$index.$quality.rc_insertion_points.rc_overlappers \
+		-depth 2 -exec cat {} \; > $index.$quality.rc_insertion_points.rc_overlappers
+
+	awk '{print $2}' $index.$quality.insertion_points.overlappers \
+		| sort -u > $index.$quality.insertion_points.overlappers.sort.uniq
+	awk '{print $2}' $index.$quality.rc_insertion_points.rc_overlappers \
+		| sort -u > $index.$quality.rc_insertion_points.rc_overlappers.sort.uniq
 
 
-awk '{print $0":F"}' $INDEX.$QUALITY.insertion_points.overlappers.sort.uniq > overlapper_reference.$INDEX.$QUALITY
-awk '{print $0":R"}' $INDEX.$QUALITY.rc_insertion_points.rc_overlappers.sort.uniq >> overlapper_reference.$INDEX.$QUALITY
+	awk '{print $0":F"}' $index.$quality.insertion_points.overlappers.sort.uniq \
+		> overlapper_reference.$index.$quality
+	awk '{print $0":R"}' $index.$quality.rc_insertion_points.rc_overlappers.sort.uniq \
+		>> overlapper_reference.$index.$quality
 
-sort overlapper_reference.$INDEX.$QUALITY > overlapper_reference.$INDEX.$QUALITY.sorted
+	sort overlapper_reference.$index.$quality > overlapper_reference.$index.$quality.sorted
 
 } 1>> $log_file 2>&1
 
