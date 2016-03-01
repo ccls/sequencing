@@ -9,7 +9,6 @@
 #
 BEGIN {
 	FS=","
-	OFS=","
 }
 function set_buffer() {
 	bufferer_position[1]=position[1]
