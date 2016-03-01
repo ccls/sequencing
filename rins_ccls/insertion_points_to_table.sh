@@ -18,11 +18,14 @@ function usage(){
 }
 
 skip_table='false'
+wd=$PWD
 
 while [ $# -ne 0 ] ; do
 	case $1 in
 		-s|--s*)
 			skip_table='true'; shift ;;
+		-w|--w*)
+			shift; wd=$1; shift ;;
 		-*)
 			echo ; echo "Unexpected args from: ${*}"; usage ;;
 		*)
@@ -53,7 +56,7 @@ tmpfile="tmpfile.$1.$now"
 #	attempting to deal with 
 #		/bin/ls: Argument list too long.
 #	Use find instead of expanding argument list (so will need quoted)
-for file in `find ./ -type f -depth 2 -name $1` ; do
+for file in `find $wd -type f -depth 2 -name $1` ; do
 
 #	echo
 #	echo $file
