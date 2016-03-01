@@ -129,5 +129,6 @@ done
 
 #dir=`dirname $0`
 #gawk -f "$dir/to_table.gawk" $tmpfile
-[[ $skip_table == 'false' ]] && to_table.sh $tmpfile
+[[ $skip_table == 'false' ]] && to_table.sh $tmpfile || echo 'skipping table creation'
+#	added the || so last command doesn't return a non-zero exit code
 
