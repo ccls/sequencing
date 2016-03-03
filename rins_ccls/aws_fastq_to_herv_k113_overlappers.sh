@@ -135,8 +135,9 @@ base=`basename $PWD`
 #
 
 
+	core="bowtie2.herv_k113_ltr_ends.__very_sensitive_local"
 
-	base="$base.bowtie2.herv_k113_ltr_ends.__very_sensitive_local"
+	base="$base.$core"
 	bowtie2 --very-sensitive-local --threads $threads -x herv_k113_ltr_ends \
 		$filetype $files -S $base.sam
 	status=$?
@@ -187,6 +188,16 @@ base=`basename $PWD`
 	#	16 = reverse complement
 
 	echo "Seeking insertion points and overlaps"
+
+
+
+#
+#	TODO REPLACE next lines of code with ...
+#	for mapq in 0 10 20 ; do LOOP
+#		extract_insertion_points_and_overlappers.sh --index hg19 --mapq $mapq --core $core $PWD
+#	done
+#
+
 
 	samtools view -F 20 $base.pre_ltr.bowtie2.hg19.sam \
 		| awk '{print $3":"$4+length($10)}' \

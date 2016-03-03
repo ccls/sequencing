@@ -93,22 +93,43 @@ logfile=`basename $0`.$index.$quality.$date.out
 
 		#	TCGA-41-5651-01A.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.pre_ltr.bowtie2.hg19.bam
 
-		samtools view -q $mapq -F 20 $sample.$core.pre_ltr.bowtie2.$index.bam \
+		#		COULD BE BAM OR SAM
+		if [ -f $sample.$core.pre_ltr.bowtie2.$index.bam ] ; then
+			pre_source=$sample.$core.pre_ltr.bowtie2.$index.bam
+		elif [ -f $sample.$core.pre_ltr.bowtie2.$index.sam ] ; then
+			pre_source=$sample.$core.pre_ltr.bowtie2.$index.sam
+		else
+			echo "Expected pre source bam or sam file not found."
+			exit 2
+		fi
+
+		if [ -f $sample.$core.post_ltr.bowtie2.$index.bam ] ; then
+			post_source=$sample.$core.post_ltr.bowtie2.$index.bam
+		elif [ -f $sample.$core.post_ltr.bowtie2.$index.sam ] ; then
+			post_source=$sample.$core.post_ltr.bowtie2.$index.sam
+		else
+			echo "Expected post source bam or sam file not found."
+			exit 3
+		fi
+
+		samtools view -q $mapq -F 20 $pre_source \
 			| awk '{print $3":"$4+length($10)}' \
 			| sort > $sample.$core.pre_ltr.bowtie2.$index.$quality.insertion_points
-		samtools view -q $mapq -F 20 $sample.$core.post_ltr.bowtie2.$index.bam \
+		samtools view -q $mapq -F 20 $post_source \
 			| awk '{print $3":"$4}' \
 			| sort > $sample.$core.post_ltr.bowtie2.$index.$quality.insertion_points
-		positions_within_10bp.sh $sample.$core.*.bowtie2.$index.$quality.insertion_points \
+		positions_within_10bp.sh $sample.$core.post_ltr.bowtie2.$index.$quality.insertion_points \
+			$sample.$core.pre_ltr.bowtie2.$index.$quality.insertion_points \
 			| sort | uniq -c > $sample.$core.both_ltr.bowtie2.$index.$quality.insertion_points.overlappers
 
-		samtools view -q $mapq -F 4 -f 16 $sample.$core.pre_ltr.bowtie2.$index.bam \
+		samtools view -q $mapq -F 4 -f 16 $pre_source \
 			| awk '{print $3":"$4}' \
 			| sort > $sample.$core.pre_ltr.bowtie2.$index.$quality.rc_insertion_points
-		samtools view -q $mapq -F 4 -f 16 $sample.$core.post_ltr.bowtie2.$index.bam \
+		samtools view -q $mapq -F 4 -f 16 $post_source \
 			| awk '{print $3":"$4+length($10)}' \
 			| sort > $sample.$core.post_ltr.bowtie2.$index.$quality.rc_insertion_points
-		positions_within_10bp.sh $sample.$core.*.bowtie2.$index.$quality.rc_insertion_points \
+		positions_within_10bp.sh $sample.$core.post_ltr.bowtie2.$index.$quality.rc_insertion_points \
+			$sample.$core.pre_ltr.bowtie2.$index.$quality.rc_insertion_points \
 			| sort | uniq -c > $sample.$core.both_ltr.bowtie2.$index.$quality.rc_insertion_points.rc_overlappers
 
 		shift

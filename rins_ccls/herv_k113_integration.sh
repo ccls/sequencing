@@ -124,17 +124,38 @@ fi
 
 	echo "Seeking insertion points and overlaps"
 
-	samtools view -F 20 $base.pre_ltr.bowtie2.hg19.bam | awk '{print $3":"$4+length($10)}' | sort > $base.pre_ltr.bowtie2.hg19.insertion_points
 
-	samtools view -F 20 $base.post_ltr.bowtie2.hg19.bam | awk '{print $3":"$4}' | sort > $base.post_ltr.bowtie2.hg19.insertion_points
 
-	positions_within_10bp.sh $base.*.bowtie2.hg19.insertion_points | sort | uniq -c > $base.both_ltr.bowtie2.hg19.insertion_points.overlappers
+#
+#	TODO REPLACE next lines of code with ...
+#	for mapq in 0 10 20 ; do LOOP
+#		extract_insertion_points_and_overlappers.sh --index hg19 --mapq $mapq --core $core $PWD
+#	done
+#
 
-	samtools view -F 4 -f 16 $base.pre_ltr.bowtie2.hg19.bam | awk '{print $3":"$4}' | sort > $base.pre_ltr.bowtie2.hg19.rc_insertion_points
 
-	samtools view -F 4 -f 16 $base.post_ltr.bowtie2.hg19.bam | awk '{print $3":"$4+length($10)}' | sort > $base.post_ltr.bowtie2.hg19.rc_insertion_points
+	samtools view -F 20 $base.pre_ltr.bowtie2.hg19.bam \
+		| awk '{print $3":"$4+length($10)}' \
+		| sort > $base.pre_ltr.bowtie2.hg19.insertion_points
+	samtools view -F 20 $base.post_ltr.bowtie2.hg19.bam \
+		| awk '{print $3":"$4}' \
+		| sort > $base.post_ltr.bowtie2.hg19.insertion_points
+	positions_within_10bp.sh $base.*.bowtie2.hg19.insertion_points \
+		| sort | uniq -c > $base.both_ltr.bowtie2.hg19.insertion_points.overlappers
 
-	positions_within_10bp.sh $base.*.bowtie2.hg19.rc_insertion_points | sort | uniq -c > $base.both_ltr.bowtie2.hg19.rc_insertion_points.rc_overlappers
+	samtools view -F 4 -f 16 $base.pre_ltr.bowtie2.hg19.bam \
+		| awk '{print $3":"$4}' \
+		| sort > $base.pre_ltr.bowtie2.hg19.rc_insertion_points
+	samtools view -F 4 -f 16 $base.post_ltr.bowtie2.hg19.bam \
+		| awk '{print $3":"$4+length($10)}' \
+		| sort > $base.post_ltr.bowtie2.hg19.rc_insertion_points
+	positions_within_10bp.sh $base.*.bowtie2.hg19.rc_insertion_points \
+		| sort | uniq -c > $base.both_ltr.bowtie2.hg19.rc_insertion_points.rc_overlappers
+
+
+
+
+
 
 	if [ $# -eq 2 ] ; then
 

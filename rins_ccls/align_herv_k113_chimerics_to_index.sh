@@ -133,6 +133,18 @@ base=`basename $PWD`
 
 	echo "Seeking insertion points and overlaps"
 
+
+
+#
+#	TODO REPLACE next lines of code with ...
+#	for mapq in 0 10 20 ; do LOOP
+#		extract_insertion_points_and_overlappers.sh --index $index --mapq $mapq --core $core $PWD
+#	done
+#
+
+
+
+
 	samtools view -F 20 $base.pre_ltr.bowtie2.$index.sam \
 		| awk '{print $3":"$4+length($10)}' \
 		| sort > $base.pre_ltr.bowtie2.$index.Q00.insertion_points

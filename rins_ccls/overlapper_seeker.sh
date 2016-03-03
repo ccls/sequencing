@@ -97,6 +97,18 @@ fi
 	
 		base="$base.aligned"
 	
+
+
+
+#
+#	TODO Extract or call existing awk program
+#
+#	similar to but not the same as ... samtools_extract_and_clip_chimeric_reads.awk
+#
+
+
+
+
 		#	--posix NEEDS to be AFTER any -v settings!
 		samtools view $flag -h -F 4 $base.bam | awk -v base=$base --posix '
 			BEGIN {
@@ -151,6 +163,17 @@ fi
 		#	-> pre_ltr.fasta
 		#	-> post_ltr.fasta
 	
+
+
+#
+#	TODO REPLACE next lines of code with ...
+#	for mapq in 0 10 20 ; do LOOP
+#		extract_insertion_points_and_overlappers.sh --index $index --mapq $mapq --core $core $PWD
+#	done
+#
+
+
+
 		if [ -f $base.pre_ltr.fasta ] ; then
 			bowtie2 -x hg19 --threads 8 -f $base.pre_ltr.fasta \
 				-S $base.pre_ltr.bowtie2.hg19.sam
