@@ -333,6 +333,8 @@ ultra-clean-scripts:
 #	rm -f $(BASE_BIN_DIR)/write_result.pl
 #	rm -f $(BASE_BIN_DIR)/write_result.rb
 
+uninstall: uninstall-scripts
+
 uninstall-scripts:
 	@printf "\nUNINSTALLING SCRIPTS\n\n"
 	cd $(BASE_BIN_DIR); \
