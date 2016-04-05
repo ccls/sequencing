@@ -22,7 +22,7 @@ while true ; do
 
 	message=`aws sqs receive-message --queue-url https://us-west-1.queue.amazonaws.com/156714443422/test123`
 
-	#	once a message is received is it "in flight" and should be deleted when complete.
+	#	once a message is received it is "in flight" and should be deleted when complete.
 
 	echo $message
 
