@@ -55,13 +55,17 @@ log_file=`basename $0`.$quality.$index.$date.out
 
 {
 
-	find $basedir \
+	find $basedir -maxdepth 2 \
 		-name \*.$core.both_ltr.bowtie2.$index.$quality.insertion_points.overlappers \
-		-depth 2 -exec cat {} \; > $index.$quality.insertion_points.overlappers
+		-exec cat {} \; > $index.$quality.insertion_points.overlappers
+#	depth usage breaks on ec2
+#		-depth 2 -exec cat {} \; > $index.$quality.insertion_points.overlappers
 
-	find $basedir \
+	find $basedir -maxdepth 2 \
 		-name \*.$core.both_ltr.bowtie2.$index.$quality.rc_insertion_points.rc_overlappers \
-		-depth 2 -exec cat {} \; > $index.$quality.rc_insertion_points.rc_overlappers
+		-exec cat {} \; > $index.$quality.rc_insertion_points.rc_overlappers
+#	depth usage breaks on ec2
+#		-depth 2 -exec cat {} \; > $index.$quality.rc_insertion_points.rc_overlappers
 
 	awk '{print $2}' $index.$quality.insertion_points.overlappers \
 		| sort -u > $index.$quality.insertion_points.overlappers.sort.uniq

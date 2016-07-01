@@ -56,7 +56,14 @@ tmpfile="tmpfile.$1.$now"
 #	attempting to deal with 
 #		/bin/ls: Argument list too long.
 #	Use find instead of expanding argument list (so will need quoted)
-for file in `find $wd -type f -depth 2 -name $1` ; do
+
+
+#	for file in `find $wd -type f -depth 2 -name $1` ; do
+#	depth breaks ec2
+#find: warning: you have specified the -maxdepth option after a non-option argument -type, but options are not positional (-maxdepth affects tests specified before it as well as those specified after it).  Please specify options before other arguments.
+for file in `find $wd -type f -maxdepth 1 -name $1` ; do
+
+
 
 #	echo
 #	echo $file
