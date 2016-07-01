@@ -338,8 +338,10 @@ uninstall: uninstall-scripts
 uninstall-scripts:
 	@printf "\nUNINSTALLING SCRIPTS\n\n"
 	cd $(BASE_BIN_DIR); \
-		find . -lname $(APPS_SUBDIR)/\* -depth 1 -exec rm {} \;
+		find . -lname $(APPS_SUBDIR)/\* -exec rm {} \;
 	rm -rf $(BASE_BIN_DIR)/$(APPS_SUBDIR)
+#	Don't know why I have the "-depth 1" here? Won't work on ec2 instance.
+#		find . -lname $(APPS_SUBDIR)/\* -depth 1 -exec rm {} \;
 
 
 #	Remove old stuff.  Need -f or get an error.
