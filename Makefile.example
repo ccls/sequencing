@@ -342,6 +342,11 @@ uninstall-scripts:
 	rm -rf $(BASE_BIN_DIR)/$(APPS_SUBDIR)
 #	Don't know why I have the "-depth 1" here? Won't work on ec2 instance.
 #		find . -lname $(APPS_SUBDIR)/\* -depth 1 -exec rm {} \;
+#$ find . -lname ccls_sequencing/\* -depth 1 
+#find: warning: you have specified the -depth option after a non-option argument -lname, but options are not positional (-depth affects tests specified before it as well as those specified after it).  Please specify options before other arguments.
+#
+#find: paths must precede expression: 1
+#Usage: find [-H] [-L] [-P] [-Olevel] [-D help|tree|search|stat|rates|opt|exec] [path...] [expression]
 
 
 #	Remove old stuff.  Need -f or get an error.
