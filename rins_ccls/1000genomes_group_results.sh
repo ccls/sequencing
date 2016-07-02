@@ -2,7 +2,9 @@
 
 date=`date "+%Y%m%d%H%M%S"`
 
-for sample in `find . -type d -name \*-\* -depth 1 -exec basename {} \; | awk -F- '{print $1}' | uniq`; do
+#for sample in `find . -type d -name \*-\* -depth 1 -exec basename {} \; | awk -F- '{print $1}' | uniq`; do
+#	-depth in wrong order and will fail on ec2, should it be used there.
+for sample in `find . -maxdepth 1 -type d -name \*-\* -exec basename {} \; | awk -F- '{print $1}' | uniq`; do
 
 #for sample in `find . -type d -name HG000\*-\* -exec basename {} \; | awk -F- '{print $1}' | uniq`; do
 #for sample in HG00096 HG00097 HG00099 HG00100 HG00103 HG00104 HG00106 ; do
