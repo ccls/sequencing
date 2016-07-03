@@ -34,7 +34,11 @@ done
 while [ $# -ne 0 ] ; do
 	echo $1
 
-	for fastabase in `find -L $1 -depth 1 -type f -name \*TCGA\*fasta | sed 's/\(^.*TCGA-[^-]*-[^-]*-\).*/\1/' | uniq` ; do
+#	-depth will produce errors like the following on ec2. Use -maxdepth instead.
+#	find: paths must precede expression: 2
+#	Usage: find [-H] [-L] [-P] [-Olevel] [-D help|tree|search|stat|rates|opt|exec] [path...] [expression]
+#	for fastabase in `find -L $1 -depth 1 -type f -name \*TCGA\*fasta | sed 's/\(^.*TCGA-[^-]*-[^-]*-\).*/\1/' | uniq` ; do
+	for fastabase in `find -L $1 -maxdepth 1 -type f -name \*TCGA\*fasta | sed 's/\(^.*TCGA-[^-]*-[^-]*-\).*/\1/' | uniq` ; do
 		echo $fastabase	#	/Volumes/box/working/output/HERV_K113_fasta/G49538.TCGA-14-1034-
 
 		cmd="fasta_read_length_filter.sh -l $length -s r $fastabase*.pre_ltr.fasta"

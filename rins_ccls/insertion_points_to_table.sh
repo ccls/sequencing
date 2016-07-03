@@ -61,6 +61,9 @@ tmpfile="tmpfile.$1.$now"
 #	for file in `find $wd -type f -depth 2 -name $1` ; do
 #	depth breaks ec2
 #find: warning: you have specified the -maxdepth option after a non-option argument -type, but options are not positional (-maxdepth affects tests specified before it as well as those specified after it).  Please specify options before other arguments.
+#	-depth will produce errors like the following on ec2. Use -maxdepth instead.
+#	find: paths must precede expression: 2
+#	Usage: find [-H] [-L] [-P] [-Olevel] [-D help|tree|search|stat|rates|opt|exec] [path...] [expression]
 for file in `find $wd -maxdepth 2 -type f -name $1` ; do
 
 

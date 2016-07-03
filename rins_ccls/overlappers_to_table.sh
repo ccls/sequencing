@@ -25,7 +25,12 @@ tmpfile="tmpfile.$1.$now"
 #	attempting to deal with 
 #		/bin/ls: Argument list too long.
 #	Use find instead of expanding argument list (so will need quoted)
-for file in `find ./ -type f -depth 2 -name $1` ; do
+
+#	-depth will produce errors like the following on ec2. Use -maxdepth instead.
+#	find: paths must precede expression: 2
+#	Usage: find [-H] [-L] [-P] [-Olevel] [-D help|tree|search|stat|rates|opt|exec] [path...] [expression]
+#for file in `find ./ -type f -depth 2 -name $1` ; do
+for file in `find ./ -maxdepth 2 -type f -name $1` ; do
 
 
 #	echo

@@ -59,12 +59,18 @@ log_file=`basename $0`.$quality.$index.$date.out
 		-name \*.$core.both_ltr.bowtie2.$index.$quality.insertion_points.overlappers \
 		-exec cat {} \; > $index.$quality.insertion_points.overlappers
 #	depth usage breaks on ec2
+#	-depth will produce errors like the following on ec2. Use -maxdepth instead.
+#	find: paths must precede expression: 2
+#	Usage: find [-H] [-L] [-P] [-Olevel] [-D help|tree|search|stat|rates|opt|exec] [path...] [expression]
 #		-depth 2 -exec cat {} \; > $index.$quality.insertion_points.overlappers
 
 	find $basedir -maxdepth 2 \
 		-name \*.$core.both_ltr.bowtie2.$index.$quality.rc_insertion_points.rc_overlappers \
 		-exec cat {} \; > $index.$quality.rc_insertion_points.rc_overlappers
 #	depth usage breaks on ec2
+#	-depth will produce errors like the following on ec2. Use -maxdepth instead.
+#	find: paths must precede expression: 2
+#	Usage: find [-H] [-L] [-P] [-Olevel] [-D help|tree|search|stat|rates|opt|exec] [path...] [expression]
 #		-depth 2 -exec cat {} \; > $index.$quality.rc_insertion_points.rc_overlappers
 
 	awk '{print $2}' $index.$quality.insertion_points.overlappers \

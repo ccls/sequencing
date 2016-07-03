@@ -34,7 +34,7 @@ function usage(){
 	echo "Example:"
 	echo "  `basename $0` [--print 'reference' or 'sample'] referencefile samplefilelist"
 	echo
-	echo "find . -type d -depth 1 \( -name HG\* -o -name NG\* \) -execdir sh -c 'echo {}; cd {}; positions_within_10bp_of_reference.sh ../../overlapper_reference.Q20 *Q20*ts | sort | uniq -c > {}.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.both_ltr.bowtie2.hg19.Q20.overlappers_reference' \;"
+	echo "find . -maxdepth 1 -type d \( -name HG\* -o -name NG\* \) -execdir sh -c 'echo {}; cd {}; positions_within_10bp_of_reference.sh ../../overlapper_reference.Q20 *Q20*ts | sort | uniq -c > {}.bowtie2.herv_k113_ltr_ends.__very_sensitive_local.aligned.both_ltr.bowtie2.hg19.Q20.overlappers_reference' \;"
 	echo
 	echo
 	echo
@@ -44,6 +44,9 @@ function usage(){
 	echo
 	exit 1
 }
+#	-depth will produce errors like the following on ec2. Use -maxdepth instead.
+#	find: paths must precede expression: 2
+#	Usage: find [-H] [-L] [-P] [-Olevel] [-D help|tree|search|stat|rates|opt|exec] [path...] [expression]
 
 #	Basically, its either 'sample' or its not. 
 printwhat='sample'

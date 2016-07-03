@@ -4,6 +4,9 @@ date=`date "+%Y%m%d%H%M%S"`
 
 #for sample in `find . -type d -name \*-\* -depth 1 -exec basename {} \; | awk -F- '{print $1}' | uniq`; do
 #	-depth in wrong order and will fail on ec2, should it be used there.
+#	-depth will produce errors like the following on ec2. Use -maxdepth instead.
+#	find: paths must precede expression: 2
+#	Usage: find [-H] [-L] [-P] [-Olevel] [-D help|tree|search|stat|rates|opt|exec] [path...] [expression]
 for sample in `find . -maxdepth 1 -type d -name \*-\* -exec basename {} \; | awk -F- '{print $1}' | uniq`; do
 
 #for sample in `find . -type d -name HG000\*-\* -exec basename {} \; | awk -F- '{print $1}' | uniq`; do
