@@ -6,6 +6,15 @@
 #	UNTESTED SINCE EXTRACTED
 
 
+
+
+#
+#
+#		NOTE: READ1 IS NOT ALWAYS FIRST! DATA FROM THIS SCRIPT IS LIKELY MISSING DATA!
+#
+#
+
+
 BEGIN {
 	if( !base ){
 		print "Requires gawk and "
